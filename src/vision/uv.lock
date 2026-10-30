@@ -2401,7 +2401,7 @@ wheels = [
 ]
 
 [[package]]
-name = "vagt-orca-ai"
+name = "vash-vision"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

@@ -2,7 +2,7 @@
 
 이 문서는 이전 YOLO26s/15종 연구 절차를 보존한 기록이다. 현재 원본 YOLO26m의 설치·배포는 [README](README.md)와 [현재 runbook](deployment/JETSON_RUNBOOK.md)을 따른다. Phase 6 자동 완료 판정은 현재 m 배포용이 아니다.
 
-# VAGT-ORCA AI
+# VASH Vision
 
 AR-glass 시점의 물체 검출, 중앙 타깃 안정화와 그립 제안을 수행하는 GPU 전용 파이프라인이다.
 현재 **추가학습하지 않은 공식 YOLO26m으로 손으로 다룰 물체 위주로 표시**한다.

@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "vagt-orca-ai"
+name = "vash-vision"
 version = "0.1.0"
-description = "GPU-only egocentric object detection and grip planning pipeline for VAGT-ORCA"
+description = "GPU-only egocentric object detection and grip planning pipeline for VASH"
 requires-python = ">=3.10,<3.13"
 dependencies = [
   "numpy>=1.26,<3",
@@ -34,6 +34,7 @@ desktop-trt = [
 ]
 
 [project.scripts]
+vash = "vagt_orca.cli:main"
 vagt-orca = "vagt_orca.cli:main"
 
 [tool.hatch.build.targets.wheel]

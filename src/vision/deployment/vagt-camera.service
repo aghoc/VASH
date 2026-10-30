@@ -1,5 +1,5 @@
 [Unit]
-Description=VAGT ELP IMX291 live vision
+Description=VASH ELP IMX291 live vision
 ConditionPathExists=/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0
 
 [Service]

@@ -1,4 +1,4 @@
-# VAGT-ORCA Jetson → ESP32 UART Protocol v1
+# VASH Jetson → ESP32 UART Protocol v1
 
 UART는 115200 baud, 8 data bits, no parity, 1 stop bit(8N1)을 사용한다. 각 packet은
 little-endian 고정 16 bytes다. Jetson은 inference frame마다 packet을 보내며 ESP32는 유효한

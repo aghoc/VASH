@@ -92,7 +92,7 @@ def infer(args: argparse.Namespace) -> None:
                         raise RuntimeError(f"Unable to create output video {args.output}")
                 writer.write(visualized)
             if args.show:
-                cv2.imshow("VAGT-ORCA", visualized)
+                cv2.imshow("VASH", visualized)
                 if cv2.waitKey(1) & 0xFF in (27, ord("q")):
                     break
             frame_number += 1
@@ -113,7 +113,7 @@ def infer(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="vagt-orca")
+    parser = argparse.ArgumentParser(prog="vash")
     subparsers = parser.add_subparsers(dest="command", required=True)
     infer_parser = subparsers.add_parser("infer", help="Run GPU-only video/webcam inference")
     infer_parser.add_argument(

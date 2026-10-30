@@ -24,14 +24,14 @@ from vagt_orca.visualization import render
 
 HTML = """<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-<title>VAGT Pixy Live Intent View</title>
+<title>VASH Pixy Live Intent View</title>
 <style>
 body{margin:0;background:#111;color:#eee;font-family:sans-serif;text-align:center}
 h2{margin:12px 0 4px}.legend{margin:0 0 10px;color:#ccc}
 img{width:min(96vw,948px);height:auto;border:2px solid #555;background:#000}
 .white{color:white}.yellow{color:#00dcff}.red{color:#ff5555}
 </style></head><body>
-<h2>VAGT Pixy Live Intent View</h2>
+<h2>VASH Pixy Live Intent View</h2>
 <p class="legend"><span class="white">+ 시선 중앙</span> · <span class="yellow">노란색 candidate</span> · <span class="red">빨간색 target</span></p>
 <img src="/stream.mjpg" alt="Pixy live stream">
 </body></html>""".encode()

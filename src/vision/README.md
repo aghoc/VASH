@@ -1,8 +1,10 @@
-# VASH Jetson Vision (VAGT-ORCA AI)
+# VASH Jetson Vision
 
 ELP IMX291 카메라 영상에서 물체를 검출하고 중앙 타깃을 안정화한 뒤 그립과 정규화된
-개구량을 제안하는 GPU 전용 모듈이다. Python 패키지명과 CLI는 기존 `vagt_orca` /
-`vagt-orca`를 유지한다. 이 모듈은 VASH의 비전 부분이며 전체 EMG·의수 통합 제어기는 아니다.
+개구량을 제안하는 GPU 전용 모듈이다. 프로젝트명은 **VASH**, 설치 패키지명은
+`vash-vision`, 기본 CLI는 `vash`다. 기존 코드와 장치 설정의 호환성을 위해
+Python import 경로 `vagt_orca`, 이전 CLI `vagt-orca`와 서비스 파일명은 유지한다.
+이 모듈은 VASH의 비전 부분이며 전체 EMG·의수 통합 제어기는 아니다.
 
 ## 현재 선택 모델
 

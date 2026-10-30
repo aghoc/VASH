@@ -28,7 +28,7 @@ from vagt_orca.visualization import render
 
 HTML = """<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-<title>VAGT ELP IMX291 Live View</title>
+<title>VASH ELP IMX291 Live View</title>
 <style>
 body{margin:0;background:#111;color:#eee;font-family:sans-serif;text-align:center}
 h2{margin:12px 0 4px}.legend{margin:0 0 10px;color:#ccc}
@@ -37,7 +37,7 @@ img{width:min(96vw,948px);height:auto;border:2px solid #555;background:#000}
 button{font-size:16px;padding:8px 16px;margin:0 4px;cursor:pointer}
 button[aria-pressed="true"]{background:#a9e8c5;color:#111;border:2px solid #58b783}
 </style></head><body>
-<h2>VAGT ELP IMX291 Live View</h2>
+<h2>VASH ELP IMX291 Live View</h2>
 <p class="legend"><span class="white">+ 시선 중앙</span> · <span class="yellow">노란색 candidate</span> · <span class="red">빨간색 target</span></p>
 <p id="modes" hidden><button id="original" onclick="setMode('original')">원본</button>
 <button id="can-pen" onclick="setMode('can-pen')">원본 + 캔·펜</button> <strong id="mode"></strong></p>
