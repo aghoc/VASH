@@ -1,0 +1,46 @@
+{
+  "deployment_accepted": false,
+  "acceptance_reason": "Development benchmark only; requires .engine execution on target Jetson",
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/onnx/yolo26s_best.onnx",
+  "model_sha256": "d94db44fe919a07fec6e578ace40a0cbda92a4cddd665a10ca7ffce76a6153c7",
+  "model_format": ".onnx",
+  "precision": "fp32",
+  "images": 128,
+  "warmup": 20,
+  "iterations": 200,
+  "hold_frames_per_scene": 5,
+  "latency_ms": {
+    "mean": 3.5847943300000003,
+    "p50": 3.567616,
+    "p95": 3.83657925,
+    "p99": 3.93572013,
+    "min": 3.169625,
+    "max": 4.091487
+  },
+  "fps": 278.95603148870185,
+  "detections": 95,
+  "frames_with_plan_proposal": 137,
+  "frames_with_new_plan_update": 2,
+  "uart_packet_serialization": {
+    "enabled": true,
+    "frame_bytes": 16,
+    "packets": 220,
+    "included_in_latency": true
+  },
+  "peak_torch_cuda_memory_mib": 5.8671875,
+  "peak_device_memory_used_mib": 943.3125,
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "platform": {
+    "machine": "x86_64",
+    "system": "Linux",
+    "release": "7.0.0-29-generic",
+    "jetson_model": null,
+    "is_jetson": false
+  }
+}

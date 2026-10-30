@@ -1,0 +1,45 @@
+{
+  "deployment_accepted": true,
+  "acceptance_reason": "Jetson TensorRT benchmark complete",
+  "model": "/home/jetson-user/vagt-orca-ai/artifacts/deployment/tensorrt/best_int8.engine",
+  "model_sha256": "81ed28ad4990b05147fcb84a2778e52f5dafe64007c661840cf347369f4b8343",
+  "model_format": ".engine",
+  "images": 512,
+  "warmup": 20,
+  "iterations": 200,
+  "hold_frames_per_scene": 5,
+  "latency_ms": {
+    "mean": 26.41902976000001,
+    "p50": 25.184669999999997,
+    "p95": 29.053386,
+    "p99": 29.312195319999997,
+    "min": 24.187803,
+    "max": 29.969185
+  },
+  "fps": 37.85150359738266,
+  "detections": 115,
+  "frames_with_plan_proposal": 47,
+  "frames_with_new_plan_update": 2,
+  "uart_packet_serialization": {
+    "enabled": true,
+    "frame_bytes": 16,
+    "packets": 220,
+    "included_in_latency": true
+  },
+  "peak_torch_cuda_memory_mib": 11.15625,
+  "peak_device_memory_used_mib": 5586.99609375,
+  "gpu": {
+    "device": 0,
+    "name": "Orin",
+    "total_memory_gib": 7.44,
+    "torch": "2.8.0",
+    "torch_cuda": "12.6"
+  },
+  "platform": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "5.15.148-tegra",
+    "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+    "is_jetson": true
+  }
+}

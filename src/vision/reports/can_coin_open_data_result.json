@@ -1,0 +1,1337 @@
+{
+  "status": "deployed",
+  "date": "2026-10-14 KST",
+  "selection": {
+    "selected_model": "artifacts/models/yolo26s_can_coin_retention.pt",
+    "method": "YOLO26s FP32 public-data fine-tuning, then full original-data retention fine-tuning",
+    "epochs": {
+      "rare_focus": 7,
+      "full_retention": 1
+    },
+    "training_configs": [
+      "configs/model_yolo26s_can_coin_v4.yaml",
+      "configs/model_yolo26s_can_coin_retention.yaml"
+    ],
+    "model_selection": "validation only, test evaluated for reporting",
+    "frozen_val": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+      "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+      "model_format": ".pt",
+      "precision": "fp32",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+      "split": "val",
+      "precision_mean": 0.45582960834369224,
+      "recall_mean": 0.27205557131151487,
+      "map50_95": 0.22147858932016073,
+      "map50": 0.28721340438330334,
+      "map75": 0.2544967986037076,
+      "per_class_map": {
+        "bottle": 0.3573824577457574,
+        "can": 0.0003168775753031715,
+        "cup": 0.2931214514969072,
+        "box": 0.050778040904097474,
+        "ball": 0.664999730604239,
+        "phone": 0.2782000057727497,
+        "remote": 0.3691919467387469,
+        "pen": 0.18451039211018413,
+        "spoon": 0.2698084420097434,
+        "fork": 0.45451927895067923,
+        "toothbrush": 0.10309807370638462,
+        "card": 0.003976071713916765,
+        "key": 0.28578033367309635,
+        "coin": 0.0047332387784278585,
+        "small_block": 0.001762498022177765
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.3573824577457574,
+          "map50": 0.4882834411343381,
+          "precision": 0.5448704723957096,
+          "recall": 0.5252038547071906,
+          "instances": 2698
+        },
+        "can": {
+          "map50_95": 0.0003168775753031715,
+          "map50": 0.0006117236253181942,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 61
+        },
+        "cup": {
+          "map50_95": 0.2931214514969072,
+          "map50": 0.37229745221392174,
+          "precision": 0.4250036038425238,
+          "recall": 0.40290935528737315,
+          "instances": 1818
+        },
+        "box": {
+          "map50_95": 0.050778040904097474,
+          "map50": 0.07874046523038625,
+          "precision": 0.29897065369632936,
+          "recall": 0.07960323844679203,
+          "instances": 3252
+        },
+        "ball": {
+          "map50_95": 0.664999730604239,
+          "map50": 0.8253243826188452,
+          "precision": 0.6870200731267375,
+          "recall": 0.7936119992920783,
+          "instances": 390
+        },
+        "phone": {
+          "map50_95": 0.2782000057727497,
+          "map50": 0.3350907076508751,
+          "precision": 0.5794487786327213,
+          "recall": 0.2635121242715213,
+          "instances": 983
+        },
+        "remote": {
+          "map50_95": 0.3691919467387469,
+          "map50": 0.46271229502639993,
+          "precision": 0.6236289832072338,
+          "recall": 0.4434782608695652,
+          "instances": 690
+        },
+        "pen": {
+          "map50_95": 0.18451039211018413,
+          "map50": 0.3086274922399078,
+          "precision": 0.661525502614906,
+          "recall": 0.19745222929936307,
+          "instances": 1256
+        },
+        "spoon": {
+          "map50_95": 0.2698084420097434,
+          "map50": 0.35722169890569355,
+          "precision": 0.624319350441343,
+          "recall": 0.3431829615143915,
+          "instances": 799
+        },
+        "fork": {
+          "map50_95": 0.45451927895067923,
+          "map50": 0.5643634981095935,
+          "precision": 0.7369520624464718,
+          "recall": 0.5068027210884354,
+          "instances": 294
+        },
+        "toothbrush": {
+          "map50_95": 0.10309807370638462,
+          "map50": 0.12404988857107185,
+          "precision": 0.16445418571294887,
+          "recall": 0.14285714285714285,
+          "instances": 84
+        },
+        "card": {
+          "map50_95": 0.003976071713916765,
+          "map50": 0.005838109411812554,
+          "precision": 1.0,
+          "recall": 0.0,
+          "instances": 18
+        },
+        "key": {
+          "map50_95": 0.28578033367309635,
+          "map50": 0.37397490564797164,
+          "precision": 0.4912504590384589,
+          "recall": 0.38221968203886997,
+          "instances": 384
+        },
+        "coin": {
+          "map50_95": 0.0047332387784278585,
+          "map50": 0.00747120324578744,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 18
+        },
+        "small_block": {
+          "map50_95": 0.001762498022177765,
+          "map50": 0.003593802117627941,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 14
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.2381051539636823,
+        "inference": 1.209950454420589,
+        "loss": 0.0002070280507590413,
+        "postprocess": 0.05016643475583783
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "frozen_test": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+      "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+      "model_format": ".pt",
+      "precision": "fp32",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+      "split": "test",
+      "precision_mean": 0.2942104008251488,
+      "recall_mean": 0.22445000812945481,
+      "map50_95": 0.16601143297296012,
+      "map50": 0.21534671827955326,
+      "map75": 0.18479459627625777,
+      "per_class_map": {
+        "bottle": 0.21357666773635836,
+        "can": 0.00017278677424815126,
+        "cup": 0.41473069575129395,
+        "box": 0.0391895966858568,
+        "ball": 0.44281306703006773,
+        "phone": 0.33100960972428267,
+        "remote": 0.277025951341012,
+        "pen": 0.17038478812561458,
+        "spoon": 0.1165306374328969,
+        "fork": 0.4145444190914656,
+        "toothbrush": 0.0,
+        "card": 0.00797205363059431,
+        "key": 0.062083295060224565,
+        "coin": 6.714124483336203e-05,
+        "small_block": 7.07849656526886e-05
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.21357666773635836,
+          "map50": 0.2964470314595005,
+          "precision": 0.38281988934326583,
+          "recall": 0.36250555308751664,
+          "instances": 2251
+        },
+        "can": {
+          "map50_95": 0.00017278677424815126,
+          "map50": 0.00028154764882063605,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 23
+        },
+        "cup": {
+          "map50_95": 0.41473069575129395,
+          "map50": 0.5213655125959391,
+          "precision": 0.5193395192152535,
+          "recall": 0.5366269165247018,
+          "instances": 1761
+        },
+        "box": {
+          "map50_95": 0.0391895966858568,
+          "map50": 0.06285033050025747,
+          "precision": 0.21773905809862376,
+          "recall": 0.0816299616825009,
+          "instances": 3877
+        },
+        "ball": {
+          "map50_95": 0.44281306703006773,
+          "map50": 0.5188060108897892,
+          "precision": 0.5647067504255061,
+          "recall": 0.5576407506702413,
+          "instances": 373
+        },
+        "phone": {
+          "map50_95": 0.33100960972428267,
+          "map50": 0.42444835725606656,
+          "precision": 0.5004051409689104,
+          "recall": 0.43481359804279374,
+          "instances": 516
+        },
+        "remote": {
+          "map50_95": 0.277025951341012,
+          "map50": 0.32894577865169494,
+          "precision": 0.42046379855719923,
+          "recall": 0.3381294964028777,
+          "instances": 695
+        },
+        "pen": {
+          "map50_95": 0.17038478812561458,
+          "map50": 0.254893583727542,
+          "precision": 0.457449697592196,
+          "recall": 0.25653206650831356,
+          "instances": 1263
+        },
+        "spoon": {
+          "map50_95": 0.1165306374328969,
+          "map50": 0.1624153934368252,
+          "precision": 0.2970272922480297,
+          "recall": 0.1734475374732334,
+          "instances": 467
+        },
+        "fork": {
+          "map50_95": 0.4145444190914656,
+          "map50": 0.5563347090986709,
+          "precision": 0.662938890497572,
+          "recall": 0.4913494809688581,
+          "instances": 289
+        },
+        "toothbrush": {
+          "map50_95": 0.0,
+          "map50": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 6
+        },
+        "card": {
+          "map50_95": 0.00797205363059431,
+          "map50": 0.01495515592950529,
+          "precision": 0.07125784557968826,
+          "recall": 0.02564102564102564,
+          "instances": 39
+        },
+        "key": {
+          "map50_95": 0.062083295060224565,
+          "map50": 0.08821298751020554,
+          "precision": 0.31900812985098803,
+          "recall": 0.10843373493975904,
+          "instances": 249
+        },
+        "coin": {
+          "map50_95": 6.714124483336203e-05,
+          "map50": 7.344354209243714e-05,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 62
+        },
+        "small_block": {
+          "map50_95": 7.07849656526886e-05,
+          "map50": 0.0001709319463889038,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 161
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.24198754219182245,
+        "inference": 1.2163517897759069,
+        "loss": 0.0002150389977218301,
+        "postprocess": 0.045984976566150866
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "public_test": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+      "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+      "model_format": ".pt",
+      "precision": "fp32",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/supplements/can_coin_open_v1/data.yaml",
+      "split": "test",
+      "precision_mean": 0.8370342617593167,
+      "recall_mean": 0.4817093204662748,
+      "map50_95": 0.42457814470581995,
+      "map50": 0.5231910595385582,
+      "map75": 0.505478242325073,
+      "per_class_map": {
+        "bottle": 0.16592717542934798,
+        "can": 0.6501056305709136,
+        "fork": 0.09949999999999999,
+        "coin": 0.782779772823018
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.16592717542934798,
+          "map50": 0.21613800004922754,
+          "precision": 0.6698168385136313,
+          "recall": 0.16666666666666666,
+          "instances": 18
+        },
+        "can": {
+          "map50_95": 0.6501056305709136,
+          "map50": 0.7765993049549604,
+          "precision": 0.6967675107864497,
+          "recall": 0.7869217591618258,
+          "instances": 146
+        },
+        "fork": {
+          "map50_95": 0.09949999999999999,
+          "map50": 0.11055555555555555,
+          "precision": 1.0,
+          "recall": 0.0,
+          "instances": 1
+        },
+        "coin": {
+          "map50_95": 0.782779772823018,
+          "map50": 0.9894713775944889,
+          "precision": 0.9815526977371858,
+          "recall": 0.9732488560366068,
+          "instances": 2841
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.4387250638554927,
+        "inference": 2.3557851848735702,
+        "loss": 0.0007172890709167221,
+        "postprocess": 0.06308470587131172
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "openimages_test": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+      "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+      "model_format": ".pt",
+      "precision": "fp32",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/benchmark/can_coin_v4_openimages/data.yaml",
+      "split": "test",
+      "precision_mean": 0.8100425971708611,
+      "recall_mean": 0.46218853023434103,
+      "map50_95": 0.43294229354193237,
+      "map50": 0.5054058806549493,
+      "map75": 0.4870108994747746,
+      "per_class_map": {
+        "bottle": 0.16864432358213133,
+        "can": 0.6558619194392048,
+        "fork": 0.09949999999999999,
+        "coin": 0.8077629311463932
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.16864432358213133,
+          "map50": 0.21978863107009508,
+          "precision": 0.6698168385136313,
+          "recall": 0.16666666666666666,
+          "instances": 18
+        },
+        "can": {
+          "map50_95": 0.6558619194392048,
+          "map50": 0.7809684703759379,
+          "precision": 0.690271083414418,
+          "recall": 0.7937625811742509,
+          "instances": 146
+        },
+        "fork": {
+          "map50_95": 0.09949999999999999,
+          "map50": 0.11055555555555555,
+          "precision": 1.0,
+          "recall": 0.0,
+          "instances": 1
+        },
+        "coin": {
+          "map50_95": 0.8077629311463932,
+          "map50": 0.9103108656182087,
+          "precision": 0.8800824667553953,
+          "recall": 0.8883248730964467,
+          "instances": 197
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.6181690790812312,
+        "inference": 2.38732817211543,
+        "loss": 0.0012179069778730355,
+        "postprocess": 0.06804862791478775
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "tradeoff": "Other13 macro AP50-95 drops 2.17% on val and 4.77% on test. Phone test 0.427614 -> 0.331010. Original model retained.",
+    "discarded_candidates": [
+      "blend25",
+      "blend50",
+      "coin classifier row transfer"
+    ]
+  },
+  "baseline_jetson_public_test": {
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_best_fp16.engine",
+    "model_sha256": "9d05b0229d368e8ae020485eef3d9a5c5cfae70bd7177101b4e254a0f3f46464",
+    "model_format": ".engine",
+    "precision": "fp16",
+    "data": "/mnt/data/vagt-orca-ai/data/benchmark/can_coin_v4_public/data.yaml",
+    "split": "test",
+    "precision_mean": 0.8740227099245363,
+    "recall_mean": 0.2918612365380908,
+    "map50_95": 0.3091809661581815,
+    "map50": 0.43809746276400213,
+    "map75": 0.41408286792140236,
+    "per_class_map": {
+      "bottle": 0.1710979319586863,
+      "can": 0.16222952655919057,
+      "fork": 0.6965,
+      "coin": 0.20689640611484922
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.1710979319586863,
+        "map50": 0.27034422945318515,
+        "precision": 1.0,
+        "recall": 0.13724454395313934,
+        "instances": 18
+      },
+      "can": {
+        "map50_95": 0.16222952655919057,
+        "map50": 0.20342625518548574,
+        "precision": 1.0,
+        "recall": 0.030200402199223823,
+        "instances": 146
+      },
+      "fork": {
+        "map50_95": 0.6965,
+        "map50": 0.995,
+        "precision": 0.4960908396981456,
+        "recall": 1.0,
+        "instances": 1
+      },
+      "coin": {
+        "map50_95": 0.20689640611484922,
+        "map50": 0.28361936641733765,
+        "precision": 1.0,
+        "recall": 0.0,
+        "instances": 2841
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 2.7539146420014666,
+      "inference": 20.04373157144394,
+      "loss": 0.026914230257724197,
+      "postprocess": 0.9980999327760837
+    },
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    }
+  },
+  "final_jetson_public_test": {
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+    "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+    "model_format": ".engine",
+    "precision": "fp16",
+    "data": "/mnt/data/vagt-orca-ai/data/benchmark/can_coin_v4_public/data.yaml",
+    "split": "test",
+    "precision_mean": 0.8464556655565459,
+    "recall_mean": 0.4733228748911325,
+    "map50_95": 0.3833647967285284,
+    "map50": 0.5214842819347237,
+    "map75": 0.44999413826414125,
+    "per_class_map": {
+      "bottle": 0.13718810870908432,
+      "can": 0.635665312396603,
+      "fork": 0.0995,
+      "coin": 0.6611057658084265
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.13718810870908432,
+        "map50": 0.19485054410800198,
+        "precision": 0.6960074708855196,
+        "recall": 0.16666666666666666,
+        "instances": 18
+      },
+      "can": {
+        "map50_95": 0.635665312396603,
+        "map50": 0.7781028386286695,
+        "precision": 0.7101548805051989,
+        "recall": 0.7602739726027398,
+        "instances": 146
+      },
+      "fork": {
+        "map50_95": 0.0995,
+        "map50": 0.124375,
+        "precision": 1.0,
+        "recall": 0.0,
+        "instances": 1
+      },
+      "coin": {
+        "map50_95": 0.6611057658084265,
+        "map50": 0.9886087450022235,
+        "precision": 0.9796603108354655,
+        "recall": 0.9663508602951236,
+        "instances": 2841
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 2.611700813457817,
+      "inference": 19.996603129408616,
+      "loss": 0.027464937807626714,
+      "postprocess": 0.9928846722595298
+    },
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    }
+  },
+  "jetson_operating_point": {
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+    "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+    "data": "/mnt/data/vagt-orca-ai/data/benchmark/can_coin_v4_public/data.yaml",
+    "split": "test",
+    "confidence": 0.35,
+    "class_confidence_thresholds": {
+      "can": 0.75,
+      "coin": 0.25
+    },
+    "match_iou": 0.5,
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "classes": {
+      "can": {
+        "tp": 73,
+        "fp": 9,
+        "fn": 73,
+        "images": 595,
+        "negative_images": 499,
+        "false_positive_negative_images": 0,
+        "precision": 0.8902439024390244,
+        "recall": 0.5,
+        "size_bins": {
+          "large_ge96px": {
+            "instances": 138,
+            "tp": 70,
+            "recall": 0.5072463768115942
+          },
+          "medium_32to96px": {
+            "instances": 8,
+            "tp": 3,
+            "recall": 0.375
+          }
+        }
+      },
+      "coin": {
+        "tp": 2775,
+        "fp": 92,
+        "fn": 66,
+        "images": 595,
+        "negative_images": 96,
+        "false_positive_negative_images": 0,
+        "precision": 0.9679107080572027,
+        "recall": 0.9767687434002112,
+        "size_bins": {
+          "large_ge96px": {
+            "instances": 151,
+            "tp": 136,
+            "recall": 0.9006622516556292
+          },
+          "medium_32to96px": {
+            "instances": 1940,
+            "tp": 1925,
+            "recall": 0.9922680412371134
+          },
+          "small_lt32px": {
+            "instances": 750,
+            "tp": 714,
+            "recall": 0.952
+          }
+        }
+      }
+    }
+  },
+  "validation_threshold_calibration": {
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+    "split": "validation only",
+    "classes": {
+      "can": {
+        "minimum_public_precision": 0.7,
+        "maximum_frozen_negative_fp_rate": 0.01,
+        "selected": {
+          "threshold": 0.75,
+          "tp": 15,
+          "fp": 1,
+          "fn": 36,
+          "precision": 0.9375,
+          "recall": 0.29411764705882354,
+          "f1": 0.44776119402985076,
+          "negative_images": 342,
+          "false_positive_negative_images": 0,
+          "negative_image_fp_rate": 0.0,
+          "frozen_negative_images": 1024,
+          "frozen_negative_fp_images": 3,
+          "frozen_negative_fp_rate": 0.0029296875
+        },
+        "curve": [
+          {
+            "threshold": 0.005,
+            "tp": 48,
+            "fp": 140,
+            "fn": 3,
+            "precision": 0.2553191489361702,
+            "recall": 0.9411764705882353,
+            "f1": 0.401673640167364,
+            "negative_images": 342,
+            "false_positive_negative_images": 10,
+            "negative_image_fp_rate": 0.029239766081871343,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 368,
+            "frozen_negative_fp_rate": 0.359375
+          },
+          {
+            "threshold": 0.01,
+            "tp": 44,
+            "fp": 89,
+            "fn": 7,
+            "precision": 0.3308270676691729,
+            "recall": 0.8627450980392157,
+            "f1": 0.47826086956521735,
+            "negative_images": 342,
+            "false_positive_negative_images": 3,
+            "negative_image_fp_rate": 0.008771929824561403,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 267,
+            "frozen_negative_fp_rate": 0.2607421875
+          },
+          {
+            "threshold": 0.02,
+            "tp": 43,
+            "fp": 57,
+            "fn": 8,
+            "precision": 0.43,
+            "recall": 0.8431372549019608,
+            "f1": 0.5695364238410596,
+            "negative_images": 342,
+            "false_positive_negative_images": 2,
+            "negative_image_fp_rate": 0.005847953216374269,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 199,
+            "frozen_negative_fp_rate": 0.1943359375
+          },
+          {
+            "threshold": 0.03,
+            "tp": 41,
+            "fp": 43,
+            "fn": 10,
+            "precision": 0.4880952380952381,
+            "recall": 0.803921568627451,
+            "f1": 0.6074074074074074,
+            "negative_images": 342,
+            "false_positive_negative_images": 1,
+            "negative_image_fp_rate": 0.0029239766081871343,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 163,
+            "frozen_negative_fp_rate": 0.1591796875
+          },
+          {
+            "threshold": 0.05,
+            "tp": 39,
+            "fp": 28,
+            "fn": 12,
+            "precision": 0.582089552238806,
+            "recall": 0.7647058823529411,
+            "f1": 0.6610169491525423,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 136,
+            "frozen_negative_fp_rate": 0.1328125
+          },
+          {
+            "threshold": 0.075,
+            "tp": 39,
+            "fp": 21,
+            "fn": 12,
+            "precision": 0.65,
+            "recall": 0.7647058823529411,
+            "f1": 0.7027027027027027,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 113,
+            "frozen_negative_fp_rate": 0.1103515625
+          },
+          {
+            "threshold": 0.1,
+            "tp": 38,
+            "fp": 17,
+            "fn": 13,
+            "precision": 0.6909090909090909,
+            "recall": 0.7450980392156863,
+            "f1": 0.7169811320754716,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 100,
+            "frozen_negative_fp_rate": 0.09765625
+          },
+          {
+            "threshold": 0.15,
+            "tp": 34,
+            "fp": 15,
+            "fn": 17,
+            "precision": 0.6938775510204082,
+            "recall": 0.6666666666666666,
+            "f1": 0.6799999999999999,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 87,
+            "frozen_negative_fp_rate": 0.0849609375
+          },
+          {
+            "threshold": 0.2,
+            "tp": 32,
+            "fp": 11,
+            "fn": 19,
+            "precision": 0.7441860465116279,
+            "recall": 0.6274509803921569,
+            "f1": 0.6808510638297872,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 75,
+            "frozen_negative_fp_rate": 0.0732421875
+          },
+          {
+            "threshold": 0.25,
+            "tp": 31,
+            "fp": 9,
+            "fn": 20,
+            "precision": 0.775,
+            "recall": 0.6078431372549019,
+            "f1": 0.6813186813186813,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 61,
+            "frozen_negative_fp_rate": 0.0595703125
+          },
+          {
+            "threshold": 0.35,
+            "tp": 27,
+            "fp": 4,
+            "fn": 24,
+            "precision": 0.8709677419354839,
+            "recall": 0.5294117647058824,
+            "f1": 0.6585365853658537,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 53,
+            "frozen_negative_fp_rate": 0.0517578125
+          },
+          {
+            "threshold": 0.5,
+            "tp": 25,
+            "fp": 2,
+            "fn": 26,
+            "precision": 0.9259259259259259,
+            "recall": 0.49019607843137253,
+            "f1": 0.6410256410256411,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 33,
+            "frozen_negative_fp_rate": 0.0322265625
+          },
+          {
+            "threshold": 0.65,
+            "tp": 19,
+            "fp": 1,
+            "fn": 32,
+            "precision": 0.95,
+            "recall": 0.37254901960784315,
+            "f1": 0.5352112676056339,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 16,
+            "frozen_negative_fp_rate": 0.015625
+          },
+          {
+            "threshold": 0.75,
+            "tp": 15,
+            "fp": 1,
+            "fn": 36,
+            "precision": 0.9375,
+            "recall": 0.29411764705882354,
+            "f1": 0.44776119402985076,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 3,
+            "frozen_negative_fp_rate": 0.0029296875
+          },
+          {
+            "threshold": 0.9,
+            "tp": 6,
+            "fp": 0,
+            "fn": 45,
+            "precision": 1.0,
+            "recall": 0.11764705882352941,
+            "f1": 0.21052631578947367,
+            "negative_images": 342,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 0,
+            "frozen_negative_fp_rate": 0.0
+          }
+        ]
+      },
+      "coin": {
+        "minimum_public_precision": 0.9,
+        "maximum_frozen_negative_fp_rate": 0.01,
+        "selected": {
+          "threshold": 0.25,
+          "tp": 1988,
+          "fp": 53,
+          "fn": 34,
+          "precision": 0.974032337089662,
+          "recall": 0.9831849653808111,
+          "f1": 0.9785872507999016,
+          "negative_images": 25,
+          "false_positive_negative_images": 0,
+          "negative_image_fp_rate": 0.0,
+          "frozen_negative_images": 1024,
+          "frozen_negative_fp_images": 10,
+          "frozen_negative_fp_rate": 0.009765625
+        },
+        "curve": [
+          {
+            "threshold": 0.005,
+            "tp": 2021,
+            "fp": 602,
+            "fn": 1,
+            "precision": 0.7704918032786885,
+            "recall": 0.9995054401582592,
+            "f1": 0.8701829924650162,
+            "negative_images": 25,
+            "false_positive_negative_images": 11,
+            "negative_image_fp_rate": 0.44,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 199,
+            "frozen_negative_fp_rate": 0.1943359375
+          },
+          {
+            "threshold": 0.01,
+            "tp": 2019,
+            "fp": 431,
+            "fn": 3,
+            "precision": 0.8240816326530612,
+            "recall": 0.9985163204747775,
+            "f1": 0.9029516994633274,
+            "negative_images": 25,
+            "false_positive_negative_images": 6,
+            "negative_image_fp_rate": 0.24,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 108,
+            "frozen_negative_fp_rate": 0.10546875
+          },
+          {
+            "threshold": 0.02,
+            "tp": 2018,
+            "fp": 334,
+            "fn": 4,
+            "precision": 0.8579931972789115,
+            "recall": 0.9980217606330366,
+            "f1": 0.9227251943301327,
+            "negative_images": 25,
+            "false_positive_negative_images": 4,
+            "negative_image_fp_rate": 0.16,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 65,
+            "frozen_negative_fp_rate": 0.0634765625
+          },
+          {
+            "threshold": 0.03,
+            "tp": 2017,
+            "fp": 292,
+            "fn": 5,
+            "precision": 0.8735383282806409,
+            "recall": 0.9975272007912958,
+            "f1": 0.9314246132532902,
+            "negative_images": 25,
+            "false_positive_negative_images": 3,
+            "negative_image_fp_rate": 0.12,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 52,
+            "frozen_negative_fp_rate": 0.05078125
+          },
+          {
+            "threshold": 0.05,
+            "tp": 2016,
+            "fp": 222,
+            "fn": 6,
+            "precision": 0.900804289544236,
+            "recall": 0.9970326409495549,
+            "f1": 0.9464788732394367,
+            "negative_images": 25,
+            "false_positive_negative_images": 2,
+            "negative_image_fp_rate": 0.08,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 39,
+            "frozen_negative_fp_rate": 0.0380859375
+          },
+          {
+            "threshold": 0.075,
+            "tp": 2015,
+            "fp": 175,
+            "fn": 7,
+            "precision": 0.9200913242009132,
+            "recall": 0.996538081107814,
+            "f1": 0.95679012345679,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 28,
+            "frozen_negative_fp_rate": 0.02734375
+          },
+          {
+            "threshold": 0.1,
+            "tp": 2011,
+            "fp": 142,
+            "fn": 11,
+            "precision": 0.9340455178820251,
+            "recall": 0.9945598417408507,
+            "f1": 0.9633532934131738,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 25,
+            "frozen_negative_fp_rate": 0.0244140625
+          },
+          {
+            "threshold": 0.15,
+            "tp": 2001,
+            "fp": 101,
+            "fn": 21,
+            "precision": 0.9519505233111323,
+            "recall": 0.9896142433234422,
+            "f1": 0.9704170708050436,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 14,
+            "frozen_negative_fp_rate": 0.013671875
+          },
+          {
+            "threshold": 0.2,
+            "tp": 1997,
+            "fp": 77,
+            "fn": 25,
+            "precision": 0.9628736740597879,
+            "recall": 0.9876360039564788,
+            "f1": 0.9750976562500001,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 12,
+            "frozen_negative_fp_rate": 0.01171875
+          },
+          {
+            "threshold": 0.25,
+            "tp": 1988,
+            "fp": 53,
+            "fn": 34,
+            "precision": 0.974032337089662,
+            "recall": 0.9831849653808111,
+            "f1": 0.9785872507999016,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 10,
+            "frozen_negative_fp_rate": 0.009765625
+          },
+          {
+            "threshold": 0.35,
+            "tp": 1960,
+            "fp": 33,
+            "fn": 62,
+            "precision": 0.9834420471650778,
+            "recall": 0.9693372898120672,
+            "f1": 0.9763387297633873,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 3,
+            "frozen_negative_fp_rate": 0.0029296875
+          },
+          {
+            "threshold": 0.5,
+            "tp": 1910,
+            "fp": 16,
+            "fn": 112,
+            "precision": 0.9916926272066459,
+            "recall": 0.9446092977250248,
+            "f1": 0.9675785207700102,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 2,
+            "frozen_negative_fp_rate": 0.001953125
+          },
+          {
+            "threshold": 0.65,
+            "tp": 1801,
+            "fp": 8,
+            "fn": 221,
+            "precision": 0.9955776672194583,
+            "recall": 0.890702274975272,
+            "f1": 0.9402244844688071,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 0,
+            "frozen_negative_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.75,
+            "tp": 1691,
+            "fp": 5,
+            "fn": 331,
+            "precision": 0.9970518867924528,
+            "recall": 0.8363006923837785,
+            "f1": 0.9096288327057558,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 0,
+            "frozen_negative_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.9,
+            "tp": 1000,
+            "fp": 4,
+            "fn": 1022,
+            "precision": 0.9960159362549801,
+            "recall": 0.49455984174085066,
+            "f1": 0.6609385327164574,
+            "negative_images": 25,
+            "false_positive_negative_images": 0,
+            "negative_image_fp_rate": 0.0,
+            "frozen_negative_images": 1024,
+            "frozen_negative_fp_images": 0,
+            "frozen_negative_fp_rate": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "jetson_benchmark": {
+    "deployment_accepted": true,
+    "acceptance_reason": "Jetson TensorRT benchmark complete",
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+    "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+    "model_format": ".engine",
+    "precision": "fp16",
+    "images": 128,
+    "warmup": 60,
+    "iterations": 300,
+    "hold_frames_per_scene": 5,
+    "latency_ms": {
+      "mean": 32.29153517999998,
+      "p50": 33.0771335,
+      "p95": 35.479346400000004,
+      "p99": 38.005663799999994,
+      "min": 25.270241,
+      "max": 40.113756
+    },
+    "fps": 30.96786803184749,
+    "detections": 170,
+    "frames_with_plan_proposal": 237,
+    "frames_with_new_plan_update": 2,
+    "uart_packet_serialization": {
+      "enabled": true,
+      "frame_bytes": 16,
+      "packets": 360,
+      "included_in_latency": true
+    },
+    "peak_torch_cuda_memory_mib": 10.5546875,
+    "peak_device_memory_used_mib": 3946.9375,
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "platform": {
+      "machine": "aarch64",
+      "system": "Linux",
+      "release": "5.15.148-tegra",
+      "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+      "is_jetson": true
+    }
+  },
+  "jetson_export": {
+    "accepted_target_build": true,
+    "development_only": false,
+    "portability_warning": null,
+    "platform": {
+      "machine": "aarch64",
+      "system": "Linux",
+      "release": "5.15.148-tegra",
+      "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+      "is_jetson": true
+    },
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "tensorrt_version": "10.3.0",
+    "model": "/mnt/data/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+    "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+    "engine": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+    "engine_bytes": 22786910,
+    "engine_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+    "model_family": "YOLO26s",
+    "precision": "fp16",
+    "end2end_nms_free": true,
+    "requested_settings": {
+      "dynamic": false,
+      "workspace_gib": 2,
+      "batch": 1,
+      "precision": "fp16"
+    },
+    "settings": {
+      "dynamic": false,
+      "workspace_gib": 2,
+      "batch": 1,
+      "precision": "fp16",
+      "opset": 17
+    }
+  },
+  "deployment_health": {
+    "deployed": true,
+    "time_unix": 1791983515.6329348,
+    "service": "NRestarts=0\nExecStart={ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --model artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine ; ignore_errors=no ; start_time=[Wed 2026-10-14 22:11:40 KST] ; stop_time=[n/a] ; pid=7470 ; code=(null) ; status=0/0 }\nActiveState=active\nSubState=running\n",
+    "health_samples": [
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 3,
+        "read_failures": 0,
+        "uptime_seconds": 4.5,
+        "fps": 4.16,
+        "pipeline_mean_ms": 156.33,
+        "pipeline_p95_ms": 413.13
+      },
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 207,
+        "read_failures": 0,
+        "uptime_seconds": 14.5,
+        "fps": 19.42,
+        "pipeline_mean_ms": 28.13,
+        "pipeline_p95_ms": 28.59
+      }
+    ],
+    "files": {
+      "artifacts/models/yolo26s_best.pt": {
+        "bytes": 20370165,
+        "sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5"
+      },
+      "artifacts/deployment/tensorrt/yolo26s_best_fp16.engine": {
+        "bytes": 22879912,
+        "sha256": "9d05b0229d368e8ae020485eef3d9a5c5cfae70bd7177101b4e254a0f3f46464"
+      },
+      "artifacts/models/yolo26s_can_coin_retention.pt": {
+        "bytes": 20321733,
+        "sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726"
+      },
+      "artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine": {
+        "bytes": 22786910,
+        "sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0"
+      }
+    },
+    "camera_images_observed": false,
+    "backup": "runs/can_coin_retention_20261014/predeploy"
+  },
+  "public_pipeline_smoke": {
+    "input": "public validation images only",
+    "camera_used": false,
+    "uart_sent": false,
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+    "classes": {
+      "can": {
+        "image": "data/benchmark/can_coin_v4_public/images/val/oi_0804e479f3848a5a.jpg",
+        "candidates_tried": 1,
+        "stable_after_frames": 4,
+        "grip": "POWER",
+        "confidence": 0.8212890625,
+        "opening": 1.0
+      },
+      "coin": {
+        "image": "data/benchmark/can_coin_v4_public/images/val/oi_01edc8b3d6663d93.jpg",
+        "candidates_tried": 1,
+        "stable_after_frames": 4,
+        "grip": "PINCH",
+        "confidence": 0.63818359375,
+        "opening": 0.3620410057902337
+      }
+    }
+  },
+  "checks": {
+    "pytest_passed": 77,
+    "ruff": "passed"
+  },
+  "deployment_steady_health": {
+    "ready": true,
+    "source": "elp",
+    "frames": 6587,
+    "read_failures": 0,
+    "uptime_seconds": 334.7,
+    "fps": 21.45,
+    "pipeline_mean_ms": 27.68,
+    "pipeline_p95_ms": 28.23,
+    "service": "NRestarts=0\nActiveState=active\nSubState=running\n"
+  },
+  "current_camera_state": {
+    "user_requested_stop": true,
+    "verified_service_properties": {
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "enabled"
+    },
+    "viewer_saves_frames_to_disk": false,
+    "ssd_available": "219G",
+    "verification": "successful SSH stop/status/df; subsequent SSH connection timed out"
+  }
+}

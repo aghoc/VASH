@@ -1,0 +1,16 @@
+grips:
+  bottle: POWER
+  can: POWER
+  cup: POWER
+  box: POWER
+  ball: POWER
+  phone: POWER
+  remote: POWER
+  pen: TRIPOD
+  spoon: TRIPOD
+  fork: TRIPOD
+  toothbrush: TRIPOD
+  card: LATERAL_PINCH
+  key: LATERAL_PINCH
+  coin: PINCH
+  small_block: PINCH

@@ -1,0 +1,28 @@
+{
+  "source": "LVIS v1 / COCO images",
+  "purpose": "bootstrap card and small_block classes absent from EgoObjects v1",
+  "mapping": {
+    "card": "card",
+    "business_card": "card",
+    "credit_card": "card",
+    "identity_card": "card",
+    "keycard": "card",
+    "Lego": "small_block",
+    "cube": "small_block"
+  },
+  "images": 148,
+  "image_decode_validation": {
+    "checked": 148,
+    "corrupt": 0
+  },
+  "annotations": {
+    "card": 280,
+    "small_block": 695
+  },
+  "split_images": {
+    "test": 18,
+    "train": 116,
+    "val": 14
+  },
+  "seed": 42
+}

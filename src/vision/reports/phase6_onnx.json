@@ -1,0 +1,59 @@
+{
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+  "model_sha256": "3d095807e8e74dfb347005fa5bd2367a88839b1ae8ffe1ee3cbbfebc8c114a90",
+  "onnx": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/onnx/best.onnx",
+  "onnx_bytes": 12276352,
+  "onnx_sha256": "9d3c33cc8b65bfb07a1e4af8529b52c3c231152fc01d2ad211f0c62943cb4c32",
+  "opsets": {
+    "ai.onnx": 17
+  },
+  "graph": {
+    "nodes": 231,
+    "inputs": [
+      "images"
+    ],
+    "outputs": [
+      "output0"
+    ]
+  },
+  "cuda_smoke_test": {
+    "available_providers": [
+      "TensorrtExecutionProvider",
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "active_providers": [
+      "CUDAExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "input_name": "images",
+    "input_shape": [
+      1,
+      3,
+      640,
+      640
+    ],
+    "output_shapes": [
+      [
+        1,
+        19,
+        8400
+      ]
+    ],
+    "passed": true
+  },
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "platform": {
+    "machine": "x86_64",
+    "system": "Linux",
+    "release": "7.0.0-29-generic",
+    "jetson_model": null,
+    "is_jetson": false
+  }
+}

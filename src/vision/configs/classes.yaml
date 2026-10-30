@@ -1,0 +1,37 @@
+names:
+  0: bottle
+  1: can
+  2: cup
+  3: box
+  4: ball
+  5: phone
+  6: remote
+  7: pen
+  8: spoon
+  9: fork
+  10: toothbrush
+  11: card
+  12: key
+  13: coin
+  14: small_block
+
+# EgoObjects names are normalized to lower-case snake_case before matching.
+# Ambiguous broad categories are intentionally not guessed.
+aliases:
+  bottle: [bottle, water_bottle, plastic_bottle, glass_bottle]
+  can: [can, soda_can, beverage_can, tin_can]
+  cup: [cup, mug, coffee_cup, tea_cup, drinking_cup]
+  box: [box, cardboard_box, carton]
+  ball:
+    [ball, sports_ball, basketball, cricket_ball, football, golf_ball,
+     lacrosse_ball, rugby_ball, soccer_ball, tennis_ball, volleyball_ball]
+  phone: [phone, cell_phone, mobile_phone, smartphone]
+  remote: [remote, remote_control]
+  pen: [pen, ballpoint_pen]
+  spoon: [spoon]
+  fork: [fork]
+  toothbrush: [toothbrush, tooth_brush]
+  card: [card, credit_card, id_card, playing_card]
+  key: [key, keys, house_car_key]
+  coin: [coin]
+  small_block: [small_block, toy_block, building_block]

@@ -1,0 +1,14 @@
+{
+  "phase": 8,
+  "status": "hardware_pending",
+  "accepted": false,
+  "records": 0,
+  "captured_classes": [],
+  "checks": {
+    "ar_glass_device_or_recording_available": false,
+    "all_15_classes_captured": false,
+    "bbox_annotations_present": false,
+    "domain_finetune_completed": false
+  },
+  "blocker": "No AR Glass camera or recorded domain data is available."
+}

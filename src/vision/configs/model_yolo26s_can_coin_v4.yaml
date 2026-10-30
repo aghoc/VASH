@@ -1,0 +1,29 @@
+base_model: artifacts/models/yolo26s_best.pt
+device: 0
+image_size: 640
+epochs: 10
+batch: 16
+workers: 8
+optimizer: AdamW
+lr0: 0.0002
+lrf: 0.1
+weight_decay: 0.0005
+warmup_epochs: 0.5
+patience: 5
+close_mosaic: 3
+save_period: 1
+seed: 42
+deterministic: true
+augment:
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.3
+  degrees: 15.0
+  translate: 0.1
+  scale: 0.3
+  shear: 0.0
+  perspective: 0.0
+  flipud: 0.1
+  fliplr: 0.5
+  mosaic: 0.3
+  mixup: 0.0

@@ -1,0 +1,681 @@
+{
+  "date_kst": "2026-10-15",
+  "validation_selection": {
+    "baseline": "yolo26s_focus8_v5.pt",
+    "baseline_validation": {
+      "combined": {
+        "bottle": 0.36711648653312356,
+        "can": 0.1579132994677259,
+        "cup": 0.3088014609822994,
+        "box": 0.04907258549030978,
+        "ball": 0.6461312370997268,
+        "phone": 0.29436926140050895,
+        "remote": 0.362807755295525,
+        "pen": 0.19949582680232084,
+        "spoon": 0.2696099549870824,
+        "fork": 0.4450953437176567,
+        "toothbrush": 0.11417513225985132,
+        "card": 0.005479178066102873,
+        "key": 0.27639346426449013,
+        "coin": 0.7773387225999401,
+        "small_block": 0.001464507963177829
+      },
+      "coco": {
+        "bottle": 0.3031798883351489,
+        "cup": 0.2512479905752193,
+        "ball": 0.0,
+        "phone": 0.11554709987773167,
+        "remote": 0.1728114150265386,
+        "spoon": 0.12427766214642455,
+        "fork": 0.32979313674434063,
+        "toothbrush": 0.4594979166666667
+      },
+      "openimages": {
+        "bottle": 0.4258145935086771,
+        "cup": 0.5116289740646006,
+        "phone": 0.5011280952656406,
+        "remote": 0.33736270396270396,
+        "pen": 0.19797841887501527,
+        "spoon": 0.34364015921305985,
+        "fork": 0.2381663322698639,
+        "toothbrush": 0.10845936149982464
+      }
+    },
+    "candidates": [
+      {
+        "epoch": 1,
+        "tag": "epoch1",
+        "candidate_fraction": null,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_targeted_v7_20261015/weights/epoch0.pt",
+        "per_class_map": {
+          "combined": {
+            "bottle": 0.35175173053900843,
+            "can": 0.07750441678085908,
+            "cup": 0.29404688425910447,
+            "box": 0.04687570650822013,
+            "ball": 0.6172108423594193,
+            "phone": 0.16696002687527609,
+            "remote": 0.31616534210496383,
+            "pen": 0.1898516005640663,
+            "spoon": 0.2449201335777865,
+            "fork": 0.3755192788784123,
+            "toothbrush": 0.007152904130060938,
+            "card": 0.0020824973560865318,
+            "key": 0.1015312263089668,
+            "coin": 0.7561232531639287,
+            "small_block": 0.007401483595845656
+          },
+          "coco": {
+            "bottle": 0.2510292805948079,
+            "cup": 0.25012955591266806,
+            "ball": 0.0,
+            "phone": 0.11084804516610465,
+            "remote": 0.21688656566780193,
+            "spoon": 0.11863650340830312,
+            "fork": 0.30311860320694217,
+            "toothbrush": 0.1797589743589744
+          },
+          "openimages": {
+            "bottle": 0.37262221759236147,
+            "cup": 0.4963097827996658,
+            "phone": 0.49722236475849535,
+            "remote": 0.5092589252478633,
+            "pen": 0.31754094132443667,
+            "spoon": 0.29116240282608014,
+            "fork": 0.22404659617282902,
+            "toothbrush": 0.054763378825226194
+          }
+        },
+        "validation_macro_deltas": {
+          "combined": -0.05188791513121113,
+          "coco": -0.04656394015092405,
+          "openimages": 0.012343496360946504
+        },
+        "mean_macro_delta": -0.028702786307062893,
+        "can_coin_public_val": {
+          "bottle": 0.199,
+          "can": 0.61803452257128,
+          "cup": 0.007896825396825397,
+          "coin": 0.7623232993659856
+        },
+        "can_coin_retained": true,
+        "material_target_drops": [
+          "phone",
+          "remote",
+          "fork",
+          "toothbrush"
+        ],
+        "eligible": false
+      },
+      {
+        "epoch": 2,
+        "tag": "epoch2",
+        "candidate_fraction": null,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_targeted_v7_20261015/weights/epoch1.pt",
+        "per_class_map": {
+          "combined": {
+            "bottle": 0.3524751931730369,
+            "can": 0.07447598327488744,
+            "cup": 0.2911697265779318,
+            "box": 0.04795999813108965,
+            "ball": 0.6138759650996711,
+            "phone": 0.17992135516973945,
+            "remote": 0.3209387744816351,
+            "pen": 0.19699327355938714,
+            "spoon": 0.25088029468031015,
+            "fork": 0.37297619689561134,
+            "toothbrush": 0.0098723081567193,
+            "card": 0.001590005186183138,
+            "key": 0.12163636381724616,
+            "coin": 0.7614378826369111,
+            "small_block": 0.00791491726183507
+          },
+          "coco": {
+            "bottle": 0.26404287613267674,
+            "cup": 0.2545204635211782,
+            "ball": 0.0,
+            "phone": 0.1101649254343007,
+            "remote": 0.2116221243328793,
+            "spoon": 0.1184603793996292,
+            "fork": 0.30453883514091534,
+            "toothbrush": 0.19246
+          },
+          "openimages": {
+            "bottle": 0.3888023518356526,
+            "cup": 0.5090106167013605,
+            "phone": 0.5165470488072909,
+            "remote": 0.4995640617734238,
+            "pen": 0.3252905577210705,
+            "spoon": 0.2955848733572353,
+            "fork": 0.21432136819673103,
+            "toothbrush": 0.0627352456935605
+          }
+        },
+        "validation_macro_deltas": {
+          "combined": -0.048280512410499604,
+          "coco": -0.0429350722014987,
+          "openimages": 0.018459685678367366
+        },
+        "mean_macro_delta": -0.02425196631121031,
+        "can_coin_public_val": {
+          "bottle": 0.20049624060150376,
+          "can": 0.6087081105619224,
+          "cup": 0.009045454545454544,
+          "coin": 0.7675002639994527
+        },
+        "can_coin_retained": true,
+        "material_target_drops": [
+          "phone",
+          "remote",
+          "fork",
+          "toothbrush"
+        ],
+        "eligible": false
+      },
+      {
+        "epoch": 2,
+        "tag": "blend25",
+        "candidate_fraction": 0.25,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_targeted_v7_blend25.pt",
+        "per_class_map": {
+          "combined": {
+            "bottle": 0.3680915584515018,
+            "can": 0.13830201999298317,
+            "cup": 0.30494290059070084,
+            "box": 0.05542363037581781,
+            "ball": 0.6507505227572972,
+            "phone": 0.24739076555043987,
+            "remote": 0.3604264232957826,
+            "pen": 0.19277510741264398,
+            "spoon": 0.2713939180223541,
+            "fork": 0.4266345573623158,
+            "toothbrush": 0.08715986570690352,
+            "card": 0.0038441337191533137,
+            "key": 0.2620854655408377,
+            "coin": 0.781350574031926,
+            "small_block": 0.002127237051027778
+          },
+          "coco": {
+            "bottle": 0.3016657137452557,
+            "cup": 0.26176525796886413,
+            "ball": 0.0,
+            "phone": 0.12280905516227533,
+            "remote": 0.19449393204690224,
+            "spoon": 0.11330984662554702,
+            "fork": 0.3560824106661334,
+            "toothbrush": 0.4602435897435896
+          },
+          "openimages": {
+            "bottle": 0.4147917920275207,
+            "cup": 0.5517629688224048,
+            "phone": 0.5154250638429848,
+            "remote": 0.3773049020266286,
+            "pen": 0.23748030349042173,
+            "spoon": 0.3494595629112099,
+            "fork": 0.24482654048926059,
+            "toothbrush": 0.09492604557288521
+          }
+        },
+        "validation_macro_deltas": {
+          "combined": -0.012832015698215682,
+          "coco": 0.007716385226642419,
+          "openimages": 0.015224817565491322
+        },
+        "mean_macro_delta": 0.00336972903130602,
+        "can_coin_public_val": {
+          "bottle": 0.2321666666666667,
+          "can": 0.673158896416145,
+          "cup": 0.014632352941176468,
+          "coin": 0.7848919012829069
+        },
+        "can_coin_retained": true,
+        "material_target_drops": [
+          "phone",
+          "toothbrush"
+        ],
+        "eligible": false
+      },
+      {
+        "epoch": 2,
+        "tag": "blend50",
+        "candidate_fraction": 0.5,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_targeted_v7_blend50.pt",
+        "per_class_map": {
+          "combined": {
+            "bottle": 0.36648457401816653,
+            "can": 0.1220683327485205,
+            "cup": 0.3014379093210875,
+            "box": 0.05434891595236653,
+            "ball": 0.6464813259461588,
+            "phone": 0.21621464924666395,
+            "remote": 0.350258876860304,
+            "pen": 0.19226300353949138,
+            "spoon": 0.26639117987920513,
+            "fork": 0.4059851593973969,
+            "toothbrush": 0.04869183837048542,
+            "card": 0.002099580927647282,
+            "key": 0.2314433858067264,
+            "coin": 0.7784575155481287,
+            "small_block": 0.008429341219934725
+          },
+          "coco": {
+            "bottle": 0.3025707102203264,
+            "cup": 0.2541759489537294,
+            "ball": 0.0,
+            "phone": 0.11902770590965037,
+            "remote": 0.2029450663556979,
+            "spoon": 0.11600168046537884,
+            "fork": 0.336189245609361,
+            "toothbrush": 0.46152446483180426
+          },
+          "openimages": {
+            "bottle": 0.41670499847115605,
+            "cup": 0.5614227881613301,
+            "phone": 0.5245675230093328,
+            "remote": 0.44577418347787184,
+            "pen": 0.2813671132078034,
+            "spoon": 0.33343536735311197,
+            "fork": 0.24047660229721105,
+            "toothbrush": 0.08572447873572836
+          }
+        },
+        "validation_macro_deltas": {
+          "combined": -0.0267180039181959,
+          "coco": 0.0051542447105539235,
+          "openimages": 0.02816180200676993
+        },
+        "mean_macro_delta": 0.002199347599709319,
+        "can_coin_public_val": {
+          "bottle": 0.34825,
+          "can": 0.6591764632809392,
+          "cup": 0.014632352941176468,
+          "coin": 0.7826722483693279
+        },
+        "can_coin_retained": true,
+        "material_target_drops": [
+          "phone",
+          "toothbrush"
+        ],
+        "eligible": false
+      },
+      {
+        "epoch": 2,
+        "tag": "bn_reference",
+        "candidate_fraction": null,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_targeted_v7_bn_reference.pt",
+        "per_class_map": {
+          "combined": {
+            "bottle": 0.03875636349365359,
+            "can": 0.0,
+            "cup": 0.011392626800282371,
+            "box": 0.0006246245048850585,
+            "ball": 0.0,
+            "phone": 0.0005791070654138209,
+            "remote": 3.421052631578947e-05,
+            "pen": 5.652582379008557e-05,
+            "spoon": 0.008246168461093242,
+            "fork": 0.03217785417197182,
+            "toothbrush": 0.0,
+            "card": 0.0,
+            "key": 0.0,
+            "coin": 0.0,
+            "small_block": 0.0
+          },
+          "coco": {
+            "bottle": 0.016897247140840607,
+            "cup": 0.0,
+            "ball": 0.0,
+            "phone": 2.1510815823558295e-05,
+            "remote": 0.0,
+            "spoon": 0.040456376771325374,
+            "fork": 0.03150000000000001,
+            "toothbrush": 0.0
+          },
+          "openimages": {
+            "bottle": 0.019680386280386278,
+            "cup": 0.020499999999999997,
+            "phone": 0.0063880001602051135,
+            "remote": 0.0019444444444444448,
+            "pen": 0.0019342079716948026,
+            "spoon": 0.016216666666666667,
+            "fork": 0.0,
+            "toothbrush": 0.0001563268163817779
+          }
+        },
+        "validation_macro_deltas": {
+          "combined": -0.2837785457044809,
+          "coco": -0.23821142494915443,
+          "openimages": -0.32466982578995085
+        },
+        "mean_macro_delta": -0.28221993214786206,
+        "can_coin_public_val": {
+          "bottle": 0.0,
+          "can": 0.0,
+          "cup": 0.0,
+          "coin": 0.0
+        },
+        "can_coin_retained": false,
+        "material_target_drops": [
+          "bottle",
+          "cup",
+          "phone",
+          "remote",
+          "spoon",
+          "fork",
+          "toothbrush",
+          "pen"
+        ],
+        "eligible": false,
+        "method": "Learned epoch2 parameters, reference BatchNorm running statistics"
+      }
+    ],
+    "selected": null,
+    "selection_data": "validation only; identical FP32 CUDA, imgsz=640, batch=16",
+    "policy": "Equal-domain mean gain, combined loss <=0.3pp, each domain >=90%, no material target regression, can/coin public >=90% of previous candidate."
+  },
+  "training": {
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    },
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v7_focus8_targeted_15/data.yaml",
+    "config": {
+      "base_model": "artifacts/models/yolo26s_focus8_v5.pt",
+      "device": 0,
+      "image_size": 800,
+      "multi_scale": 0.2,
+      "epochs": 2,
+      "batch": 8,
+      "workers": 8,
+      "optimizer": "AdamW",
+      "lr0": 2e-05,
+      "lrf": 0.2,
+      "weight_decay": 0.0005,
+      "warmup_epochs": 0.25,
+      "patience": 0,
+      "close_mosaic": 0,
+      "save_period": 1,
+      "freeze": 5,
+      "seed": 20261015,
+      "deterministic": true,
+      "augment": {
+        "hsv_h": 0.015,
+        "hsv_s": 0.3,
+        "hsv_v": 0.2,
+        "degrees": 7.0,
+        "translate": 0.06,
+        "scale": 0.25,
+        "shear": 0.0,
+        "perspective": 0.0,
+        "flipud": 0.0,
+        "fliplr": 0.5,
+        "mosaic": 0.0,
+        "mixup": 0.0
+      }
+    },
+    "configured_epochs": 2,
+    "epochs": 2,
+    "best_epoch": 2,
+    "batch": 8,
+    "elapsed_seconds": 393.102,
+    "run_directory": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_targeted_v7_20261015",
+    "best_checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_targeted_v7_global_best.pt",
+    "metrics": {
+      "metrics/precision(B)": 0.5611282032252445,
+      "metrics/recall(B)": 0.33147689579448275,
+      "metrics/mAP50(B)": 0.34109381898287466,
+      "metrics/mAP50-95(B)": 0.2570857842077291,
+      "fitness": 0.2570857842077291
+    }
+  },
+  "data": {
+    "parent_dataset": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v6_focus8_coco_oi_15",
+    "focus_class_quotas": {
+      "0": 1200,
+      "2": 1200,
+      "5": 1200,
+      "6": 1400,
+      "8": 1400,
+      "9": 1400,
+      "10": 1800,
+      "7": 1800
+    },
+    "retention_quotas": {
+      "1": 800,
+      "13": 1000,
+      "3": 250,
+      "4": 250,
+      "11": 100000,
+      "12": 250,
+      "14": 100000
+    },
+    "source_counts": {
+      "COCO 2017": 2640,
+      "Open Images focus8": 3452,
+      "Existing 15-class retention": 5686,
+      "EgoObjects replay": 372,
+      "Targeted contextual crop": 780
+    },
+    "positive_train_images": {
+      "0": 1875,
+      "2": 1987,
+      "8": 1550,
+      "9": 1519,
+      "5": 1533,
+      "10": 1954,
+      "6": 1597,
+      "7": 1969,
+      "3": 281,
+      "4": 252,
+      "12": 253,
+      "1": 807,
+      "13": 1002,
+      "11": 80,
+      "14": 36
+    },
+    "parent_train_photographs": 12150,
+    "derived_crops": 780,
+    "train_holdout_pixel_intersections": 0,
+    "all_compatible_class_labels_preserved": true,
+    "selection": "Class/group round robin; COCO/Open Images groups first within each round. Keep all available card/block photos and can/coin replay.",
+    "integrity": {
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "missing_classes": [],
+      "splits": {
+        "train": {
+          "images": 12930,
+          "labels": 12930
+        },
+        "val": {
+          "images": 6927,
+          "labels": 6927
+        },
+        "test": {
+          "images": 6698,
+          "labels": 6698
+        }
+      },
+      "class_counts": {
+        "0": 9704,
+        "1": 2097,
+        "2": 7260,
+        "3": 7748,
+        "4": 1271,
+        "5": 3486,
+        "6": 3769,
+        "7": 5865,
+        "8": 3910,
+        "9": 3069,
+        "10": 3348,
+        "11": 280,
+        "12": 1099,
+        "13": 8291,
+        "14": 695
+      },
+      "class_counts_by_split": {
+        "train": {
+          "0": 4736,
+          "1": 1816,
+          "2": 3680,
+          "3": 619,
+          "4": 508,
+          "5": 1987,
+          "6": 2384,
+          "7": 3346,
+          "8": 2644,
+          "9": 2485,
+          "10": 3258,
+          "11": 223,
+          "12": 466,
+          "13": 3348,
+          "14": 520
+        },
+        "val": {
+          "0": 2699,
+          "1": 112,
+          "2": 1819,
+          "3": 3252,
+          "4": 390,
+          "5": 983,
+          "6": 690,
+          "7": 1256,
+          "8": 799,
+          "9": 294,
+          "10": 84,
+          "11": 18,
+          "12": 384,
+          "13": 2040,
+          "14": 14
+        },
+        "test": {
+          "0": 2269,
+          "1": 169,
+          "2": 1761,
+          "3": 3877,
+          "4": 373,
+          "5": 516,
+          "6": 695,
+          "7": 1263,
+          "8": 467,
+          "9": 290,
+          "10": 6,
+          "11": 39,
+          "12": 249,
+          "13": 2903,
+          "14": 161
+        }
+      },
+      "missing_classes_by_split": {
+        "train": [],
+        "val": [],
+        "test": []
+      }
+    }
+  },
+  "resolution_diagnostic": [
+    {
+      "source": "openimages",
+      "image_size": 640,
+      "per_class_map": {
+        "bottle": 0.42815135986343567,
+        "cup": 0.5172024987151771,
+        "phone": 0.5053626105679003,
+        "remote": 0.33365703020383874,
+        "pen": 0.1990611841834868,
+        "spoon": 0.34720278136275046,
+        "fork": 0.23338919469787042,
+        "toothbrush": 0.06245427141808537
+      },
+      "target_macro": 0.3283101163765681,
+      "speed_ms_per_image": {
+        "preprocess": 0.2974791572481287,
+        "inference": 2.5734020161119204,
+        "loss": 0.0004024999901547187,
+        "postprocess": 0.048660729850135184
+      }
+    },
+    {
+      "source": "openimages",
+      "image_size": 960,
+      "per_class_map": {
+        "bottle": 0.21189073660448526,
+        "cup": 0.32218943784144405,
+        "phone": 0.13133395280795415,
+        "remote": 0.11204819785479354,
+        "pen": 0.03664069326213018,
+        "spoon": 0.22454818592354697,
+        "fork": 0.15781581899830704,
+        "toothbrush": 0.007284514570752204
+      },
+      "target_macro": 0.15046894223292667,
+      "speed_ms_per_image": {
+        "preprocess": 0.7822967379158194,
+        "inference": 4.006415786285112,
+        "loss": 0.00043067338919495194,
+        "postprocess": 0.08535349999669228
+      }
+    },
+    {
+      "source": "frozen",
+      "image_size": 640,
+      "per_class_map": {
+        "bottle": 0.36735788276857134,
+        "can": 0.00043767053409357517,
+        "cup": 0.3089203716837211,
+        "box": 0.0492770375146181,
+        "ball": 0.64783511120014,
+        "phone": 0.2949084785911624,
+        "remote": 0.3631195579295089,
+        "pen": 0.1998148504315536,
+        "spoon": 0.26974943368698684,
+        "fork": 0.4457954849718617,
+        "toothbrush": 0.1128951102398216,
+        "card": 0.005546128947148272,
+        "key": 0.2760152035552245,
+        "coin": 0.005240219764082212,
+        "small_block": 0.0016349492411721286
+      },
+      "target_macro": 0.29532014628789843,
+      "speed_ms_per_image": {
+        "preprocess": 0.23240718536596167,
+        "inference": 1.1712426027440592,
+        "loss": 0.0003667306417610678,
+        "postprocess": 0.05470026432992266
+      }
+    },
+    {
+      "source": "frozen",
+      "image_size": 960,
+      "per_class_map": {
+        "bottle": 0.39109136481899975,
+        "can": 0.0012885391997017736,
+        "cup": 0.34127565976231755,
+        "box": 0.05035026587237527,
+        "ball": 0.6989486603132666,
+        "phone": 0.3087837837805524,
+        "remote": 0.40903179516249855,
+        "pen": 0.2651192448708488,
+        "spoon": 0.27444245158052405,
+        "fork": 0.4316226740048467,
+        "toothbrush": 0.09066373251381725,
+        "card": 0.0009876119298151249,
+        "key": 0.215866605887242,
+        "coin": 0.0009925288394084992,
+        "small_block": 0.01620110789980732
+      },
+      "target_macro": 0.3140038383118006,
+      "speed_ms_per_image": {
+        "preprocess": 0.49947855198064556,
+        "inference": 2.831329870275429,
+        "loss": 0.0004113396356365783,
+        "postprocess": 0.054473836738319424
+      }
+    }
+  ],
+  "comparisons": {}
+}

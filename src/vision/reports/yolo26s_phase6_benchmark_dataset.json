@@ -1,0 +1,10 @@
+{
+  "dataset": "/home/developer/Documents/VAGT/vagt-orca-ai/data/benchmark/yolo26s_phase6/images",
+  "source_data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/egoobjects_15/data.yaml",
+  "split": "val",
+  "selection": "deterministic_class_balanced_round_robin",
+  "images": 128,
+  "all_images_decoded": true,
+  "model_family": "YOLO26s",
+  "deployment_precision": "fp16"
+}

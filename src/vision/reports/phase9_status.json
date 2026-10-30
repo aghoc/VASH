@@ -1,0 +1,13 @@
+{
+  "phase": 9,
+  "status": "hardware_pending",
+  "accepted": false,
+  "opening_observations": 0,
+  "checks": {
+    "physical_opening_observations_present": false,
+    "opening_mae_at_most_0_10": false,
+    "four_grip_poses_verified": false,
+    "lateral_pinch_contact_verified": false
+  },
+  "blocker": "ORCA Hand physical calibration data is not available."
+}

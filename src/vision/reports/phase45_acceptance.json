@@ -1,0 +1,23 @@
+{
+  "seed": 42,
+  "center_bias": {
+    "scenarios": 100,
+    "correct": 100,
+    "accuracy": 1.0
+  },
+  "debounce_5_frame_4_vote": {
+    "scenarios": 100,
+    "correct": 100,
+    "accuracy": 1.0
+  },
+  "grip_mapping": {
+    "classes": 15,
+    "correct": 15,
+    "accuracy": 1.0
+  },
+  "no_target_lkg": {
+    "proposal_retained": true,
+    "updated": false,
+    "reason": "no_target"
+  }
+}

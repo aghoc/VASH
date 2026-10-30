@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-08-07T20:00:00+09:00",
+  "dataset": "EgoObjects v1 plus LVIS v1 supplement",
+  "split_policy": "sequence_safe_group_resplit_with_class_coverage",
+  "seed": 42,
+  "integrity": {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "missing_classes": []
+  },
+  "splits": {
+    "train": {"images": 49946, "labels": 49946, "egoobjects_groups": 650},
+    "val": {"images": 6560, "labels": 6560, "egoobjects_groups": 83},
+    "test": {"images": 6103, "labels": 6103, "egoobjects_groups": 81}
+  },
+  "class_counts": {
+    "bottle": 23126,
+    "can": 2253,
+    "cup": 16283,
+    "box": 32975,
+    "ball": 4627,
+    "phone": 4908,
+    "remote": 7125,
+    "pen": 8898,
+    "spoon": 7339,
+    "fork": 2970,
+    "toothbrush": 1364,
+    "card": 280,
+    "key": 4358,
+    "coin": 203,
+    "small_block": 695
+  },
+  "conversion": {
+    "egoobjects_images": 62461,
+    "egoobjects_annotations": 116429,
+    "invalid_boxes_skipped": 17,
+    "missing_images": 0,
+    "unmapped_or_missing_category_ids": 1035,
+    "lvis_images": 148,
+    "lvis_card_boxes": 280,
+    "lvis_small_block_boxes": 695
+  },
+  "notes": [
+    "All images belonging to one EgoObjects group_id are assigned to exactly one split.",
+    "The source val/test subset labels overlap heavily by group_id, so all complete groups were deterministically re-split 80/10/10.",
+    "One complete coin group was moved from train to val so every one of the 15 classes is measurable in train, val, and test.",
+    "EgoObjects does not provide card or small_block categories; those two classes are supplemented from official LVIS v1 annotations and COCO images."
+  ]
+}

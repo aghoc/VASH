@@ -1,0 +1,31 @@
+base_model: artifacts/models/yolo26s_focus8_v5.pt
+device: 0
+image_size: 800
+multi_scale: 0.2
+epochs: 2
+batch: 8
+workers: 8
+optimizer: AdamW
+lr0: 0.00002
+lrf: 0.2
+weight_decay: 0.0005
+warmup_epochs: 0.25
+patience: 0
+close_mosaic: 0
+save_period: 1
+freeze: 5
+seed: 20261015
+deterministic: true
+augment:
+  hsv_h: 0.015
+  hsv_s: 0.3
+  hsv_v: 0.2
+  degrees: 7.0
+  translate: 0.06
+  scale: 0.25
+  shear: 0.0
+  perspective: 0.0
+  flipud: 0.0
+  fliplr: 0.5
+  mosaic: 0.0
+  mixup: 0.0

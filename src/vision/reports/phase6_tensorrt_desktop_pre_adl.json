@@ -1,0 +1,33 @@
+{
+  "accepted_target_build": false,
+  "development_only": true,
+  "portability_warning": "This engine is GPU/platform-specific and MUST NOT be deployed to Jetson.",
+  "platform": {
+    "machine": "x86_64",
+    "system": "Linux",
+    "release": "7.0.0-28-generic",
+    "jetson_model": null,
+    "is_jetson": false
+  },
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "tensorrt_version": "11.2.1.2",
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+  "model_sha256": "04709825b5b570c2a2548cf9400a187400e9f9f00bb3a81cbd764853de793062",
+  "calibration": "/home/developer/Documents/VAGT/vagt-orca-ai/data/calibration/jetson_int8/data.yaml",
+  "engine": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/tensorrt/best_int8_RTX_DEVELOPMENT_ONLY_NOT_FOR_JETSON.engine",
+  "engine_bytes": 7936134,
+  "engine_sha256": "9264315bfc1a335a5eb3bd3ef139b7192c6dc8e88d30664a64b8691e56c98d73",
+  "precision": "int8",
+  "settings": {
+    "dynamic": true,
+    "workspace_gib": 2,
+    "batch": 4,
+    "precision": "int8"
+  }
+}

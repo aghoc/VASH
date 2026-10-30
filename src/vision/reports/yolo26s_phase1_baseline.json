@@ -1,0 +1,28 @@
+{
+  "completed_at": "2026-08-18T10:39:33.064788+00:00",
+  "model_family": "YOLO26s",
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26s.pt",
+  "model_sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b",
+  "training_precision_target": "fp32",
+  "deployment_precision_target": "fp16",
+  "default_head": "end-to-end / NMS-free",
+  "end2end_nms_free_verified": true,
+  "ultralytics": "8.4.115",
+  "torch": "2.13.0+cu130",
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "frames": 10,
+  "detections": 50,
+  "latency_ms": {
+    "mean": 72.4531157,
+    "min": 4.1006,
+    "max": 681.887432
+  },
+  "input": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/phase1_baseline_input.mp4",
+  "visualization": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/yolo26s_phase1_baseline_visualized.mp4"
+}

@@ -1,0 +1,15 @@
+model: artifacts/deployment/tensorrt/yolo26s_focus8_refined_v8_fp16.engine
+confidence_threshold: 0.35
+class_confidence_thresholds:
+  can: 0.75
+  coin: 0.25
+iou_threshold: 0.45
+image_size: 640
+device: cuda:0
+half: true
+target:
+  debounce_window: 5
+  required_votes: 4
+  switch_margin: 0.2
+  identity_iou_threshold: 0.3
+  missing_grace_frames: 8

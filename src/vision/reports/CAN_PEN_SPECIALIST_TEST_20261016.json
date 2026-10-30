@@ -1,0 +1,1997 @@
+{
+  "date": "2026-10-16",
+  "status": "rejected_original_selected_camera_stopped",
+  "baseline": {
+    "model": "models/pretrained/yolo26m.pt",
+    "checkpoint_sha256": "401cea9ab23ad19246ff7744859816bc599f350e93c9dd30367b6f0a0745d0b7",
+    "base_runtime_preserved": true
+  },
+  "specialist": {
+    "model": "artifacts/models/yolo26s_can_pen_specialist_20261016.pt",
+    "checkpoint_sha256": "9f688b21ef93eb01e898cb412f23efa8002a5c512131841481fdbb421133b7bf",
+    "classes": [
+      "can",
+      "pen"
+    ],
+    "training": {
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      },
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/can_pen_specialist_20261016/data.yaml",
+      "config": {
+        "base_model": "models/pretrained/yolo26s.pt",
+        "device": 0,
+        "image_size": 640,
+        "epochs": 8,
+        "batch": 16,
+        "workers": 8,
+        "optimizer": "AdamW",
+        "lr0": 0.0003,
+        "lrf": 0.1,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 0.5,
+        "patience": 3,
+        "close_mosaic": 0,
+        "save_period": 1,
+        "freeze": 10,
+        "seed": 20261016,
+        "deterministic": true,
+        "augment": {
+          "hsv_h": 0.01,
+          "hsv_s": 0.25,
+          "hsv_v": 0.2,
+          "degrees": 10.0,
+          "translate": 0.05,
+          "scale": 0.25,
+          "shear": 0.0,
+          "perspective": 0.0,
+          "flipud": 0.0,
+          "fliplr": 0.5,
+          "mosaic": 0.0,
+          "mixup": 0.0
+        }
+      },
+      "configured_epochs": 8,
+      "epochs": 6,
+      "best_epoch": 3,
+      "batch": 16,
+      "elapsed_seconds": 418.387,
+      "run_directory": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_can_pen_specialist_20261016",
+      "best_checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_pen_specialist_20261016.pt",
+      "metrics": {
+        "metrics/precision(B)": 0.447681869037016,
+        "metrics/recall(B)": 0.3416779105628373,
+        "metrics/mAP50(B)": 0.36961113053658157,
+        "metrics/mAP50-95(B)": 0.22926128748246213,
+        "fitness": 0.22926128748246213
+      }
+    }
+  },
+  "data": {
+    "parent": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v6_focus8_coco_oi_15",
+    "classes": {
+      "0": "can",
+      "1": "pen"
+    },
+    "new_camera_frames": 0,
+    "split_policy": "Preserve every parent's train/val/test assignment; no new split",
+    "parent_labels_unchanged": true,
+    "pixel_train_holdout_intersection": 0,
+    "ego_group_split_overlap": 0,
+    "train_positive_ego_group_cap": 30,
+    "counts": {
+      "train": {
+        "images": 9506,
+        "negatives": 3500,
+        "positive_images": {
+          "0": 2392,
+          "1": 3677
+        },
+        "sources": {
+          "Existing 15-class retention": 6094,
+          "EgoObjects replay": 2068,
+          "Open Images focus8": 1123,
+          "COCO 2017": 221
+        }
+      },
+      "val": {
+        "images": 2708,
+        "negatives": 1800,
+        "positive_images": {
+          "1": 872,
+          "0": 86
+        },
+        "sources": {
+          "Existing 15-class retention": 2571,
+          "Open Images focus8": 98,
+          "COCO 2017": 39
+        }
+      },
+      "test": {
+        "images": 7111,
+        "negatives": 6131,
+        "positive_images": {
+          "1": 866,
+          "0": 116
+        },
+        "sources": {
+          "Existing 15-class retention": 6662,
+          "Open Images focus8": 324,
+          "COCO 2017": 125
+        }
+      }
+    },
+    "negative_scope": "No can/pen annotation, not manually verified object absence",
+    "integrity": {
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "missing_classes": [],
+      "splits": {
+        "train": {
+          "images": 9506,
+          "labels": 9506
+        },
+        "val": {
+          "images": 2708,
+          "labels": 2708
+        },
+        "test": {
+          "images": 7111,
+          "labels": 7111
+        }
+      },
+      "class_counts": {
+        "0": 5040,
+        "1": 7957
+      },
+      "class_counts_by_split": {
+        "train": {
+          "0": 4759,
+          "1": 5314
+        },
+        "val": {
+          "0": 112,
+          "1": 1297
+        },
+        "test": {
+          "0": 169,
+          "1": 1346
+        }
+      },
+      "missing_classes_by_split": {
+        "train": [],
+        "val": [],
+        "test": []
+      }
+    }
+  },
+  "desktop_validation": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_pen_specialist_20261016.pt",
+    "model_sha256": "9f688b21ef93eb01e898cb412f23efa8002a5c512131841481fdbb421133b7bf",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/can_pen_specialist_20261016/data.yaml",
+    "split": "val",
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    },
+    "match_iou": 0.5,
+    "classes": {
+      "can": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 36,
+          "fp": 85,
+          "fn": 76,
+          "precision": 0.2975206611570248,
+          "recall": 0.32142857142857145,
+          "f1": 0.30901287553648066,
+          "images": 2708,
+          "negative_images": 2622,
+          "negative_fp_images": 44,
+          "negative_image_fp_rate": 0.016781083142639208
+        },
+        "selected": {
+          "threshold": 0.8,
+          "tp": 21,
+          "fp": 3,
+          "fn": 91,
+          "precision": 0.875,
+          "recall": 0.1875,
+          "f1": 0.3088235294117647,
+          "images": 2708,
+          "negative_images": 2622,
+          "negative_fp_images": 3,
+          "negative_image_fp_rate": 0.0011441647597254005
+        },
+        "curve": [
+          {
+            "threshold": 0.1,
+            "tp": 41,
+            "fp": 355,
+            "fn": 71,
+            "precision": 0.10353535353535354,
+            "recall": 0.36607142857142855,
+            "f1": 0.1614173228346457,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 215,
+            "negative_image_fp_rate": 0.08199847444698703
+          },
+          {
+            "threshold": 0.15,
+            "tp": 39,
+            "fp": 242,
+            "fn": 73,
+            "precision": 0.1387900355871886,
+            "recall": 0.3482142857142857,
+            "f1": 0.1984732824427481,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 149,
+            "negative_image_fp_rate": 0.05682684973302822
+          },
+          {
+            "threshold": 0.2,
+            "tp": 37,
+            "fp": 183,
+            "fn": 75,
+            "precision": 0.16818181818181818,
+            "recall": 0.33035714285714285,
+            "f1": 0.22289156626506026,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 109,
+            "negative_image_fp_rate": 0.041571319603356215
+          },
+          {
+            "threshold": 0.25,
+            "tp": 36,
+            "fp": 140,
+            "fn": 76,
+            "precision": 0.20454545454545456,
+            "recall": 0.32142857142857145,
+            "f1": 0.25000000000000006,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 84,
+            "negative_image_fp_rate": 0.032036613272311214
+          },
+          {
+            "threshold": 0.3,
+            "tp": 36,
+            "fp": 103,
+            "fn": 76,
+            "precision": 0.2589928057553957,
+            "recall": 0.32142857142857145,
+            "f1": 0.28685258964143423,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 58,
+            "negative_image_fp_rate": 0.02212051868802441
+          },
+          {
+            "threshold": 0.35,
+            "tp": 36,
+            "fp": 85,
+            "fn": 76,
+            "precision": 0.2975206611570248,
+            "recall": 0.32142857142857145,
+            "f1": 0.30901287553648066,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 44,
+            "negative_image_fp_rate": 0.016781083142639208
+          },
+          {
+            "threshold": 0.4,
+            "tp": 33,
+            "fp": 68,
+            "fn": 79,
+            "precision": 0.32673267326732675,
+            "recall": 0.29464285714285715,
+            "f1": 0.30985915492957744,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 39,
+            "negative_image_fp_rate": 0.014874141876430207
+          },
+          {
+            "threshold": 0.45,
+            "tp": 33,
+            "fp": 56,
+            "fn": 79,
+            "precision": 0.3707865168539326,
+            "recall": 0.29464285714285715,
+            "f1": 0.3283582089552239,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 30,
+            "negative_image_fp_rate": 0.011441647597254004
+          },
+          {
+            "threshold": 0.5,
+            "tp": 31,
+            "fp": 40,
+            "fn": 81,
+            "precision": 0.43661971830985913,
+            "recall": 0.2767857142857143,
+            "f1": 0.33879781420765026,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 26,
+            "negative_image_fp_rate": 0.009916094584286803
+          },
+          {
+            "threshold": 0.55,
+            "tp": 31,
+            "fp": 29,
+            "fn": 81,
+            "precision": 0.5166666666666667,
+            "recall": 0.2767857142857143,
+            "f1": 0.3604651162790698,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 18,
+            "negative_image_fp_rate": 0.006864988558352402
+          },
+          {
+            "threshold": 0.6,
+            "tp": 29,
+            "fp": 19,
+            "fn": 83,
+            "precision": 0.6041666666666666,
+            "recall": 0.25892857142857145,
+            "f1": 0.3625,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 14,
+            "negative_image_fp_rate": 0.005339435545385202
+          },
+          {
+            "threshold": 0.65,
+            "tp": 28,
+            "fp": 12,
+            "fn": 84,
+            "precision": 0.7,
+            "recall": 0.25,
+            "f1": 0.3684210526315789,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 9,
+            "negative_image_fp_rate": 0.003432494279176201
+          },
+          {
+            "threshold": 0.7,
+            "tp": 26,
+            "fp": 8,
+            "fn": 86,
+            "precision": 0.7647058823529411,
+            "recall": 0.23214285714285715,
+            "f1": 0.35616438356164387,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 5,
+            "negative_image_fp_rate": 0.0019069412662090007
+          },
+          {
+            "threshold": 0.75,
+            "tp": 25,
+            "fp": 6,
+            "fn": 87,
+            "precision": 0.8064516129032258,
+            "recall": 0.22321428571428573,
+            "f1": 0.34965034965034963,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 4,
+            "negative_image_fp_rate": 0.0015255530129672007
+          },
+          {
+            "threshold": 0.8,
+            "tp": 21,
+            "fp": 3,
+            "fn": 91,
+            "precision": 0.875,
+            "recall": 0.1875,
+            "f1": 0.3088235294117647,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 3,
+            "negative_image_fp_rate": 0.0011441647597254005
+          },
+          {
+            "threshold": 0.85,
+            "tp": 19,
+            "fp": 1,
+            "fn": 93,
+            "precision": 0.95,
+            "recall": 0.16964285714285715,
+            "f1": 0.2878787878787879,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 1,
+            "negative_image_fp_rate": 0.00038138825324180017
+          },
+          {
+            "threshold": 0.9,
+            "tp": 11,
+            "fp": 0,
+            "fn": 101,
+            "precision": 1.0,
+            "recall": 0.09821428571428571,
+            "f1": 0.17886178861788615,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.95,
+            "tp": 2,
+            "fp": 0,
+            "fn": 110,
+            "precision": 1.0,
+            "recall": 0.017857142857142856,
+            "f1": 0.03508771929824561,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.975,
+            "tp": 0,
+            "fp": 0,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.99,
+            "tp": 0,
+            "fp": 0,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          }
+        ],
+        "gate": {
+          "minimum_precision": 0.85,
+          "maximum_negative_fp_rate": 0.01,
+          "minimum_true_positives": 10
+        }
+      },
+      "pen": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 489,
+          "fp": 268,
+          "fn": 808,
+          "precision": 0.6459709379128138,
+          "recall": 0.37702390131071706,
+          "f1": 0.47614410905550153,
+          "images": 2708,
+          "negative_images": 1836,
+          "negative_fp_images": 131,
+          "negative_image_fp_rate": 0.07135076252723312
+        },
+        "selected": {
+          "threshold": 0.8,
+          "tp": 55,
+          "fp": 8,
+          "fn": 1242,
+          "precision": 0.873015873015873,
+          "recall": 0.04240555127216654,
+          "f1": 0.08088235294117647,
+          "images": 2708,
+          "negative_images": 1836,
+          "negative_fp_images": 6,
+          "negative_image_fp_rate": 0.0032679738562091504
+        },
+        "curve": [
+          {
+            "threshold": 0.1,
+            "tp": 775,
+            "fp": 1266,
+            "fn": 522,
+            "precision": 0.37971582557569816,
+            "recall": 0.5975327679259831,
+            "f1": 0.4643499101258239,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 323,
+            "negative_image_fp_rate": 0.17592592592592593
+          },
+          {
+            "threshold": 0.15,
+            "tp": 701,
+            "fp": 855,
+            "fn": 596,
+            "precision": 0.4505141388174807,
+            "recall": 0.5404780262143408,
+            "f1": 0.49141254819488256,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 263,
+            "negative_image_fp_rate": 0.14324618736383443
+          },
+          {
+            "threshold": 0.2,
+            "tp": 640,
+            "fp": 634,
+            "fn": 657,
+            "precision": 0.5023547880690737,
+            "recall": 0.49344641480339246,
+            "f1": 0.4978607545702062,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 220,
+            "negative_image_fp_rate": 0.11982570806100218
+          },
+          {
+            "threshold": 0.25,
+            "tp": 607,
+            "fp": 485,
+            "fn": 690,
+            "precision": 0.5558608058608059,
+            "recall": 0.4680030840400925,
+            "f1": 0.5081624110506489,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 188,
+            "negative_image_fp_rate": 0.10239651416122005
+          },
+          {
+            "threshold": 0.3,
+            "tp": 551,
+            "fp": 365,
+            "fn": 746,
+            "precision": 0.601528384279476,
+            "recall": 0.4248265227447957,
+            "f1": 0.4979665612291008,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 159,
+            "negative_image_fp_rate": 0.08660130718954248
+          },
+          {
+            "threshold": 0.35,
+            "tp": 489,
+            "fp": 268,
+            "fn": 808,
+            "precision": 0.6459709379128138,
+            "recall": 0.37702390131071706,
+            "f1": 0.47614410905550153,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 131,
+            "negative_image_fp_rate": 0.07135076252723312
+          },
+          {
+            "threshold": 0.4,
+            "tp": 441,
+            "fp": 211,
+            "fn": 856,
+            "precision": 0.6763803680981595,
+            "recall": 0.3400154202004626,
+            "f1": 0.45253976398152895,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 110,
+            "negative_image_fp_rate": 0.05991285403050109
+          },
+          {
+            "threshold": 0.45,
+            "tp": 386,
+            "fp": 166,
+            "fn": 911,
+            "precision": 0.6992753623188406,
+            "recall": 0.29760986892829605,
+            "f1": 0.41752298539751215,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 88,
+            "negative_image_fp_rate": 0.04793028322440087
+          },
+          {
+            "threshold": 0.5,
+            "tp": 333,
+            "fp": 119,
+            "fn": 964,
+            "precision": 0.7367256637168141,
+            "recall": 0.25674633770239014,
+            "f1": 0.3807890222984563,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 69,
+            "negative_image_fp_rate": 0.03758169934640523
+          },
+          {
+            "threshold": 0.55,
+            "tp": 297,
+            "fp": 91,
+            "fn": 1000,
+            "precision": 0.7654639175257731,
+            "recall": 0.2289899768696993,
+            "f1": 0.35252225519287833,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 55,
+            "negative_image_fp_rate": 0.029956427015250545
+          },
+          {
+            "threshold": 0.6,
+            "tp": 257,
+            "fp": 66,
+            "fn": 1040,
+            "precision": 0.7956656346749226,
+            "recall": 0.1981495759444873,
+            "f1": 0.317283950617284,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 38,
+            "negative_image_fp_rate": 0.020697167755991286
+          },
+          {
+            "threshold": 0.65,
+            "tp": 217,
+            "fp": 50,
+            "fn": 1080,
+            "precision": 0.8127340823970037,
+            "recall": 0.16730917501927525,
+            "f1": 0.2774936061381074,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 33,
+            "negative_image_fp_rate": 0.017973856209150325
+          },
+          {
+            "threshold": 0.7,
+            "tp": 158,
+            "fp": 30,
+            "fn": 1139,
+            "precision": 0.8404255319148937,
+            "recall": 0.1218195836545875,
+            "f1": 0.2127946127946128,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 18,
+            "negative_image_fp_rate": 0.00980392156862745
+          },
+          {
+            "threshold": 0.75,
+            "tp": 98,
+            "fp": 18,
+            "fn": 1199,
+            "precision": 0.8448275862068966,
+            "recall": 0.07555898226676946,
+            "f1": 0.1387119603680113,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 11,
+            "negative_image_fp_rate": 0.005991285403050109
+          },
+          {
+            "threshold": 0.8,
+            "tp": 55,
+            "fp": 8,
+            "fn": 1242,
+            "precision": 0.873015873015873,
+            "recall": 0.04240555127216654,
+            "f1": 0.08088235294117647,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 6,
+            "negative_image_fp_rate": 0.0032679738562091504
+          },
+          {
+            "threshold": 0.85,
+            "tp": 22,
+            "fp": 5,
+            "fn": 1275,
+            "precision": 0.8148148148148148,
+            "recall": 0.016962220508866616,
+            "f1": 0.03323262839879154,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 4,
+            "negative_image_fp_rate": 0.002178649237472767
+          },
+          {
+            "threshold": 0.9,
+            "tp": 9,
+            "fp": 1,
+            "fn": 1288,
+            "precision": 0.9,
+            "recall": 0.006939090208172706,
+            "f1": 0.013771996939556235,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 1,
+            "negative_image_fp_rate": 0.0005446623093681918
+          },
+          {
+            "threshold": 0.95,
+            "tp": 2,
+            "fp": 0,
+            "fn": 1295,
+            "precision": 1.0,
+            "recall": 0.0015420200462606013,
+            "f1": 0.003079291762894534,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.975,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1297,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.99,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1297,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          }
+        ],
+        "gate": {
+          "minimum_precision": 0.85,
+          "maximum_negative_fp_rate": 0.01,
+          "minimum_true_positives": 10
+        }
+      }
+    },
+    "new_camera_frames": 0,
+    "scope": "Public annotation-based measurements; missing annotations may count as FP",
+    "threshold_selection": "Validation only; held-out test never sets thresholds"
+  },
+  "desktop_test": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_pen_specialist_20261016.pt",
+    "model_sha256": "9f688b21ef93eb01e898cb412f23efa8002a5c512131841481fdbb421133b7bf",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/can_pen_specialist_20261016/data.yaml",
+    "split": "test",
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    },
+    "match_iou": 0.5,
+    "classes": {
+      "can": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 124,
+          "fp": 256,
+          "fn": 45,
+          "precision": 0.3263157894736842,
+          "recall": 0.7337278106508875,
+          "f1": 0.4517304189435338,
+          "images": 7111,
+          "negative_images": 6995,
+          "negative_fp_images": 148,
+          "negative_image_fp_rate": 0.02115796997855611
+        },
+        "validation_selected": {
+          "threshold": 0.8,
+          "tp": 87,
+          "fp": 20,
+          "fn": 82,
+          "precision": 0.8130841121495327,
+          "recall": 0.514792899408284,
+          "f1": 0.6304347826086956,
+          "images": 7111,
+          "negative_images": 6995,
+          "negative_fp_images": 13,
+          "negative_image_fp_rate": 0.001858470335954253
+        }
+      },
+      "pen": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 475,
+          "fp": 845,
+          "fn": 871,
+          "precision": 0.35984848484848486,
+          "recall": 0.35289747399702825,
+          "f1": 0.35633908477119275,
+          "images": 7111,
+          "negative_images": 6245,
+          "negative_fp_images": 474,
+          "negative_image_fp_rate": 0.07590072057646118
+        },
+        "validation_selected": {
+          "threshold": 0.8,
+          "tp": 64,
+          "fp": 35,
+          "fn": 1282,
+          "precision": 0.6464646464646465,
+          "recall": 0.0475482912332838,
+          "f1": 0.08858131487889274,
+          "images": 7111,
+          "negative_images": 6245,
+          "negative_fp_images": 28,
+          "negative_image_fp_rate": 0.0044835868694955965
+        }
+      }
+    },
+    "new_camera_frames": 0,
+    "scope": "Public annotation-based measurements; missing annotations may count as FP",
+    "threshold_selection": "Validation only; held-out test never sets thresholds"
+  },
+  "isolation_desktop": {
+    "public_images": 32,
+    "primary_class_count": 80,
+    "supplement_classes": {
+      "0": "can",
+      "1": "pen"
+    },
+    "primary_detections": 56,
+    "supplement_detections": 4,
+    "enabled_primary_outputs_exact_match": true,
+    "disabled_outputs_exact_match": true,
+    "primary_sha256_before_after": "401cea9ab23ad19246ff7744859816bc599f350e93c9dd30367b6f0a0745d0b7",
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    },
+    "runtime": {
+      "model": "models/pretrained/yolo26m.pt",
+      "confidence_threshold": 0.35,
+      "iou_threshold": 0.45,
+      "image_size": 640,
+      "device": "cuda:0",
+      "half": true,
+      "target": {
+        "debounce_window": 5,
+        "required_votes": 4,
+        "switch_margin": 0.2,
+        "identity_iou_threshold": 0.3,
+        "missing_grace_frames": 8,
+        "grip_supported_only": true
+      },
+      "detection_profile": {
+        "aliases": {
+          "sports ball": "ball",
+          "cell phone": "phone"
+        },
+        "project_class_ids": {
+          "bottle": 0,
+          "cup": 2,
+          "ball": 4,
+          "phone": 5,
+          "remote": 6,
+          "spoon": 8,
+          "fork": 9,
+          "toothbrush": 10
+        },
+        "unmapped_class_id_offset": 100,
+        "end2end": true,
+        "rect": false,
+        "excluded_classes": [
+          "person",
+          "bicycle",
+          "car",
+          "motorcycle",
+          "airplane",
+          "bus",
+          "train",
+          "truck",
+          "boat",
+          "traffic light",
+          "fire hydrant",
+          "stop sign",
+          "parking meter",
+          "bench",
+          "bird",
+          "cat",
+          "dog",
+          "horse",
+          "sheep",
+          "cow",
+          "elephant",
+          "bear",
+          "zebra",
+          "giraffe",
+          "chair",
+          "couch",
+          "potted plant",
+          "bed",
+          "dining table",
+          "toilet",
+          "tv",
+          "microwave",
+          "oven",
+          "toaster",
+          "sink",
+          "refrigerator",
+          "clock"
+        ]
+      },
+      "supplement_profile": {
+        "model": "artifacts/models/yolo26s_can_pen_specialist_20261016.pt",
+        "class_confidence_thresholds": {
+          "can": 0.8,
+          "pen": 0.8
+        }
+      }
+    },
+    "camera_frames_saved": 0,
+    "scope": "Functional isolation check, not an accuracy or latency benchmark"
+  },
+  "decision": {
+    "production_acceptance": false,
+    "user_requested_experimental_test": true,
+    "pen_recall_insufficient": true,
+    "camera_accuracy": "not_accepted; can/pen missed in observed scene",
+    "automatic_camera_frame_recording": false,
+    "user_canceled_specialist": true,
+    "selected_model": "official_original_yolo26m",
+    "can_pen_enabled": false,
+    "camera_running": false
+  },
+  "jetson_export": {
+    "accepted_target_build": true,
+    "development_only": false,
+    "portability_warning": null,
+    "platform": {
+      "machine": "aarch64",
+      "system": "Linux",
+      "release": "5.15.148-tegra",
+      "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+      "is_jetson": true
+    },
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "tensorrt_version": "10.3.0",
+    "model": "/mnt/data/vagt-orca-ai/artifacts/models/yolo26s_can_pen_specialist_20261016.pt",
+    "model_sha256": "9f688b21ef93eb01e898cb412f23efa8002a5c512131841481fdbb421133b7bf",
+    "engine": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_pen_specialist_20261016_fp16.engine",
+    "engine_bytes": 22816636,
+    "engine_sha256": "497fee2132acf0181094db5c32b9fbd2f3ee3835d4cfe12a5659ff52fc9c005b",
+    "model_family": "YOLO26s",
+    "precision": "fp16",
+    "end2end_nms_free": true,
+    "requested_settings": {
+      "dynamic": false,
+      "workspace_gib": 0.5,
+      "batch": 1,
+      "precision": "fp16"
+    },
+    "settings": {
+      "dynamic": false,
+      "workspace_gib": 0.5,
+      "batch": 1,
+      "precision": "fp16",
+      "opset": 17
+    }
+  },
+  "jetson_validation": {
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_pen_specialist_20261016_fp16.engine",
+    "model_sha256": "497fee2132acf0181094db5c32b9fbd2f3ee3835d4cfe12a5659ff52fc9c005b",
+    "data": "/mnt/data/vagt-orca-ai/data/processed/can_pen_specialist_20261016/data.yaml",
+    "split": "val",
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "match_iou": 0.5,
+    "classes": {
+      "can": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 36,
+          "fp": 86,
+          "fn": 76,
+          "precision": 0.29508196721311475,
+          "recall": 0.32142857142857145,
+          "f1": 0.3076923076923077,
+          "images": 2708,
+          "negative_images": 2622,
+          "negative_fp_images": 45,
+          "negative_image_fp_rate": 0.017162471395881007
+        },
+        "selected": {
+          "threshold": 0.85,
+          "tp": 19,
+          "fp": 1,
+          "fn": 93,
+          "precision": 0.95,
+          "recall": 0.16964285714285715,
+          "f1": 0.2878787878787879,
+          "images": 2708,
+          "negative_images": 2622,
+          "negative_fp_images": 1,
+          "negative_image_fp_rate": 0.00038138825324180017
+        },
+        "curve": [
+          {
+            "threshold": 0.1,
+            "tp": 41,
+            "fp": 354,
+            "fn": 71,
+            "precision": 0.10379746835443038,
+            "recall": 0.36607142857142855,
+            "f1": 0.16173570019723868,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 215,
+            "negative_image_fp_rate": 0.08199847444698703
+          },
+          {
+            "threshold": 0.15,
+            "tp": 39,
+            "fp": 243,
+            "fn": 73,
+            "precision": 0.13829787234042554,
+            "recall": 0.3482142857142857,
+            "f1": 0.1979695431472081,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 150,
+            "negative_image_fp_rate": 0.057208237986270026
+          },
+          {
+            "threshold": 0.2,
+            "tp": 37,
+            "fp": 182,
+            "fn": 75,
+            "precision": 0.1689497716894977,
+            "recall": 0.33035714285714285,
+            "f1": 0.22356495468277943,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 109,
+            "negative_image_fp_rate": 0.041571319603356215
+          },
+          {
+            "threshold": 0.25,
+            "tp": 36,
+            "fp": 139,
+            "fn": 76,
+            "precision": 0.2057142857142857,
+            "recall": 0.32142857142857145,
+            "f1": 0.2508710801393728,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 84,
+            "negative_image_fp_rate": 0.032036613272311214
+          },
+          {
+            "threshold": 0.3,
+            "tp": 36,
+            "fp": 103,
+            "fn": 76,
+            "precision": 0.2589928057553957,
+            "recall": 0.32142857142857145,
+            "f1": 0.28685258964143423,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 59,
+            "negative_image_fp_rate": 0.02250190694126621
+          },
+          {
+            "threshold": 0.35,
+            "tp": 36,
+            "fp": 86,
+            "fn": 76,
+            "precision": 0.29508196721311475,
+            "recall": 0.32142857142857145,
+            "f1": 0.3076923076923077,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 45,
+            "negative_image_fp_rate": 0.017162471395881007
+          },
+          {
+            "threshold": 0.4,
+            "tp": 34,
+            "fp": 69,
+            "fn": 78,
+            "precision": 0.3300970873786408,
+            "recall": 0.30357142857142855,
+            "f1": 0.31627906976744186,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 39,
+            "negative_image_fp_rate": 0.014874141876430207
+          },
+          {
+            "threshold": 0.45,
+            "tp": 33,
+            "fp": 56,
+            "fn": 79,
+            "precision": 0.3707865168539326,
+            "recall": 0.29464285714285715,
+            "f1": 0.3283582089552239,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 30,
+            "negative_image_fp_rate": 0.011441647597254004
+          },
+          {
+            "threshold": 0.5,
+            "tp": 31,
+            "fp": 40,
+            "fn": 81,
+            "precision": 0.43661971830985913,
+            "recall": 0.2767857142857143,
+            "f1": 0.33879781420765026,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 26,
+            "negative_image_fp_rate": 0.009916094584286803
+          },
+          {
+            "threshold": 0.55,
+            "tp": 31,
+            "fp": 29,
+            "fn": 81,
+            "precision": 0.5166666666666667,
+            "recall": 0.2767857142857143,
+            "f1": 0.3604651162790698,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 18,
+            "negative_image_fp_rate": 0.006864988558352402
+          },
+          {
+            "threshold": 0.6,
+            "tp": 29,
+            "fp": 19,
+            "fn": 83,
+            "precision": 0.6041666666666666,
+            "recall": 0.25892857142857145,
+            "f1": 0.3625,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 14,
+            "negative_image_fp_rate": 0.005339435545385202
+          },
+          {
+            "threshold": 0.65,
+            "tp": 28,
+            "fp": 12,
+            "fn": 84,
+            "precision": 0.7,
+            "recall": 0.25,
+            "f1": 0.3684210526315789,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 9,
+            "negative_image_fp_rate": 0.003432494279176201
+          },
+          {
+            "threshold": 0.7,
+            "tp": 26,
+            "fp": 8,
+            "fn": 86,
+            "precision": 0.7647058823529411,
+            "recall": 0.23214285714285715,
+            "f1": 0.35616438356164387,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 5,
+            "negative_image_fp_rate": 0.0019069412662090007
+          },
+          {
+            "threshold": 0.75,
+            "tp": 25,
+            "fp": 6,
+            "fn": 87,
+            "precision": 0.8064516129032258,
+            "recall": 0.22321428571428573,
+            "f1": 0.34965034965034963,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 4,
+            "negative_image_fp_rate": 0.0015255530129672007
+          },
+          {
+            "threshold": 0.8,
+            "tp": 20,
+            "fp": 4,
+            "fn": 92,
+            "precision": 0.8333333333333334,
+            "recall": 0.17857142857142858,
+            "f1": 0.29411764705882354,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 4,
+            "negative_image_fp_rate": 0.0015255530129672007
+          },
+          {
+            "threshold": 0.85,
+            "tp": 19,
+            "fp": 1,
+            "fn": 93,
+            "precision": 0.95,
+            "recall": 0.16964285714285715,
+            "f1": 0.2878787878787879,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 1,
+            "negative_image_fp_rate": 0.00038138825324180017
+          },
+          {
+            "threshold": 0.9,
+            "tp": 11,
+            "fp": 0,
+            "fn": 101,
+            "precision": 1.0,
+            "recall": 0.09821428571428571,
+            "f1": 0.17886178861788615,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.95,
+            "tp": 1,
+            "fp": 0,
+            "fn": 111,
+            "precision": 1.0,
+            "recall": 0.008928571428571428,
+            "f1": 0.017699115044247787,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.975,
+            "tp": 0,
+            "fp": 0,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.99,
+            "tp": 0,
+            "fp": 0,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 2622,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          }
+        ],
+        "gate": {
+          "minimum_precision": 0.85,
+          "maximum_negative_fp_rate": 0.01,
+          "minimum_true_positives": 10
+        }
+      },
+      "pen": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 493,
+          "fp": 263,
+          "fn": 804,
+          "precision": 0.6521164021164021,
+          "recall": 0.3801079414032382,
+          "f1": 0.48027277155382364,
+          "images": 2708,
+          "negative_images": 1836,
+          "negative_fp_images": 130,
+          "negative_image_fp_rate": 0.07080610021786492
+        },
+        "selected": {
+          "threshold": 0.8,
+          "tp": 55,
+          "fp": 8,
+          "fn": 1242,
+          "precision": 0.873015873015873,
+          "recall": 0.04240555127216654,
+          "f1": 0.08088235294117647,
+          "images": 2708,
+          "negative_images": 1836,
+          "negative_fp_images": 6,
+          "negative_image_fp_rate": 0.0032679738562091504
+        },
+        "curve": [
+          {
+            "threshold": 0.1,
+            "tp": 775,
+            "fp": 1268,
+            "fn": 522,
+            "precision": 0.37934410181106215,
+            "recall": 0.5975327679259831,
+            "f1": 0.4640718562874252,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 325,
+            "negative_image_fp_rate": 0.1770152505446623
+          },
+          {
+            "threshold": 0.15,
+            "tp": 701,
+            "fp": 862,
+            "fn": 596,
+            "precision": 0.4484964811260397,
+            "recall": 0.5404780262143408,
+            "f1": 0.4902097902097903,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 262,
+            "negative_image_fp_rate": 0.14270152505446623
+          },
+          {
+            "threshold": 0.2,
+            "tp": 640,
+            "fp": 633,
+            "fn": 657,
+            "precision": 0.5027494108405341,
+            "recall": 0.49344641480339246,
+            "f1": 0.4980544747081712,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 219,
+            "negative_image_fp_rate": 0.119281045751634
+          },
+          {
+            "threshold": 0.25,
+            "tp": 602,
+            "fp": 485,
+            "fn": 695,
+            "precision": 0.5538178472861086,
+            "recall": 0.46414803392444104,
+            "f1": 0.5050335570469799,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 187,
+            "negative_image_fp_rate": 0.10185185185185185
+          },
+          {
+            "threshold": 0.3,
+            "tp": 554,
+            "fp": 364,
+            "fn": 743,
+            "precision": 0.6034858387799564,
+            "recall": 0.4271395528141866,
+            "f1": 0.5002257336343114,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 158,
+            "negative_image_fp_rate": 0.0860566448801743
+          },
+          {
+            "threshold": 0.35,
+            "tp": 493,
+            "fp": 263,
+            "fn": 804,
+            "precision": 0.6521164021164021,
+            "recall": 0.3801079414032382,
+            "f1": 0.48027277155382364,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 130,
+            "negative_image_fp_rate": 0.07080610021786492
+          },
+          {
+            "threshold": 0.4,
+            "tp": 438,
+            "fp": 209,
+            "fn": 859,
+            "precision": 0.6769706336939721,
+            "recall": 0.33770239013107173,
+            "f1": 0.4506172839506173,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 110,
+            "negative_image_fp_rate": 0.05991285403050109
+          },
+          {
+            "threshold": 0.45,
+            "tp": 386,
+            "fp": 162,
+            "fn": 911,
+            "precision": 0.7043795620437956,
+            "recall": 0.29760986892829605,
+            "f1": 0.4184281842818428,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 90,
+            "negative_image_fp_rate": 0.049019607843137254
+          },
+          {
+            "threshold": 0.5,
+            "tp": 334,
+            "fp": 119,
+            "fn": 963,
+            "precision": 0.7373068432671082,
+            "recall": 0.25751734772552043,
+            "f1": 0.38171428571428573,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 69,
+            "negative_image_fp_rate": 0.03758169934640523
+          },
+          {
+            "threshold": 0.55,
+            "tp": 297,
+            "fp": 89,
+            "fn": 1000,
+            "precision": 0.7694300518134715,
+            "recall": 0.2289899768696993,
+            "f1": 0.3529411764705882,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 54,
+            "negative_image_fp_rate": 0.029411764705882353
+          },
+          {
+            "threshold": 0.6,
+            "tp": 258,
+            "fp": 66,
+            "fn": 1039,
+            "precision": 0.7962962962962963,
+            "recall": 0.19892058596761758,
+            "f1": 0.3183220234423196,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 38,
+            "negative_image_fp_rate": 0.020697167755991286
+          },
+          {
+            "threshold": 0.65,
+            "tp": 214,
+            "fp": 50,
+            "fn": 1083,
+            "precision": 0.8106060606060606,
+            "recall": 0.16499614494988435,
+            "f1": 0.27418321588725175,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 33,
+            "negative_image_fp_rate": 0.017973856209150325
+          },
+          {
+            "threshold": 0.7,
+            "tp": 158,
+            "fp": 30,
+            "fn": 1139,
+            "precision": 0.8404255319148937,
+            "recall": 0.1218195836545875,
+            "f1": 0.2127946127946128,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 18,
+            "negative_image_fp_rate": 0.00980392156862745
+          },
+          {
+            "threshold": 0.75,
+            "tp": 96,
+            "fp": 18,
+            "fn": 1201,
+            "precision": 0.8421052631578947,
+            "recall": 0.07401696222050887,
+            "f1": 0.13607370659107015,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 11,
+            "negative_image_fp_rate": 0.005991285403050109
+          },
+          {
+            "threshold": 0.8,
+            "tp": 55,
+            "fp": 8,
+            "fn": 1242,
+            "precision": 0.873015873015873,
+            "recall": 0.04240555127216654,
+            "f1": 0.08088235294117647,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 6,
+            "negative_image_fp_rate": 0.0032679738562091504
+          },
+          {
+            "threshold": 0.85,
+            "tp": 20,
+            "fp": 5,
+            "fn": 1277,
+            "precision": 0.8,
+            "recall": 0.015420200462606014,
+            "f1": 0.030257186081694403,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 4,
+            "negative_image_fp_rate": 0.002178649237472767
+          },
+          {
+            "threshold": 0.9,
+            "tp": 9,
+            "fp": 1,
+            "fn": 1288,
+            "precision": 0.9,
+            "recall": 0.006939090208172706,
+            "f1": 0.013771996939556235,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 1,
+            "negative_image_fp_rate": 0.0005446623093681918
+          },
+          {
+            "threshold": 0.95,
+            "tp": 2,
+            "fp": 0,
+            "fn": 1295,
+            "precision": 1.0,
+            "recall": 0.0015420200462606013,
+            "f1": 0.003079291762894534,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.975,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1297,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          },
+          {
+            "threshold": 0.99,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1297,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "images": 2708,
+            "negative_images": 1836,
+            "negative_fp_images": 0,
+            "negative_image_fp_rate": 0.0
+          }
+        ],
+        "gate": {
+          "minimum_precision": 0.85,
+          "maximum_negative_fp_rate": 0.01,
+          "minimum_true_positives": 10
+        }
+      }
+    },
+    "new_camera_frames": 0,
+    "scope": "Public annotation-based measurements; missing annotations may count as FP",
+    "threshold_selection": "Validation only; held-out test never sets thresholds"
+  },
+  "jetson_test": {
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_pen_specialist_20261016_fp16.engine",
+    "model_sha256": "497fee2132acf0181094db5c32b9fbd2f3ee3835d4cfe12a5659ff52fc9c005b",
+    "data": "/mnt/data/vagt-orca-ai/data/processed/can_pen_specialist_20261016/data.yaml",
+    "split": "test",
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "match_iou": 0.5,
+    "classes": {
+      "can": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 123,
+          "fp": 259,
+          "fn": 46,
+          "precision": 0.3219895287958115,
+          "recall": 0.727810650887574,
+          "f1": 0.4464609800362976,
+          "images": 7111,
+          "negative_images": 6995,
+          "negative_fp_images": 151,
+          "negative_image_fp_rate": 0.02158684774839171
+        },
+        "validation_selected": {
+          "threshold": 0.85,
+          "tp": 72,
+          "fp": 12,
+          "fn": 97,
+          "precision": 0.8571428571428571,
+          "recall": 0.4260355029585799,
+          "f1": 0.5691699604743083,
+          "images": 7111,
+          "negative_images": 6995,
+          "negative_fp_images": 7,
+          "negative_image_fp_rate": 0.0010007147962830592
+        }
+      },
+      "pen": {
+        "fixed_035": {
+          "threshold": 0.35,
+          "tp": 478,
+          "fp": 844,
+          "fn": 868,
+          "precision": 0.3615733736762481,
+          "recall": 0.3551263001485884,
+          "f1": 0.3583208395802099,
+          "images": 7111,
+          "negative_images": 6245,
+          "negative_fp_images": 473,
+          "negative_image_fp_rate": 0.07574059247397918
+        },
+        "validation_selected": {
+          "threshold": 0.8,
+          "tp": 63,
+          "fp": 35,
+          "fn": 1283,
+          "precision": 0.6428571428571429,
+          "recall": 0.046805349182763745,
+          "f1": 0.08725761772853186,
+          "images": 7111,
+          "negative_images": 6245,
+          "negative_fp_images": 28,
+          "negative_image_fp_rate": 0.0044835868694955965
+        }
+      }
+    },
+    "new_camera_frames": 0,
+    "scope": "Public annotation-based measurements; missing annotations may count as FP",
+    "threshold_selection": "Validation only; held-out test never sets thresholds"
+  },
+  "isolation_jetson": {
+    "public_images": 32,
+    "primary_class_count": 80,
+    "supplement_classes": {
+      "0": "can",
+      "1": "pen"
+    },
+    "primary_detections": 56,
+    "supplement_detections": 3,
+    "enabled_primary_outputs_exact_match": true,
+    "disabled_outputs_exact_match": true,
+    "primary_sha256_before_after": "22eedf1aca4bc67b55b08407d6dbb401fc7f9fc103558c8d0c9ed8e7acd02c72",
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "runtime": {
+      "model": "models/pretrained/yolo26m.pt",
+      "confidence_threshold": 0.35,
+      "iou_threshold": 0.45,
+      "image_size": 640,
+      "device": "cuda:0",
+      "half": true,
+      "target": {
+        "debounce_window": 5,
+        "required_votes": 4,
+        "switch_margin": 0.2,
+        "identity_iou_threshold": 0.3,
+        "missing_grace_frames": 8,
+        "grip_supported_only": true
+      },
+      "detection_profile": {
+        "aliases": {
+          "sports ball": "ball",
+          "cell phone": "phone"
+        },
+        "project_class_ids": {
+          "bottle": 0,
+          "cup": 2,
+          "ball": 4,
+          "phone": 5,
+          "remote": 6,
+          "spoon": 8,
+          "fork": 9,
+          "toothbrush": 10
+        },
+        "unmapped_class_id_offset": 100,
+        "end2end": true,
+        "rect": false,
+        "excluded_classes": [
+          "person",
+          "bicycle",
+          "car",
+          "motorcycle",
+          "airplane",
+          "bus",
+          "train",
+          "truck",
+          "boat",
+          "traffic light",
+          "fire hydrant",
+          "stop sign",
+          "parking meter",
+          "bench",
+          "bird",
+          "cat",
+          "dog",
+          "horse",
+          "sheep",
+          "cow",
+          "elephant",
+          "bear",
+          "zebra",
+          "giraffe",
+          "chair",
+          "couch",
+          "potted plant",
+          "bed",
+          "dining table",
+          "toilet",
+          "tv",
+          "microwave",
+          "oven",
+          "toaster",
+          "sink",
+          "refrigerator",
+          "clock"
+        ]
+      },
+      "supplement_profile": {
+        "model": "artifacts/deployment/tensorrt/yolo26s_can_pen_specialist_20261016_fp16.engine",
+        "class_confidence_thresholds": {
+          "can": 0.85,
+          "pen": 0.8
+        }
+      }
+    },
+    "camera_frames_saved": 0,
+    "scope": "Functional isolation check, not an accuracy or latency benchmark"
+  },
+  "checks": {
+    "pytest_passed": 92,
+    "pytest_skipped_opt_in_gpu": 5,
+    "ruff_changed_python": "passed",
+    "last_optional_null_profile_regression": "6 passed"
+  },
+  "live_mode_samples": {
+    "original": [
+      {
+        "ready": true,
+        "supplement_available": true,
+        "supplement_enabled": false,
+        "model_mode": "original",
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1212,
+        "read_failures": 0,
+        "last_frame_unix": 1792136988.1622753,
+        "uptime_seconds": 97.7,
+        "fps": 18.09,
+        "pipeline_mean_ms": 38.6,
+        "pipeline_p95_ms": 49.33,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "supplement_available": true,
+        "supplement_enabled": false,
+        "model_mode": "original",
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1246,
+        "read_failures": 0,
+        "last_frame_unix": 1792136990.19632,
+        "uptime_seconds": 99.7,
+        "fps": 16.61,
+        "pipeline_mean_ms": 37.33,
+        "pipeline_p95_ms": 48.74,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "supplement_available": true,
+        "supplement_enabled": false,
+        "model_mode": "original",
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1276,
+        "read_failures": 0,
+        "last_frame_unix": 1792136992.1912546,
+        "uptime_seconds": 101.7,
+        "fps": 15.24,
+        "pipeline_mean_ms": 37.34,
+        "pipeline_p95_ms": 48.46,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      }
+    ],
+    "original_plus_can_pen": [
+      {
+        "ready": true,
+        "supplement_available": true,
+        "supplement_enabled": true,
+        "model_mode": "original_plus_can_pen",
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1759,
+        "read_failures": 0,
+        "last_frame_unix": 1792137030.2234735,
+        "uptime_seconds": 139.8,
+        "fps": 10.87,
+        "pipeline_mean_ms": 63.74,
+        "pipeline_p95_ms": 67.99,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "supplement_available": true,
+        "supplement_enabled": true,
+        "model_mode": "original_plus_can_pen",
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1783,
+        "read_failures": 0,
+        "last_frame_unix": 1792137032.204431,
+        "uptime_seconds": 141.7,
+        "fps": 12.14,
+        "pipeline_mean_ms": 62.65,
+        "pipeline_p95_ms": 67.22,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "supplement_available": true,
+        "supplement_enabled": true,
+        "model_mode": "original_plus_can_pen",
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1807,
+        "read_failures": 0,
+        "last_frame_unix": 1792137034.223964,
+        "uptime_seconds": 143.8,
+        "fps": 11.9,
+        "pipeline_mean_ms": 61.93,
+        "pipeline_p95_ms": 66.51,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      }
+    ]
+  },
+  "final_state": {
+    "state": "camera_stopped_original_selected",
+    "service": {
+      "MainPID": "0",
+      "ExecStart": "{ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --runtime configs/runtime.yaml --model artifacts/deployment/tensorrt/yolo26m_coco_original_fp16.engine ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "camera_handles": [],
+    "baseline": "official_original_yolo26m",
+    "can_pen_test_enabled": false,
+    "can_pen_override_active": false,
+    "automatic_camera_recording": false,
+    "overcurrent_counters_after_stop": {
+      "oc3_event_cnt": 26,
+      "oc1_event_cnt": 0,
+      "oc2_event_cnt": 0
+    },
+    "new_user_decision": "Use original only; do not use can or pen; stop camera"
+  },
+  "overcurrent_observation": {
+    "power_mode": "25W",
+    "power_source": "supplied DC adapter (user confirmed)",
+    "oc3_event_cnt": 26,
+    "oc1_event_cnt": 0,
+    "oc2_event_cnt": 0,
+    "warning_baseline_available": false,
+    "cause_proven": false,
+    "protection_modified": false,
+    "power_mode_modified": false,
+    "observation_60s_executed": false,
+    "input_sample_mv": 4968,
+    "input_sample_ma": 1744,
+    "current_alarm_at_read": 0,
+    "temperatures_at_read_c": {
+      "cpu": 52.9,
+      "gpu": 53.5,
+      "tj": 53.8
+    },
+    "kernel_journal_query": "no entries returned"
+  }
+}

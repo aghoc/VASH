@@ -1,0 +1,29 @@
+{
+  "status": "hardware_connection_pending",
+  "non_hardware_preparation_complete": true,
+  "actual_collection_started": false,
+  "source": "pixy",
+  "plan": "/home/developer/Documents/VAGT/vagt-orca-ai/configs/ar_glass_collection_plan.csv",
+  "planned_sessions": 45,
+  "planned_images": 4500,
+  "classes": 15,
+  "model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "checks": {
+    "all_required_classes_planned": true,
+    "minimum_sequences_planned": true,
+    "all_variations_covered_per_class": true,
+    "session_names_unique": true,
+    "current_checkpoint_present": true,
+    "onnx_matches_checkpoint": true,
+    "deployment_precision_is_fp16": true,
+    "recorder_present": true,
+    "pixy_bridge_build_script_present": true
+  },
+  "hardware_checks_deferred": {
+    "current_jetson_engine_built": false,
+    "pixy_connected_on_collection_device": false,
+    "pixy_bridge_built_on_collection_device": false,
+    "mounted_view_and_focus_confirmed": false
+  },
+  "next_command_after_hardware_connection": ".venv/bin/python tools/record_ar_glass.py --source pixy --class-name bottle --session bottle_mounted_01 --lighting bright --distance far --background plain --rotation rotated --occlusion clear --multi-object multiple --motion static --max-images 100"
+}

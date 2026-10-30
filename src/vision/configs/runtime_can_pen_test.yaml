@@ -1,0 +1,72 @@
+model: models/pretrained/yolo26m.pt
+confidence_threshold: 0.35
+iou_threshold: 0.45
+image_size: 640
+device: cuda:0
+half: true
+target:
+  debounce_window: 5
+  required_votes: 4
+  switch_margin: 0.2
+  identity_iou_threshold: 0.3
+  missing_grace_frames: 8
+  grip_supported_only: true
+detection_profile:
+  aliases:
+    sports ball: ball
+    cell phone: phone
+  project_class_ids:
+    bottle: 0
+    cup: 2
+    ball: 4
+    phone: 5
+    remote: 6
+    spoon: 8
+    fork: 9
+    toothbrush: 10
+  unmapped_class_id_offset: 100
+  end2end: true
+  rect: false
+  excluded_classes:
+  - person
+  - bicycle
+  - car
+  - motorcycle
+  - airplane
+  - bus
+  - train
+  - truck
+  - boat
+  - traffic light
+  - fire hydrant
+  - stop sign
+  - parking meter
+  - bench
+  - bird
+  - cat
+  - dog
+  - horse
+  - sheep
+  - cow
+  - elephant
+  - bear
+  - zebra
+  - giraffe
+  - chair
+  - couch
+  - potted plant
+  - bed
+  - dining table
+  - toilet
+  - tv
+  - microwave
+  - oven
+  - toaster
+  - sink
+  - refrigerator
+  - clock
+supplement_profile:
+  model: artifacts/models/yolo26s_can_pen_specialist_20261016.pt
+  class_confidence_thresholds:
+    can: 0.8
+    pen: 0.8

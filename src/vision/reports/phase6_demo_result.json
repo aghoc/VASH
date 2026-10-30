@@ -1,0 +1,55 @@
+{
+  "accepted": true,
+  "checks": {
+    "video_frame_count_matches_source": true,
+    "jsonl_record_count_matches_source": true,
+    "frame_indices_are_contiguous": true,
+    "duration_is_at_least_10_seconds": true,
+    "resolution_matches_source": true
+  },
+  "source_sequences": 8,
+  "unique_source_frames": 130,
+  "video": {
+    "path": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/demo/result_tensorrt_desktop.mp4",
+    "sha256": "7afe0a335f140d3bd4f4c137f51aa24b4cec753337c2ff6e7d67a49f0e4b4a00",
+    "bytes": 6193194,
+    "frames": 130,
+    "fps": 10.0,
+    "duration_seconds": 13.0,
+    "resolution": [
+      1280,
+      720
+    ]
+  },
+  "jsonl": {
+    "path": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/demo/result_tensorrt_desktop.jsonl",
+    "sha256": "735b2a4b1919d9fe5edb08fa8d3365381e984509522f1fc59a42fae71f7d125b",
+    "records": 130
+  },
+  "inference_summary": {
+    "detections": 92,
+    "frames_with_candidate": 71,
+    "frames_with_target_lock": 14,
+    "frames_with_plan": 118,
+    "new_plan_updates": 14,
+    "candidate_classes": {
+      "bottle": 16,
+      "box": 7,
+      "can": 7,
+      "cup": 15,
+      "key": 1,
+      "pen": 1,
+      "phone": 13,
+      "remote": 11
+    },
+    "target_classes": {
+      "bottle": 5,
+      "can": 2,
+      "cup": 7
+    },
+    "grip_frames": {
+      "POWER": 118
+    }
+  },
+  "scope": "RTX TensorRT development demonstration; not Jetson acceptance evidence"
+}

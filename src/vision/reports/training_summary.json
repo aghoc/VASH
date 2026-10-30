@@ -1,0 +1,229 @@
+{
+  "generated_at": "2026-08-07T14:29:04.036406+00:00",
+  "training": {
+    "completed_epochs": 50,
+    "best_epoch_by_map50_95": {
+      "epoch": 17,
+      "time": 3694.23,
+      "train/box_loss": 1.06104,
+      "train/cls_loss": 1.03304,
+      "train/dfl_loss": 1.07611,
+      "metrics/precision(B)": 0.48181,
+      "metrics/recall(B)": 0.24812,
+      "metrics/mAP50(B)": 0.2458,
+      "metrics/mAP50-95(B)": 0.18332,
+      "val/box_loss": 1.12294,
+      "val/cls_loss": 2.46495,
+      "val/dfl_loss": 1.12981,
+      "lr/pg0": 0.0006832,
+      "lr/pg1": 0.0006832,
+      "lr/pg2": 0.0006832
+    },
+    "final_epoch": {
+      "epoch": 50,
+      "time": 10787.9,
+      "train/box_loss": 0.77731,
+      "train/cls_loss": 0.45755,
+      "train/dfl_loss": 0.92153,
+      "metrics/precision(B)": 0.46986,
+      "metrics/recall(B)": 0.22541,
+      "metrics/mAP50(B)": 0.22034,
+      "metrics/mAP50-95(B)": 0.16716,
+      "val/box_loss": 1.13725,
+      "val/cls_loss": 3.00105,
+      "val/dfl_loss": 1.13892,
+      "lr/pg0": 2.98e-05,
+      "lr/pg1": 2.98e-05,
+      "lr/pg2": 2.98e-05
+    },
+    "metadata": {
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      },
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/egoobjects_15/data.yaml",
+      "config": {
+        "base_model": "models/pretrained/yolov8n.pt",
+        "image_size": 640,
+        "epochs": 50,
+        "batch": 32,
+        "workers": 8,
+        "device": 0,
+        "amp": false,
+        "seed": 42,
+        "deterministic": true,
+        "optimizer": "AdamW",
+        "lr0": 0.001,
+        "weight_decay": 0.0005,
+        "augment": {
+          "hsv_h": 0.015,
+          "hsv_s": 0.7,
+          "hsv_v": 0.4,
+          "degrees": 8.0,
+          "translate": 0.1,
+          "scale": 0.5,
+          "fliplr": 0.5,
+          "mosaic": 0.7,
+          "mixup": 0.1
+        }
+      },
+      "epochs": 50,
+      "batch": 32,
+      "elapsed_seconds": 10815.089,
+      "run_directory": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolov8n_egoobjects_15",
+      "best_checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+      "metrics": {
+        "metrics/precision(B)": 0.4796879587090093,
+        "metrics/recall(B)": 0.24872115310168835,
+        "metrics/mAP50(B)": 0.2457690230991088,
+        "metrics/mAP50-95(B)": 0.1833095005529781,
+        "fitness": 0.1833095005529781
+      }
+    }
+  },
+  "checkpoint": {
+    "path": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+    "bytes": 6255402,
+    "sha256": "04709825b5b570c2a2548cf9400a187400e9f9f00bb3a81cbd764853de793062"
+  },
+  "validation": {
+    "val": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/egoobjects_15/data.yaml",
+      "split": "val",
+      "precision_mean": 0.47828291706474346,
+      "recall_mean": 0.24858535501156964,
+      "map50_95": 0.18333342038217795,
+      "map50": 0.2456260802061544,
+      "map75": 0.21151143079217885,
+      "per_class_map": {
+        "bottle": 0.3263009383732289,
+        "can": 0.0003495050982248103,
+        "cup": 0.2742417799830611,
+        "box": 0.05820522724318401,
+        "ball": 0.6515089097210038,
+        "phone": 0.25734911464186394,
+        "remote": 0.32541111985914817,
+        "pen": 0.07645922666447479,
+        "spoon": 0.22286042565646827,
+        "fork": 0.28213184893562904,
+        "toothbrush": 0.0671698443017126,
+        "card": 0.0008365765345912894,
+        "key": 0.20717678872007889,
+        "coin": 0.0,
+        "small_block": 0.0
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.23631239207256063,
+        "inference": 0.496751389482597,
+        "loss": 0.00018179253002904817,
+        "postprocess": 0.2405178852119739
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "test": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/egoobjects_15/data.yaml",
+      "split": "test",
+      "precision_mean": 0.40878165395295163,
+      "recall_mean": 0.20648746496609205,
+      "map50_95": 0.13608898006152526,
+      "map50": 0.1824457710331232,
+      "map75": 0.15447500585570362,
+      "per_class_map": {
+        "bottle": 0.20985951946224404,
+        "can": 2.757835755559447e-05,
+        "cup": 0.3329092377807948,
+        "box": 0.03552591573662595,
+        "ball": 0.22590436527980046,
+        "phone": 0.2882699624595224,
+        "remote": 0.2379953651112993,
+        "pen": 0.13499251617402114,
+        "spoon": 0.055704603864137926,
+        "fork": 0.4095838782214005,
+        "toothbrush": 0.0,
+        "card": 0.0004008497768875312,
+        "key": 0.11002965869858919,
+        "coin": 0.0,
+        "small_block": 0.00013125
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.2350495367803708,
+        "inference": 0.518774365228282,
+        "loss": 0.00018808881256869911,
+        "postprocess": 0.24330998967754783
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    }
+  },
+  "failure_analysis": {
+    "split": "val",
+    "images_analyzed": 1000,
+    "sampling": "deterministic_class_balanced_round_robin",
+    "ground_truth_by_class": {
+      "bottle": 298,
+      "can": 61,
+      "cup": 261,
+      "box": 429,
+      "ball": 97,
+      "phone": 159,
+      "remote": 97,
+      "pen": 259,
+      "spoon": 108,
+      "fork": 82,
+      "toothbrush": 82,
+      "card": 18,
+      "key": 82,
+      "coin": 18,
+      "small_block": 14
+    },
+    "misses_by_class": {
+      "bottle": 173,
+      "can": 61,
+      "cup": 175,
+      "box": 394,
+      "ball": 12,
+      "phone": 120,
+      "remote": 57,
+      "pen": 237,
+      "spoon": 76,
+      "fork": 35,
+      "toothbrush": 78,
+      "card": 18,
+      "key": 57,
+      "coin": 18,
+      "small_block": 14
+    },
+    "false_positives_by_class": {
+      "bottle": 137,
+      "can": 15,
+      "cup": 102,
+      "box": 128,
+      "ball": 5,
+      "phone": 33,
+      "remote": 47,
+      "pen": 46,
+      "spoon": 53,
+      "fork": 22,
+      "toothbrush": 1,
+      "key": 24,
+      "coin": 1
+    },
+    "saved_case_count": 100
+  }
+}

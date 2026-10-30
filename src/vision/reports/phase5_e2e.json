@@ -1,0 +1,153 @@
+{
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/best.pt",
+  "source_image": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/A4B951C63A016D47040881E5FFDB4524_08_79.jpg",
+  "candidates_searched": 300,
+  "search_candidate": {
+    "class": "ball",
+    "confidence": 0.9269377589225769,
+    "bbox": [
+      1318.867431640625,
+      597.050048828125,
+      1591.40966796875,
+      853.3387451171875
+    ]
+  },
+  "input_video": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/phase5_e2e/input.mp4",
+  "visualized_video": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/phase5_e2e/visualized.mp4",
+  "first_locked_frame": 3,
+  "frames": [
+    {
+      "frame": 0,
+      "detections": 1,
+      "candidate": "ball",
+      "target": null,
+      "plan": null,
+      "plan_updated": false,
+      "reason": "no_target"
+    },
+    {
+      "frame": 1,
+      "detections": 1,
+      "candidate": "ball",
+      "target": null,
+      "plan": null,
+      "plan_updated": false,
+      "reason": "no_target"
+    },
+    {
+      "frame": 2,
+      "detections": 1,
+      "candidate": "ball",
+      "target": null,
+      "plan": null,
+      "plan_updated": false,
+      "reason": "no_target"
+    },
+    {
+      "frame": 3,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 4,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 5,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 6,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 7,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 8,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 9,
+      "detections": 1,
+      "candidate": "ball",
+      "target": "ball",
+      "plan": {
+        "class": "ball",
+        "grip": "POWER",
+        "opening": 0.420851,
+        "confidence": 0.926062
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    }
+  ],
+  "accepted": true
+}

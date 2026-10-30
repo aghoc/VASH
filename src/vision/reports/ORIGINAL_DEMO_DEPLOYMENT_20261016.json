@@ -1,0 +1,797 @@
+{
+  "date": "2026-10-16",
+  "selected_model": "official_original_yolo26m",
+  "new_training": false,
+  "checkpoint_sha256": "401cea9ab23ad19246ff7744859816bc599f350e93c9dd30367b6f0a0745d0b7",
+  "engine_sha256": "22eedf1aca4bc67b55b08407d6dbb401fc7f9fc103558c8d0c9ed8e7acd02c72",
+  "camera_accuracy": "pending_user_test",
+  "camera_frame_recording": false,
+  "full_pytest": {
+    "passed": 81,
+    "skipped_opt_in_gpu": 5
+  },
+  "post_activation_pytest_passed": 11,
+  "public_native_comparison": {
+    "s": {
+      "coco": {
+        "per_class": {
+          "ball": {
+            "ap50_95": 0.7121666666666667,
+            "ap50": 0.995,
+            "instances": 2
+          },
+          "fork": {
+            "ap50_95": 0.3206148302411702,
+            "ap50": 0.5446500029455726,
+            "instances": 22
+          },
+          "remote": {
+            "ap50_95": 0.5635095370278818,
+            "ap50": 0.720381947701129,
+            "instances": 22
+          },
+          "phone": {
+            "ap50_95": 0.4248007299410455,
+            "ap50": 0.6345236354288943,
+            "instances": 33
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "ball": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 1,
+              "images": 125,
+              "positive_images": 2,
+              "negative_images": 123,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 18,
+              "fp": 5,
+              "fn": 15,
+              "images": 125,
+              "positive_images": 30,
+              "negative_images": 95,
+              "false_positive_negative_images": 2,
+              "precision": 0.782608695652174,
+              "recall": 0.5454545454545454,
+              "negative_image_fp_rate": 0.021052631578947368
+            },
+            "remote": {
+              "tp": 10,
+              "fp": 3,
+              "fn": 12,
+              "images": 125,
+              "positive_images": 15,
+              "negative_images": 110,
+              "false_positive_negative_images": 0,
+              "precision": 0.7692307692307693,
+              "recall": 0.45454545454545453,
+              "negative_image_fp_rate": 0.0
+            },
+            "fork": {
+              "tp": 6,
+              "fp": 0,
+              "fn": 16,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.2727272727272727,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        }
+      },
+      "openimages": {
+        "per_class": {
+          "fork": {
+            "ap50_95": 0.6367000813142765,
+            "ap50": 0.7583839757258486,
+            "instances": 66
+          },
+          "remote": {
+            "ap50_95": 0.8200079985059798,
+            "ap50": 0.8512383117498207,
+            "instances": 30
+          },
+          "phone": {
+            "ap50_95": 0.7448853997524096,
+            "ap50": 0.8115279043130031,
+            "instances": 66
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "ball": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.0030864197530864196
+            },
+            "phone": {
+              "tp": 45,
+              "fp": 8,
+              "fn": 21,
+              "images": 324,
+              "positive_images": 50,
+              "negative_images": 274,
+              "false_positive_negative_images": 2,
+              "precision": 0.8490566037735849,
+              "recall": 0.6818181818181818,
+              "negative_image_fp_rate": 0.0072992700729927005
+            },
+            "remote": {
+              "tp": 25,
+              "fp": 9,
+              "fn": 5,
+              "images": 324,
+              "positive_images": 19,
+              "negative_images": 305,
+              "false_positive_negative_images": 3,
+              "precision": 0.7352941176470589,
+              "recall": 0.8333333333333334,
+              "negative_image_fp_rate": 0.009836065573770493
+            },
+            "fork": {
+              "tp": 40,
+              "fp": 7,
+              "fn": 26,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 4,
+              "precision": 0.851063829787234,
+              "recall": 0.6060606060606061,
+              "negative_image_fp_rate": 0.014760147601476014
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        }
+      }
+    },
+    "m": {
+      "coco": {
+        "per_class": {
+          "ball": {
+            "ap50_95": 0.595,
+            "ap50": 0.8283333333333331,
+            "instances": 2
+          },
+          "fork": {
+            "ap50_95": 0.42279906022412356,
+            "ap50": 0.5953930639924125,
+            "instances": 22
+          },
+          "remote": {
+            "ap50_95": 0.5869207518859665,
+            "ap50": 0.7494551013150444,
+            "instances": 22
+          },
+          "phone": {
+            "ap50_95": 0.47835201871380056,
+            "ap50": 0.6879853155008997,
+            "instances": 33
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "ball": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 1,
+              "images": 125,
+              "positive_images": 2,
+              "negative_images": 123,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 18,
+              "fp": 5,
+              "fn": 15,
+              "images": 125,
+              "positive_images": 30,
+              "negative_images": 95,
+              "false_positive_negative_images": 3,
+              "precision": 0.782608695652174,
+              "recall": 0.5454545454545454,
+              "negative_image_fp_rate": 0.031578947368421054
+            },
+            "remote": {
+              "tp": 13,
+              "fp": 2,
+              "fn": 9,
+              "images": 125,
+              "positive_images": 15,
+              "negative_images": 110,
+              "false_positive_negative_images": 0,
+              "precision": 0.8666666666666667,
+              "recall": 0.5909090909090909,
+              "negative_image_fp_rate": 0.0
+            },
+            "fork": {
+              "tp": 8,
+              "fp": 2,
+              "fn": 14,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 0,
+              "precision": 0.8,
+              "recall": 0.36363636363636365,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        }
+      },
+      "openimages": {
+        "per_class": {
+          "fork": {
+            "ap50_95": 0.7027800716399779,
+            "ap50": 0.8361674091604453,
+            "instances": 66
+          },
+          "remote": {
+            "ap50_95": 0.8729861874437962,
+            "ap50": 0.905410544367066,
+            "instances": 30
+          },
+          "phone": {
+            "ap50_95": 0.8130951597979867,
+            "ap50": 0.8627729516144603,
+            "instances": 66
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "ball": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 52,
+              "fp": 11,
+              "fn": 14,
+              "images": 324,
+              "positive_images": 50,
+              "negative_images": 274,
+              "false_positive_negative_images": 5,
+              "precision": 0.8253968253968254,
+              "recall": 0.7878787878787878,
+              "negative_image_fp_rate": 0.01824817518248175
+            },
+            "remote": {
+              "tp": 25,
+              "fp": 10,
+              "fn": 5,
+              "images": 324,
+              "positive_images": 19,
+              "negative_images": 305,
+              "false_positive_negative_images": 3,
+              "precision": 0.7142857142857143,
+              "recall": 0.8333333333333334,
+              "negative_image_fp_rate": 0.009836065573770493
+            },
+            "fork": {
+              "tp": 52,
+              "fp": 9,
+              "fn": 14,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 5,
+              "precision": 0.8524590163934426,
+              "recall": 0.7878787878787878,
+              "negative_image_fp_rate": 0.01845018450184502
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        }
+      }
+    }
+  },
+  "selection_uses_existing_public_test_results": true,
+  "initial_demo_candidates": [
+    "fork",
+    "remote",
+    "phone"
+  ],
+  "initial_3_class_benchmark": {
+    "deployment_accepted": true,
+    "acceptance_reason": "Jetson TensorRT benchmark complete",
+    "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26m_coco_original_fp16.engine",
+    "model_sha256": "22eedf1aca4bc67b55b08407d6dbb401fc7f9fc103558c8d0c9ed8e7acd02c72",
+    "model_format": ".engine",
+    "runtime": "/mnt/data/vagt-orca-ai/runs/original_demo_20261015/runtime_demo3_m.yaml",
+    "runtime_sha256": "bacaf77ffb6ac45dfd49386bd4bf731102ae58031fc88d8c1ac02a4e034ed301",
+    "focus_profile": null,
+    "detection_profile": {
+      "allowed_classes": [
+        "fork",
+        "remote",
+        "phone"
+      ],
+      "aliases": {
+        "cell phone": "phone"
+      },
+      "project_class_ids": {
+        "fork": 9,
+        "remote": 6,
+        "phone": 5
+      },
+      "end2end": true,
+      "rect": false
+    },
+    "specialist_sha256": null,
+    "precision": "fp16",
+    "images": 23,
+    "warmup": 20,
+    "iterations": 200,
+    "hold_frames_per_scene": 5,
+    "latency_ms": {
+      "mean": 38.074508479999984,
+      "p50": 38.0534605,
+      "p95": 39.8804516,
+      "p99": 40.73695652,
+      "min": 35.346359,
+      "max": 41.095729
+    },
+    "fps": 26.264291777404985,
+    "detections": 165,
+    "frames_with_plan_proposal": 162,
+    "frames_with_new_plan_update": 46,
+    "uart_packet_serialization": {
+      "enabled": true,
+      "frame_bytes": 16,
+      "packets": 220,
+      "included_in_latency": true
+    },
+    "peak_torch_cuda_memory_mib": 10.5546875,
+    "peak_device_memory_used_mib": 2898.97265625,
+    "gpu": {
+      "device": 0,
+      "name": "Orin",
+      "total_memory_gib": 7.44,
+      "torch": "2.8.0",
+      "torch_cuda": "12.6"
+    },
+    "platform": {
+      "machine": "aarch64",
+      "system": "Linux",
+      "release": "5.15.148-tegra",
+      "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+      "is_jetson": true
+    }
+  },
+  "initial_3_class_live_test": {
+    "checked_at": "2026-10-16T15:51:11.399534+09:00",
+    "state": "running_user_test",
+    "model": "official_original_yolo26m",
+    "classes": [
+      "fork",
+      "remote",
+      "phone"
+    ],
+    "service": {
+      "MainPID": "5248",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --runtime configs/runtime.yaml --model artifacts/deployment/tensorrt/yolo26m_coco_original_fp16.engine ; ignore_errors=no ; start_time=[Fri 2026-10-16 15:49:18 KST] ; stop_time=[n/a] ; pid=5248 ; code=(null) ; status=0/0 }",
+      "ActiveState": "active",
+      "SubState": "running",
+      "UnitFileState": "disabled"
+    },
+    "camera_handles": [
+      "/dev/video0"
+    ],
+    "status_samples": [
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1700,
+        "read_failures": 0,
+        "last_frame_unix": 1792133467.3636372,
+        "uptime_seconds": 107.8,
+        "fps": 16.76,
+        "pipeline_mean_ms": 39.07,
+        "pipeline_p95_ms": 49.07,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1735,
+        "read_failures": 0,
+        "last_frame_unix": 1792133469.3388338,
+        "uptime_seconds": 109.8,
+        "fps": 17.54,
+        "pipeline_mean_ms": 38.05,
+        "pipeline_p95_ms": 48.94,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1769,
+        "read_failures": 0,
+        "last_frame_unix": 1792133471.3792539,
+        "uptime_seconds": 111.8,
+        "fps": 17.15,
+        "pipeline_mean_ms": 37.7,
+        "pipeline_p95_ms": 48.94,
+        "detections": 0,
+        "candidate": null,
+        "target": null
+      }
+    ],
+    "frame_files_saved": false,
+    "camera_accuracy": "not_rated_pending_user_observation",
+    "stop_policy": "Keep running until explicit user stop; no automatic duration limit."
+  },
+  "initial_local_remote_source_match": {
+    "configs/runtime.yaml": true,
+    "configs/deployment.yaml": true,
+    "deployment/vagt-camera.service": true,
+    "src/vagt_orca/vision/detector.py": true,
+    "src/vagt_orca/cli.py": true,
+    "tools/camera_live_view.py": true,
+    "deployment/benchmark.py": true
+  },
+  "current_policy": "object_focus_background_exclusion",
+  "display_class_count": 43,
+  "excluded_class_count": 37,
+  "target_classes": [
+    "bottle",
+    "cup",
+    "ball",
+    "phone",
+    "remote",
+    "spoon",
+    "fork",
+    "toothbrush"
+  ],
+  "current_local_remote_source_match": {
+    "configs/runtime.yaml": true,
+    "configs/deployment.yaml": true,
+    "configs/runtime_original_demo_s.yaml": true,
+    "configs/runtime_original_demo_m.yaml": true,
+    "deployment/vagt-camera.service": true,
+    "src/vagt_orca/vision/detector.py": true,
+    "src/vagt_orca/vision/pipeline.py": true,
+    "src/vagt_orca/cli.py": true,
+    "tools/camera_live_view.py": true,
+    "deployment/benchmark.py": true
+  },
+  "related_pytest_passed": 50,
+  "current_live_state": {
+    "state": "camera_stopped_original_selected",
+    "service": {
+      "MainPID": "0",
+      "ExecStart": "{ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --runtime configs/runtime.yaml --model artifacts/deployment/tensorrt/yolo26m_coco_original_fp16.engine ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "camera_handles": [],
+    "baseline": "official_original_yolo26m",
+    "can_pen_test_enabled": false,
+    "can_pen_override_active": false,
+    "automatic_camera_recording": false,
+    "overcurrent_counters_after_stop": {
+      "oc3_event_cnt": 26,
+      "oc1_event_cnt": 0,
+      "oc2_event_cnt": 0
+    },
+    "new_user_decision": "Use original only; do not use can or pen; stop camera"
+  },
+  "ui_observation": {
+    "scene": "Bottle on a desk",
+    "desk_displayed": false,
+    "selected_target": "bottle",
+    "camera_frame_file_saved": false
+  },
+  "historical_object_focus_live_state": {
+    "checked_at": "2026-10-16T16:03:49.866931+09:00",
+    "state": "running_user_test",
+    "model": "official_original_yolo26m",
+    "native_class_count": 80,
+    "display_class_count": 43,
+    "excluded_class_count": 37,
+    "display_classes": [
+      "backpack",
+      "umbrella",
+      "handbag",
+      "tie",
+      "suitcase",
+      "frisbee",
+      "skis",
+      "snowboard",
+      "ball",
+      "kite",
+      "baseball bat",
+      "baseball glove",
+      "skateboard",
+      "surfboard",
+      "tennis racket",
+      "bottle",
+      "wine glass",
+      "cup",
+      "fork",
+      "knife",
+      "spoon",
+      "bowl",
+      "banana",
+      "apple",
+      "sandwich",
+      "orange",
+      "broccoli",
+      "carrot",
+      "hot dog",
+      "pizza",
+      "donut",
+      "cake",
+      "laptop",
+      "mouse",
+      "remote",
+      "keyboard",
+      "phone",
+      "book",
+      "vase",
+      "scissors",
+      "teddy bear",
+      "hair drier",
+      "toothbrush"
+    ],
+    "target_classes": [
+      "bottle",
+      "cup",
+      "ball",
+      "phone",
+      "remote",
+      "spoon",
+      "fork",
+      "toothbrush"
+    ],
+    "runtime": {
+      "model": "models/pretrained/yolo26m.pt",
+      "confidence_threshold": 0.35,
+      "iou_threshold": 0.45,
+      "image_size": 640,
+      "device": "cuda:0",
+      "half": true,
+      "target": {
+        "debounce_window": 5,
+        "required_votes": 4,
+        "switch_margin": 0.2,
+        "identity_iou_threshold": 0.3,
+        "missing_grace_frames": 8,
+        "grip_supported_only": true
+      },
+      "detection_profile": {
+        "aliases": {
+          "sports ball": "ball",
+          "cell phone": "phone"
+        },
+        "project_class_ids": {
+          "bottle": 0,
+          "cup": 2,
+          "ball": 4,
+          "phone": 5,
+          "remote": 6,
+          "spoon": 8,
+          "fork": 9,
+          "toothbrush": 10
+        },
+        "unmapped_class_id_offset": 100,
+        "end2end": true,
+        "rect": false,
+        "excluded_classes": [
+          "person",
+          "bicycle",
+          "car",
+          "motorcycle",
+          "airplane",
+          "bus",
+          "train",
+          "truck",
+          "boat",
+          "traffic light",
+          "fire hydrant",
+          "stop sign",
+          "parking meter",
+          "bench",
+          "bird",
+          "cat",
+          "dog",
+          "horse",
+          "sheep",
+          "cow",
+          "elephant",
+          "bear",
+          "zebra",
+          "giraffe",
+          "chair",
+          "couch",
+          "potted plant",
+          "bed",
+          "dining table",
+          "toilet",
+          "tv",
+          "microwave",
+          "oven",
+          "toaster",
+          "sink",
+          "refrigerator",
+          "clock"
+        ]
+      }
+    },
+    "service": {
+      "MainPID": "8099",
+      "NRestarts": "0",
+      "ExecStart": "{ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --runtime configs/runtime.yaml --model artifacts/deployment/tensorrt/yolo26m_coco_original_fp16.engine ; ignore_errors=no ; start_time=[Fri 2026-10-16 16:02:32 KST] ; stop_time=[n/a] ; pid=8099 ; code=(null) ; status=0/0 }",
+      "ActiveState": "active",
+      "UnitFileState": "disabled"
+    },
+    "status_samples": [
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1037,
+        "read_failures": 0,
+        "last_frame_unix": 1792134225.824111,
+        "uptime_seconds": 72.6,
+        "fps": 15.11,
+        "pipeline_mean_ms": 41.99,
+        "pipeline_p95_ms": 50.23,
+        "detections": 2,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1067,
+        "read_failures": 0,
+        "last_frame_unix": 1792134227.8328738,
+        "uptime_seconds": 74.6,
+        "fps": 14.67,
+        "pipeline_mean_ms": 42.1,
+        "pipeline_p95_ms": 50.22,
+        "detections": 2,
+        "candidate": null,
+        "target": null
+      },
+      {
+        "ready": true,
+        "source": "elp",
+        "camera": {
+          "device": "/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0",
+          "width": 1280,
+          "height": 720,
+          "fps": 60.0,
+          "fourcc": "YUYV"
+        },
+        "frames": 1102,
+        "read_failures": 0,
+        "last_frame_unix": 1792134229.8519988,
+        "uptime_seconds": 76.6,
+        "fps": 17.17,
+        "pipeline_mean_ms": 40.74,
+        "pipeline_p95_ms": 50.22,
+        "detections": 2,
+        "candidate": null,
+        "target": null
+      }
+    ],
+    "frame_files_saved": false,
+    "camera_accuracy": "pending_user_observation",
+    "stop_policy": "Keep running until explicit user stop.",
+    "files": {
+      "configs/runtime.yaml": "29eddc66db4a8ca4d2eaf1142885c696557ca4e5947689143e5334fae824cd8a",
+      "configs/deployment.yaml": "36de624777e7de3cf0db04415177b96b27c30505c29524adde019426f530c65d",
+      "configs/runtime_original_demo_s.yaml": "ad811598cb0cefac03eeb04ee99685f865c0b4742275615c0c6964e936df3778",
+      "configs/runtime_original_demo_m.yaml": "29eddc66db4a8ca4d2eaf1142885c696557ca4e5947689143e5334fae824cd8a",
+      "deployment/vagt-camera.service": "96c1918ef57fab57f6567bbe2b88e229857d6ddbf2f40f093652310afb907bbc",
+      "src/vagt_orca/vision/detector.py": "db613c8ab1d440b5202d64335e5d82296cbc76901e5b1511362d0fb9f2ae2704",
+      "src/vagt_orca/vision/pipeline.py": "6abfebb7e2704fa02f83f25e42969c7bfdf24ac1022fc4b28ef1904859023cf2",
+      "src/vagt_orca/cli.py": "c8d59d228030ae91f9aace575dd7479fca95f0cd5877641e203595a4fa274910",
+      "tools/camera_live_view.py": "05e1d2310bea02e2cbaa40d8801bc8c1b34fda7e99c09f80eea545e14908faed",
+      "deployment/benchmark.py": "0d14d0ae02a8084b17b5249e2294208a0cfed68b282d69bea07daf5ef2319787"
+    }
+  },
+  "current_demo_candidates": [
+    "bottle",
+    "phone",
+    "fork"
+  ],
+  "can_pen_specialist_used": false,
+  "latest_user_decision": "official original YOLO26m only; no can or pen; camera stopped"
+}

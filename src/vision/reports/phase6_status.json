@@ -1,0 +1,27 @@
+{
+  "phase": 6,
+  "status": "complete",
+  "accepted": true,
+  "checks": {
+    "onnx_export_and_cuda_smoke": true,
+    "calibration_dataset_ready": true,
+    "long_sequence_demo_verified": true,
+    "jetson_transfer_bundle_ready": true,
+    "jetson_int8_engine_built": true,
+    "jetson_end_to_end_benchmark_recorded": true
+  },
+  "current_platform": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "5.15.148-tegra",
+    "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+    "is_jetson": true
+  },
+  "blocker": null,
+  "resume": "Follow deployment/JETSON_RUNBOOK.md on the Jetson, then rerun this script.",
+  "desktop_development_reports": [
+    "reports/phase6_tensorrt_desktop.json",
+    "reports/phase6_benchmark_onnx_desktop.json",
+    "reports/phase6_benchmark_tensorrt_desktop.json"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-08-13T21:45:00+09:00",
+  "status": "accepted_and_promoted",
+  "base_model": "artifacts/models/best_pre_adl.pt",
+  "model": "artifacts/models/best.pt",
+  "model_sha256": "3d095807e8e74dfb347005fa5bd2367a88839b1ae8ffe1ee3cbbfebc8c114a90",
+  "best_epoch": 1,
+  "epochs_completed": 4,
+  "stop_reason": "patience 3 early stopping after validation mAP50-95 declined for epochs 2 through 4",
+  "source_data": {
+    "dataset": "ADL Dataset",
+    "official_videos": 20,
+    "video_size_bytes": 43087304390,
+    "video_resolution": "1280x960",
+    "annotation_canvas": "640x480",
+    "extracted_images": 14916,
+    "extracted_boxes": 27192,
+    "boxes_by_class": {
+      "bottle": 10310,
+      "cup": 11050,
+      "phone": 1224,
+      "remote": 2813,
+      "toothbrush": 1795
+    },
+    "excluded": "knife/spoon/fork merged label"
+  },
+  "training": {
+    "dataset": "data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+    "train_images": 25804,
+    "base_train_images": 19692,
+    "adl_train_images": 6112,
+    "validation_images": 6560,
+    "test_images": 6103,
+    "image_size": 640,
+    "batch": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.00005,
+    "amp": false
+  },
+  "previous_model": {
+    "val": {
+      "precision": 0.4798460206997231,
+      "recall": 0.27630645916476776,
+      "map50": 0.2687823145039737,
+      "map50_95": 0.20071160071423452
+    },
+    "test": {
+      "precision": 0.41325467752285344,
+      "recall": 0.21859141270065266,
+      "map50": 0.20710766077294268,
+      "map50_95": 0.1563844251712244
+    }
+  },
+  "new_model": {
+    "val": {
+      "precision": 0.4769093930978122,
+      "recall": 0.276305228750923,
+      "map50": 0.2696335636658854,
+      "map50_95": 0.2030476177821498
+    },
+    "test": {
+      "precision": 0.41668544349147024,
+      "recall": 0.22098729913838372,
+      "map50": 0.21002451992643767,
+      "map50_95": 0.1601142027238924
+    }
+  },
+  "relative_change_percent": {
+    "val_map50_95": 1.164,
+    "test_map50_95": 2.385,
+    "test_map50": 1.408,
+    "test_recall": 1.096,
+    "test_precision": 0.830,
+    "test_map50_95_vs_phase3": 17.654
+  },
+  "deployment_note": "Existing ONNX, TensorRT, and Jetson artifacts predate this checkpoint and require regeneration."
+}

@@ -1,0 +1,60 @@
+{
+  "input_video": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/yolo26s_demo/input_sequences.mp4",
+  "unique_source_frames": 130,
+  "fps": 10.0,
+  "duration_seconds": 13.0,
+  "resolution": [
+    1280,
+    720
+  ],
+  "sequences": [
+    {
+      "id": "F4C5B1521033360D530955E53FE58C6C_08",
+      "frames": 17,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/F4C5B1521033360D530955E53FE58C6C_08_41.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/F4C5B1521033360D530955E53FE58C6C_08_57.jpg"
+    },
+    {
+      "id": "FFEE2BEB5B93D382205E55F3268F87BF_01",
+      "frames": 17,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/FFEE2BEB5B93D382205E55F3268F87BF_01_61.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/FFEE2BEB5B93D382205E55F3268F87BF_01_77.jpg"
+    },
+    {
+      "id": "4CE1B10E650532B56D39E5EC6A66E089_06",
+      "frames": 16,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/4CE1B10E650532B56D39E5EC6A66E089_06_14.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/4CE1B10E650532B56D39E5EC6A66E089_06_29.jpg"
+    },
+    {
+      "id": "503523C2A49DD9EA8EF47C5AC9F7A7BA_08",
+      "frames": 16,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/503523C2A49DD9EA8EF47C5AC9F7A7BA_08_22.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/503523C2A49DD9EA8EF47C5AC9F7A7BA_08_37.jpg"
+    },
+    {
+      "id": "A3F5FC830F908A83836A475382970778_08",
+      "frames": 16,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/A3F5FC830F908A83836A475382970778_08_115.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/A3F5FC830F908A83836A475382970778_08_130.jpg"
+    },
+    {
+      "id": "C7510EB619634877401B454098A5C9BD_05",
+      "frames": 16,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/C7510EB619634877401B454098A5C9BD_05_55.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/C7510EB619634877401B454098A5C9BD_05_70.jpg"
+    },
+    {
+      "id": "FFEE2BEB5B93D382205E55F3268F87BF_08",
+      "frames": 16,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/FFEE2BEB5B93D382205E55F3268F87BF_08_92.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/FFEE2BEB5B93D382205E55F3268F87BF_08_107.jpg"
+    },
+    {
+      "id": "FFEE2BEB5B93D382205E55F3268F87BF_10",
+      "frames": 16,
+      "first": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/FFEE2BEB5B93D382205E55F3268F87BF_10_30.jpg",
+      "last": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/FFEE2BEB5B93D382205E55F3268F87BF_10_45.jpg"
+    }
+  ]
+}

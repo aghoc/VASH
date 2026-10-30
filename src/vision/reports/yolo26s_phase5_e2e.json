@@ -1,0 +1,154 @@
+{
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_best.pt",
+  "model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "source_image": "/home/developer/Documents/VAGT/vagt-orca-ai/data/raw/egoobjects/images/A759BF4E1C80A4FB3F23B6151B42187F_03_97.jpg",
+  "candidates_searched": 300,
+  "search_candidate": {
+    "class": "spoon",
+    "confidence": 0.9351652264595032,
+    "bbox": [
+      347.02630615234375,
+      318.1553649902344,
+      508.0320129394531,
+      505.6647033691406
+    ]
+  },
+  "input_video": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/yolo26s_phase5_e2e/input.mp4",
+  "visualized_video": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/yolo26s_phase5_e2e/visualized.mp4",
+  "first_locked_frame": 3,
+  "frames": [
+    {
+      "frame": 0,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": null,
+      "plan": null,
+      "plan_updated": false,
+      "reason": "no_target"
+    },
+    {
+      "frame": 1,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": null,
+      "plan": null,
+      "plan_updated": false,
+      "reason": "no_target"
+    },
+    {
+      "frame": 2,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": null,
+      "plan": null,
+      "plan_updated": false,
+      "reason": "no_target"
+    },
+    {
+      "frame": 3,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 4,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 5,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 6,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 7,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 8,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    },
+    {
+      "frame": 9,
+      "detections": 1,
+      "candidate": "spoon",
+      "target": "spoon",
+      "plan": {
+        "class": "spoon",
+        "grip": "TRIPOD",
+        "opening": 0.212959,
+        "confidence": 0.934113
+      },
+      "plan_updated": true,
+      "reason": "updated"
+    }
+  ],
+  "accepted": true
+}

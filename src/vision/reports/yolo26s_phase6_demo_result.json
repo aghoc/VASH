@@ -1,0 +1,48 @@
+{
+  "accepted": true,
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_best.pt",
+  "model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "checks": {
+    "video_frame_count_matches_source": true,
+    "jsonl_record_count_matches_source": true,
+    "frame_indices_are_contiguous": true,
+    "duration_is_at_least_10_seconds": true,
+    "resolution_matches_source": true
+  },
+  "source_sequences": 8,
+  "unique_source_frames": 130,
+  "video": {
+    "path": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/yolo26s_demo/result_fp16_desktop.mp4",
+    "sha256": "839dc09c01594c3c65437a1af993f8261d3995575eac010ac539d1d81fc3d739",
+    "bytes": 5880197,
+    "frames": 130,
+    "fps": 10.0,
+    "duration_seconds": 13.0,
+    "resolution": [
+      1280,
+      720
+    ]
+  },
+  "jsonl": {
+    "path": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/yolo26s_demo/result_fp16_desktop.jsonl",
+    "sha256": "6f7b0f212ccd7aa51de5e960dd984c6ab4caec4adab47d42027d6161c43cb7ec",
+    "records": 130
+  },
+  "inference_summary": {
+    "detections": 55,
+    "frames_with_candidate": 5,
+    "frames_with_target_lock": 2,
+    "frames_with_plan": 77,
+    "new_plan_updates": 2,
+    "candidate_classes": {
+      "cup": 5
+    },
+    "target_classes": {
+      "cup": 2
+    },
+    "grip_frames": {
+      "POWER": 77
+    }
+  },
+  "scope": "RTX FP16 development demonstration; not Jetson acceptance evidence"
+}

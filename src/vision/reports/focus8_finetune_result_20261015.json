@@ -1,0 +1,1780 @@
+{
+  "date_kst": "2026-10-15",
+  "targets": [
+    "bottle",
+    "cup",
+    "phone",
+    "remote",
+    "spoon",
+    "fork",
+    "toothbrush",
+    "pen"
+  ],
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+  "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+  "training": {
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    },
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v6_focus8_coco_oi_15/data.yaml",
+    "config": {
+      "base_model": "artifacts/models/yolo26s_can_coin_retention.pt",
+      "device": 0,
+      "image_size": 640,
+      "epochs": 3,
+      "batch": 16,
+      "workers": 8,
+      "optimizer": "AdamW",
+      "lr0": 3e-05,
+      "lrf": 0.1,
+      "weight_decay": 0.0005,
+      "warmup_epochs": 0.0,
+      "patience": 0,
+      "close_mosaic": 0,
+      "save_period": 1,
+      "freeze": 10,
+      "seed": 20261015,
+      "deterministic": true,
+      "augment": {
+        "hsv_h": 0.015,
+        "hsv_s": 0.3,
+        "hsv_v": 0.2,
+        "degrees": 5.0,
+        "translate": 0.05,
+        "scale": 0.2,
+        "shear": 0.0,
+        "perspective": 0.0,
+        "flipud": 0.0,
+        "fliplr": 0.5,
+        "mosaic": 0.0,
+        "mixup": 0.0
+      }
+    },
+    "configured_epochs": 3,
+    "epochs": 3,
+    "best_epoch": 2,
+    "batch": 16,
+    "elapsed_seconds": 994.864,
+    "run_directory": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_stable_20261015",
+    "best_checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_stable_global_best.pt",
+    "metrics": {
+      "metrics/precision(B)": 0.534633773145656,
+      "metrics/recall(B)": 0.354290169336302,
+      "metrics/mAP50(B)": 0.3640328418305554,
+      "metrics/mAP50-95(B)": 0.28489750209904735,
+      "fitness": 0.28489750209904735
+    }
+  },
+  "training_trials": {
+    "yolo26s_focus8_v5_global_best": {
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      },
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v5_focus8_15/data.yaml",
+      "config": {
+        "base_model": "artifacts/models/yolo26s_can_coin_retention.pt",
+        "device": 0,
+        "image_size": 640,
+        "epochs": 6,
+        "batch": 16,
+        "workers": 8,
+        "optimizer": "AdamW",
+        "lr0": 0.0001,
+        "lrf": 0.1,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 0.5,
+        "patience": 3,
+        "close_mosaic": 2,
+        "save_period": 1,
+        "seed": 20261015,
+        "deterministic": true,
+        "augment": {
+          "hsv_h": 0.015,
+          "hsv_s": 0.4,
+          "hsv_v": 0.3,
+          "degrees": 7.0,
+          "translate": 0.08,
+          "scale": 0.35,
+          "shear": 0.0,
+          "perspective": 0.0,
+          "flipud": 0.0,
+          "fliplr": 0.5,
+          "mosaic": 0.3,
+          "mixup": 0.0
+        }
+      },
+      "configured_epochs": 6,
+      "epochs": 6,
+      "best_epoch": 5,
+      "batch": 16,
+      "elapsed_seconds": 2527.046,
+      "run_directory": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_20261015",
+      "best_checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_global_best.pt",
+      "metrics": {
+        "metrics/precision(B)": 0.5217737985612935,
+        "metrics/recall(B)": 0.3537753771909512,
+        "metrics/mAP50(B)": 0.35652899719581127,
+        "metrics/mAP50-95(B)": 0.2795165294997737,
+        "fitness": 0.2795165294997737
+      }
+    },
+    "yolo26s_focus8_v5_stable_global_best": {
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      },
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v6_focus8_coco_oi_15/data.yaml",
+      "config": {
+        "base_model": "artifacts/models/yolo26s_can_coin_retention.pt",
+        "device": 0,
+        "image_size": 640,
+        "epochs": 3,
+        "batch": 16,
+        "workers": 8,
+        "optimizer": "AdamW",
+        "lr0": 3e-05,
+        "lrf": 0.1,
+        "weight_decay": 0.0005,
+        "warmup_epochs": 0.0,
+        "patience": 0,
+        "close_mosaic": 0,
+        "save_period": 1,
+        "freeze": 10,
+        "seed": 20261015,
+        "deterministic": true,
+        "augment": {
+          "hsv_h": 0.015,
+          "hsv_s": 0.3,
+          "hsv_v": 0.2,
+          "degrees": 5.0,
+          "translate": 0.05,
+          "scale": 0.2,
+          "shear": 0.0,
+          "perspective": 0.0,
+          "flipud": 0.0,
+          "fliplr": 0.5,
+          "mosaic": 0.0,
+          "mixup": 0.0
+        }
+      },
+      "configured_epochs": 3,
+      "epochs": 3,
+      "best_epoch": 2,
+      "batch": 16,
+      "elapsed_seconds": 994.864,
+      "run_directory": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_stable_20261015",
+      "best_checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_stable_global_best.pt",
+      "metrics": {
+        "metrics/precision(B)": 0.534633773145656,
+        "metrics/recall(B)": 0.354290169336302,
+        "metrics/mAP50(B)": 0.3640328418305554,
+        "metrics/mAP50-95(B)": 0.28489750209904735,
+        "fitness": 0.28489750209904735
+      }
+    }
+  },
+  "validation_selection": {
+    "selected": {
+      "epoch": 3,
+      "trial": "stable",
+      "training_metadata": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_stable_global_best.training.json",
+      "validation_metrics": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/stable_epoch3_combined/val/metrics_summary.json",
+      "validation_batch": 16,
+      "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_stable_20261015/weights/epoch2.pt",
+      "target_macro": 0.295183902747296,
+      "target_macro_delta": 0.006744612016952423,
+      "per_class_map": {
+        "bottle": 0.36711648653312356,
+        "can": 0.1579132994677259,
+        "cup": 0.3088014609822994,
+        "box": 0.04907258549030978,
+        "ball": 0.6461312370997268,
+        "phone": 0.29436926140050895,
+        "remote": 0.362807755295525,
+        "pen": 0.19949582680232084,
+        "spoon": 0.2696099549870824,
+        "fork": 0.4450953437176567,
+        "toothbrush": 0.11417513225985132,
+        "card": 0.005479178066102873,
+        "key": 0.27639346426449013,
+        "coin": 0.7773387225999401,
+        "small_block": 0.001464507963177829
+      },
+      "target_deltas": {
+        "bottle": 0.010293025981923054,
+        "cup": 0.016004254256260286,
+        "phone": 0.01624051194903181,
+        "remote": -0.006380255705835891,
+        "spoon": -0.00013023303486492388,
+        "fork": -0.008012949588356688,
+        "toothbrush": 0.011122510400962307,
+        "pen": 0.014820031876499717
+      },
+      "improved_targets": 5,
+      "material_target_drops": [],
+      "can_coin_retained": true,
+      "eligible": true
+    },
+    "output": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+    "candidates": [
+      {
+        "epoch": 1,
+        "trial": "stable",
+        "training_metadata": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_stable_global_best.training.json",
+        "validation_metrics": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/stable_epoch1_combined/val/metrics_summary.json",
+        "validation_batch": 16,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_stable_20261015/weights/epoch0.pt",
+        "target_macro": 0.2933741830486852,
+        "target_macro_delta": 0.004934892318341599,
+        "per_class_map": {
+          "bottle": 0.3700146199039072,
+          "can": 0.1493538690258824,
+          "cup": 0.30480182415307006,
+          "box": 0.05093723088463044,
+          "ball": 0.6492927964427493,
+          "phone": 0.28241085516111875,
+          "remote": 0.36494732732967755,
+          "pen": 0.19340058113126632,
+          "spoon": 0.2737459291723418,
+          "fork": 0.45180752631841037,
+          "toothbrush": 0.10586480121968922,
+          "card": 0.004806639863012195,
+          "key": 0.2779102123570206,
+          "coin": 0.7746895325523442,
+          "small_block": 0.0015048614973582944
+        },
+        "target_deltas": {
+          "bottle": 0.013191159352706705,
+          "cup": 0.012004617427030961,
+          "phone": 0.004282105709641604,
+          "remote": -0.004240683671683343,
+          "spoon": 0.004005741150394482,
+          "fork": -0.0013007669876030081,
+          "toothbrush": 0.002812179360800207,
+          "pen": 0.0087247862054452
+        },
+        "improved_targets": 6,
+        "material_target_drops": [],
+        "can_coin_retained": true,
+        "eligible": true
+      },
+      {
+        "epoch": 2,
+        "trial": "stable",
+        "training_metadata": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_stable_global_best.training.json",
+        "validation_metrics": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/stable_epoch2_combined/val/metrics_summary.json",
+        "validation_batch": 16,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_stable_20261015/weights/epoch1.pt",
+        "target_macro": 0.2949228258843461,
+        "target_macro_delta": 0.006483535154002518,
+        "per_class_map": {
+          "bottle": 0.36983503184835,
+          "can": 0.15631279205053306,
+          "cup": 0.30778190364341984,
+          "box": 0.0500958535313879,
+          "ball": 0.641652132178252,
+          "phone": 0.2920024762491246,
+          "remote": 0.36755791055576265,
+          "pen": 0.19919391527460692,
+          "spoon": 0.2699037534859376,
+          "fork": 0.4454026241517684,
+          "toothbrush": 0.10770499186579882,
+          "card": 0.0047222691838376156,
+          "key": 0.2776984370118214,
+          "coin": 0.7794657785057391,
+          "small_block": 0.0016559707202094861
+        },
+        "target_deltas": {
+          "bottle": 0.013011571297149471,
+          "cup": 0.014984696917380746,
+          "phone": 0.013873726797647479,
+          "remote": -0.0016301004455982482,
+          "spoon": 0.00016356546399026728,
+          "fork": -0.007705669154244976,
+          "toothbrush": 0.004652370006909809,
+          "pen": 0.014518120348785801
+        },
+        "improved_targets": 6,
+        "material_target_drops": [],
+        "can_coin_retained": true,
+        "eligible": true
+      },
+      {
+        "epoch": 3,
+        "trial": "stable",
+        "training_metadata": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5_stable_global_best.training.json",
+        "validation_metrics": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/stable_epoch3_combined/val/metrics_summary.json",
+        "validation_batch": 16,
+        "checkpoint": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/training/yolo26s_focus8_v5_stable_20261015/weights/epoch2.pt",
+        "target_macro": 0.295183902747296,
+        "target_macro_delta": 0.006744612016952423,
+        "per_class_map": {
+          "bottle": 0.36711648653312356,
+          "can": 0.1579132994677259,
+          "cup": 0.3088014609822994,
+          "box": 0.04907258549030978,
+          "ball": 0.6461312370997268,
+          "phone": 0.29436926140050895,
+          "remote": 0.362807755295525,
+          "pen": 0.19949582680232084,
+          "spoon": 0.2696099549870824,
+          "fork": 0.4450953437176567,
+          "toothbrush": 0.11417513225985132,
+          "card": 0.005479178066102873,
+          "key": 0.27639346426449013,
+          "coin": 0.7773387225999401,
+          "small_block": 0.001464507963177829
+        },
+        "target_deltas": {
+          "bottle": 0.010293025981923054,
+          "cup": 0.016004254256260286,
+          "phone": 0.01624051194903181,
+          "remote": -0.006380255705835891,
+          "spoon": -0.00013023303486492388,
+          "fork": -0.008012949588356688,
+          "toothbrush": 0.011122510400962307,
+          "pen": 0.014820031876499717
+        },
+        "improved_targets": 5,
+        "material_target_drops": [],
+        "can_coin_retained": true,
+        "eligible": true
+      }
+    ],
+    "latest_request_scope": "Only checkpoints trained on new COCO + Open Images data are eligible.",
+    "selection_data": "combined validation only; frozen/external test not used for selection",
+    "additional_can_coin_public_validation_required": true,
+    "public_validation_gate": {
+      "passed": true,
+      "classes": {
+        "can": {
+          "before": 0.6639792234501005,
+          "after": 0.6742434657346064
+        },
+        "coin": {
+          "before": 0.7848425243445222,
+          "after": 0.7819182765460055
+        }
+      }
+    }
+  },
+  "target_test_macro_before": 0.2422253461503655,
+  "target_test_macro_after": 0.24751623957167607,
+  "target_test_macro_delta": 0.005290893421310561,
+  "target_test_relative_gain": 0.02184285627163951,
+  "external_coco_target_classes": [
+    "bottle",
+    "cup",
+    "phone",
+    "remote",
+    "spoon",
+    "fork",
+    "toothbrush"
+  ],
+  "external_coco_target_macro_before": 0.2113113144568304,
+  "external_coco_target_macro_after": 0.2345022477815554,
+  "external_openimages_target_macro_before": 0.26680974519359596,
+  "external_openimages_target_macro_after": 0.35656288552419524,
+  "per_class_frozen_test": [
+    {
+      "class": "bottle",
+      "target": true,
+      "before": 0.21357666773635836,
+      "after": 0.22202276024441686,
+      "delta": 0.0084460925080585,
+      "test_instances": 2251
+    },
+    {
+      "class": "can",
+      "target": false,
+      "before": 0.00017278677424815126,
+      "after": 2.690686026563923e-05,
+      "delta": -0.00014587991398251203,
+      "test_instances": 23
+    },
+    {
+      "class": "cup",
+      "target": true,
+      "before": 0.41473069575129395,
+      "after": 0.4274023933804413,
+      "delta": 0.012671697629147327,
+      "test_instances": 1761
+    },
+    {
+      "class": "box",
+      "target": false,
+      "before": 0.0391895966858568,
+      "after": 0.03809418479600751,
+      "delta": -0.001095411889849289,
+      "test_instances": 3877
+    },
+    {
+      "class": "ball",
+      "target": false,
+      "before": 0.44281306703006773,
+      "after": 0.43924147829774807,
+      "delta": -0.003571588732319664,
+      "test_instances": 373
+    },
+    {
+      "class": "phone",
+      "target": true,
+      "before": 0.33100960972428267,
+      "after": 0.3470519224342969,
+      "delta": 0.016042312710014217,
+      "test_instances": 516
+    },
+    {
+      "class": "remote",
+      "target": true,
+      "before": 0.277025951341012,
+      "after": 0.2738436215091934,
+      "delta": -0.0031823298318185977,
+      "test_instances": 695
+    },
+    {
+      "class": "pen",
+      "target": true,
+      "before": 0.17038478812561458,
+      "after": 0.17408186332041373,
+      "delta": 0.003697075194799143,
+      "test_instances": 1263
+    },
+    {
+      "class": "spoon",
+      "target": true,
+      "before": 0.1165306374328969,
+      "after": 0.12152713100617943,
+      "delta": 0.004996493573282523,
+      "test_instances": 467
+    },
+    {
+      "class": "fork",
+      "target": true,
+      "before": 0.4145444190914656,
+      "after": 0.4141975354110885,
+      "delta": -0.00034688368037710804,
+      "test_instances": 289
+    },
+    {
+      "class": "toothbrush",
+      "target": true,
+      "before": 0.0,
+      "after": 2.689267378371771e-06,
+      "delta": 2.689267378371771e-06,
+      "test_instances": 6
+    },
+    {
+      "class": "card",
+      "target": false,
+      "before": 0.00797205363059431,
+      "after": 0.007074839037690415,
+      "delta": -0.0008972145929038939,
+      "test_instances": 39
+    },
+    {
+      "class": "key",
+      "target": false,
+      "before": 0.062083295060224565,
+      "after": 0.05512364911489015,
+      "delta": -0.006959645945334415,
+      "test_instances": 249
+    },
+    {
+      "class": "coin",
+      "target": false,
+      "before": 6.714124483336203e-05,
+      "after": 7.799816024396707e-05,
+      "delta": 1.0856915410605044e-05,
+      "test_instances": 62
+    },
+    {
+      "class": "small_block",
+      "target": false,
+      "before": 7.07849656526886e-05,
+      "after": 3.840356365668798e-06,
+      "delta": -6.694460928701979e-05,
+      "test_instances": 161
+    }
+  ],
+  "frozen_validation_before": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+    "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+    "split": "val",
+    "precision_mean": 0.45582960834369224,
+    "recall_mean": 0.27205557131151487,
+    "map50_95": 0.22147858932016073,
+    "map50": 0.28721340438330334,
+    "map75": 0.2544967986037076,
+    "per_class_map": {
+      "bottle": 0.3573824577457574,
+      "can": 0.0003168775753031715,
+      "cup": 0.2931214514969072,
+      "box": 0.050778040904097474,
+      "ball": 0.664999730604239,
+      "phone": 0.2782000057727497,
+      "remote": 0.3691919467387469,
+      "pen": 0.18451039211018413,
+      "spoon": 0.2698084420097434,
+      "fork": 0.45451927895067923,
+      "toothbrush": 0.10309807370638462,
+      "card": 0.003976071713916765,
+      "key": 0.28578033367309635,
+      "coin": 0.0047332387784278585,
+      "small_block": 0.001762498022177765
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.3573824577457574,
+        "map50": 0.4882834411343381,
+        "precision": 0.5448704723957096,
+        "recall": 0.5252038547071906,
+        "instances": 2698
+      },
+      "can": {
+        "map50_95": 0.0003168775753031715,
+        "map50": 0.0006117236253181942,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 61
+      },
+      "cup": {
+        "map50_95": 0.2931214514969072,
+        "map50": 0.37229745221392174,
+        "precision": 0.4250036038425238,
+        "recall": 0.40290935528737315,
+        "instances": 1818
+      },
+      "box": {
+        "map50_95": 0.050778040904097474,
+        "map50": 0.07874046523038625,
+        "precision": 0.29897065369632936,
+        "recall": 0.07960323844679203,
+        "instances": 3252
+      },
+      "ball": {
+        "map50_95": 0.664999730604239,
+        "map50": 0.8253243826188452,
+        "precision": 0.6870200731267375,
+        "recall": 0.7936119992920783,
+        "instances": 390
+      },
+      "phone": {
+        "map50_95": 0.2782000057727497,
+        "map50": 0.3350907076508751,
+        "precision": 0.5794487786327213,
+        "recall": 0.2635121242715213,
+        "instances": 983
+      },
+      "remote": {
+        "map50_95": 0.3691919467387469,
+        "map50": 0.46271229502639993,
+        "precision": 0.6236289832072338,
+        "recall": 0.4434782608695652,
+        "instances": 690
+      },
+      "pen": {
+        "map50_95": 0.18451039211018413,
+        "map50": 0.3086274922399078,
+        "precision": 0.661525502614906,
+        "recall": 0.19745222929936307,
+        "instances": 1256
+      },
+      "spoon": {
+        "map50_95": 0.2698084420097434,
+        "map50": 0.35722169890569355,
+        "precision": 0.624319350441343,
+        "recall": 0.3431829615143915,
+        "instances": 799
+      },
+      "fork": {
+        "map50_95": 0.45451927895067923,
+        "map50": 0.5643634981095935,
+        "precision": 0.7369520624464718,
+        "recall": 0.5068027210884354,
+        "instances": 294
+      },
+      "toothbrush": {
+        "map50_95": 0.10309807370638462,
+        "map50": 0.12404988857107185,
+        "precision": 0.16445418571294887,
+        "recall": 0.14285714285714285,
+        "instances": 84
+      },
+      "card": {
+        "map50_95": 0.003976071713916765,
+        "map50": 0.005838109411812554,
+        "precision": 1.0,
+        "recall": 0.0,
+        "instances": 18
+      },
+      "key": {
+        "map50_95": 0.28578033367309635,
+        "map50": 0.37397490564797164,
+        "precision": 0.4912504590384589,
+        "recall": 0.38221968203886997,
+        "instances": 384
+      },
+      "coin": {
+        "map50_95": 0.0047332387784278585,
+        "map50": 0.00747120324578744,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 18
+      },
+      "small_block": {
+        "map50_95": 0.001762498022177765,
+        "map50": 0.003593802117627941,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 14
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.2381051539636823,
+      "inference": 1.209950454420589,
+      "loss": 0.0002070280507590413,
+      "postprocess": 0.05016643475583783
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "frozen_validation_after": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+    "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+    "split": "val",
+    "precision_mean": 0.43631263632570844,
+    "recall_mean": 0.28599186520893205,
+    "map50_95": 0.2234233996462633,
+    "map50": 0.2879258194257963,
+    "map75": 0.25567496854511157,
+    "per_class_map": {
+      "bottle": 0.3677226757517372,
+      "can": 0.00043806400519703524,
+      "cup": 0.3090029017189176,
+      "box": 0.04931410148393125,
+      "ball": 0.6478695324165821,
+      "phone": 0.2951016635183015,
+      "remote": 0.36297269710490465,
+      "pen": 0.19962636628008262,
+      "spoon": 0.2696167826916588,
+      "fork": 0.4466235529564445,
+      "toothbrush": 0.11433761336222381,
+      "card": 0.005494952263817551,
+      "key": 0.276450634283321,
+      "coin": 0.005130940515797828,
+      "small_block": 0.0016485163410326412
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.3677226757517372,
+        "map50": 0.49545479515323676,
+        "precision": 0.5176817541781331,
+        "recall": 0.5736572686201356,
+        "instances": 2698
+      },
+      "can": {
+        "map50_95": 0.00043806400519703524,
+        "map50": 0.0006890946213722756,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 61
+      },
+      "cup": {
+        "map50_95": 0.3090029017189176,
+        "map50": 0.39230945107790005,
+        "precision": 0.4417944169542712,
+        "recall": 0.4157531854629828,
+        "instances": 1818
+      },
+      "box": {
+        "map50_95": 0.04931410148393125,
+        "map50": 0.07597381861402405,
+        "precision": 0.29517302772763254,
+        "recall": 0.07958521362895882,
+        "instances": 3252
+      },
+      "ball": {
+        "map50_95": 0.6478695324165821,
+        "map50": 0.803317243462262,
+        "precision": 0.6823396317512868,
+        "recall": 0.7846153846153846,
+        "instances": 390
+      },
+      "phone": {
+        "map50_95": 0.2951016635183015,
+        "map50": 0.35138477360842874,
+        "precision": 0.5524820979985205,
+        "recall": 0.3365808007290584,
+        "instances": 983
+      },
+      "remote": {
+        "map50_95": 0.36297269710490465,
+        "map50": 0.45115321757978427,
+        "precision": 0.5896345472046013,
+        "recall": 0.4391304347826087,
+        "instances": 690
+      },
+      "pen": {
+        "map50_95": 0.19962636628008262,
+        "map50": 0.32806330538628975,
+        "precision": 0.6103693257010362,
+        "recall": 0.2340764331210191,
+        "instances": 1256
+      },
+      "spoon": {
+        "map50_95": 0.2696167826916588,
+        "map50": 0.35213144412275543,
+        "precision": 0.5447950320216155,
+        "recall": 0.3579474342928661,
+        "instances": 799
+      },
+      "fork": {
+        "map50_95": 0.4466235529564445,
+        "map50": 0.5529098904916764,
+        "precision": 0.6796152090646707,
+        "recall": 0.49784729907144376,
+        "instances": 294
+      },
+      "toothbrush": {
+        "map50_95": 0.11433761336222381,
+        "map50": 0.134882709420098,
+        "precision": 0.15696561289772168,
+        "recall": 0.19047619047619047,
+        "instances": 84
+      },
+      "card": {
+        "map50_95": 0.005494952263817551,
+        "map50": 0.008198503260796373,
+        "precision": 1.0,
+        "recall": 0.0,
+        "instances": 18
+      },
+      "key": {
+        "map50_95": 0.276450634283321,
+        "map50": 0.3612723971384664,
+        "precision": 0.4738388893861381,
+        "recall": 0.3802083333333333,
+        "instances": 384
+      },
+      "coin": {
+        "map50_95": 0.005130940515797828,
+        "map50": 0.008093334924043585,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 18
+      },
+      "small_block": {
+        "map50_95": 0.0016485163410326412,
+        "map50": 0.0030533125258110838,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 14
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.242553538872033,
+      "inference": 1.2094197635659807,
+      "loss": 0.0001939257618055197,
+      "postprocess": 0.05025718780649274
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "can_coin_public_validation_before": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+    "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/supplements/can_coin_open_v1/data.yaml",
+    "split": "val",
+    "precision_mean": 0.459430332924505,
+    "recall_mean": 0.39238031942546076,
+    "map50_95": 0.37745289065235943,
+    "map50": 0.4596541207034568,
+    "map75": 0.45079344883319616,
+    "per_class_map": {
+      "bottle": 0.05804166666666667,
+      "can": 0.6639792234501005,
+      "cup": 0.002948148148148149,
+      "coin": 0.7848425243445222
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.05804166666666667,
+        "map50": 0.08291666666666667,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 1
+      },
+      "can": {
+        "map50_95": 0.6639792234501005,
+        "map50": 0.756048219515222,
+        "precision": 0.8584600607585792,
+        "recall": 0.5947438296306264,
+        "instances": 51
+      },
+      "cup": {
+        "map50_95": 0.002948148148148149,
+        "map50": 0.007370370370370373,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 1
+      },
+      "coin": {
+        "map50_95": 0.7848425243445222,
+        "map50": 0.992281226261568,
+        "precision": 0.9792612709394409,
+        "recall": 0.9747774480712166,
+        "instances": 2022
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.7094963351529464,
+      "inference": 2.1848337629265804,
+      "loss": 0.0003565068061530783,
+      "postprocess": 0.14162375477004804
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "can_coin_public_validation_after": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+    "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/supplements/can_coin_open_v1/data.yaml",
+    "split": "val",
+    "precision_mean": 0.5050348214530762,
+    "recall_mean": 0.6348939881484074,
+    "map50_95": 0.4022912031140127,
+    "map50": 0.49227468621477133,
+    "map75": 0.4807500910129384,
+    "per_class_map": {
+      "bottle": 0.14427500000000001,
+      "can": 0.6742434657346064,
+      "cup": 0.008728070175438595,
+      "coin": 0.7819182765460055
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.14427500000000001,
+        "map50": 0.199,
+        "precision": 0.1648813144659759,
+        "recall": 1.0,
+        "instances": 1
+      },
+      "can": {
+        "map50_95": 0.6742434657346064,
+        "map50": 0.7604731238454122,
+        "precision": 0.8791748020615291,
+        "recall": 0.5707555289854688,
+        "instances": 51
+      },
+      "cup": {
+        "map50_95": 0.008728070175438595,
+        "map50": 0.01745614035087719,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 1
+      },
+      "coin": {
+        "map50_95": 0.7819182765460055,
+        "map50": 0.9921694806627959,
+        "precision": 0.9760831692847997,
+        "recall": 0.9688204236081605,
+        "instances": 2022
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.6105394495906439,
+      "inference": 2.152848261577143,
+      "loss": 0.00022155585591646408,
+      "postprocess": 0.046614852869873345
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "can_coin_public_test_before": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+    "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/supplements/can_coin_open_v1/data.yaml",
+    "split": "test",
+    "precision_mean": 0.8370342617593167,
+    "recall_mean": 0.4817093204662748,
+    "map50_95": 0.42457814470581995,
+    "map50": 0.5231910595385582,
+    "map75": 0.505478242325073,
+    "per_class_map": {
+      "bottle": 0.16592717542934798,
+      "can": 0.6501056305709136,
+      "fork": 0.09949999999999999,
+      "coin": 0.782779772823018
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.16592717542934798,
+        "map50": 0.21613800004922754,
+        "precision": 0.6698168385136313,
+        "recall": 0.16666666666666666,
+        "instances": 18
+      },
+      "can": {
+        "map50_95": 0.6501056305709136,
+        "map50": 0.7765993049549604,
+        "precision": 0.6967675107864497,
+        "recall": 0.7869217591618258,
+        "instances": 146
+      },
+      "fork": {
+        "map50_95": 0.09949999999999999,
+        "map50": 0.11055555555555555,
+        "precision": 1.0,
+        "recall": 0.0,
+        "instances": 1
+      },
+      "coin": {
+        "map50_95": 0.782779772823018,
+        "map50": 0.9894713775944889,
+        "precision": 0.9815526977371858,
+        "recall": 0.9732488560366068,
+        "instances": 2841
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.4387250638554927,
+      "inference": 2.3557851848735702,
+      "loss": 0.0007172890709167221,
+      "postprocess": 0.06308470587131172
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "can_coin_public_test_after": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+    "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/supplements/can_coin_open_v1/data.yaml",
+    "split": "test",
+    "precision_mean": 0.8539273628359808,
+    "recall_mean": 0.46234062990143693,
+    "map50_95": 0.42944615020603816,
+    "map50": 0.5302763490652693,
+    "map75": 0.5146461946396907,
+    "per_class_map": {
+      "bottle": 0.2012053868856986,
+      "can": 0.6279591450592046,
+      "fork": 0.1119375,
+      "coin": 0.7766825688792495
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.2012053868856986,
+        "map50": 0.2630920754453504,
+        "precision": 0.6699271211569875,
+        "recall": 0.2222222222222222,
+        "instances": 18
+      },
+      "can": {
+        "map50_95": 0.6279591450592046,
+        "map50": 0.7439053909377836,
+        "precision": 0.7575113573814662,
+        "recall": 0.678082191780822,
+        "instances": 146
+      },
+      "fork": {
+        "map50_95": 0.1119375,
+        "map50": 0.124375,
+        "precision": 1.0,
+        "recall": 0.0,
+        "instances": 1
+      },
+      "coin": {
+        "map50_95": 0.7766825688792495,
+        "map50": 0.9897329298779436,
+        "precision": 0.9882709728054696,
+        "recall": 0.9490581056027035,
+        "instances": 2841
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.4693697932743205,
+      "inference": 2.365964524371612,
+      "loss": 0.001397536137677385,
+      "postprocess": 0.06623727058773633
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "can_coin_public_validation_retained": true,
+  "external_coco_test_before": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+    "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+    "split": "test",
+    "precision_mean": 0.40701194375421434,
+    "recall_mean": 0.326899461343082,
+    "map50_95": 0.23641352918198466,
+    "map50": 0.34177082523068175,
+    "map75": 0.26284839655950487,
+    "per_class_map": {
+      "bottle": 0.2829184425310195,
+      "cup": 0.24995288555352255,
+      "ball": 0.4121290322580644,
+      "phone": 0.2513025834073675,
+      "remote": 0.289106608336611,
+      "spoon": 0.0677905055104295,
+      "fork": 0.1743029434689406,
+      "toothbrush": 0.16380523238992212
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.2829184425310195,
+        "map50": 0.41423765697735804,
+        "precision": 0.5943313352487412,
+        "recall": 0.3564356435643564,
+        "instances": 101
+      },
+      "cup": {
+        "map50_95": 0.24995288555352255,
+        "map50": 0.36061941245535467,
+        "precision": 0.6005989966048588,
+        "recall": 0.28431372549019607,
+        "instances": 102
+      },
+      "ball": {
+        "map50_95": 0.4121290322580644,
+        "map50": 0.5272580645161289,
+        "precision": 0.18258816967955033,
+        "recall": 0.5,
+        "instances": 2
+      },
+      "phone": {
+        "map50_95": 0.2513025834073675,
+        "map50": 0.42251567547249447,
+        "precision": 0.5074639014517782,
+        "recall": 0.30303030303030304,
+        "instances": 33
+      },
+      "remote": {
+        "map50_95": 0.289106608336611,
+        "map50": 0.3608266783321765,
+        "precision": 0.48485319705059743,
+        "recall": 0.3181818181818182,
+        "instances": 22
+      },
+      "spoon": {
+        "map50_95": 0.0677905055104295,
+        "map50": 0.10316678844592252,
+        "precision": 0.19272296406537576,
+        "recall": 0.15626450350828552,
+        "instances": 23
+      },
+      "fork": {
+        "map50_95": 0.1743029434689406,
+        "map50": 0.24634220509384488,
+        "precision": 0.33373231487005456,
+        "recall": 0.36363636363636365,
+        "instances": 22
+      },
+      "toothbrush": {
+        "map50_95": 0.16380523238992212,
+        "map50": 0.299200120552174,
+        "precision": 0.3598046710627587,
+        "recall": 0.3333333333333333,
+        "instances": 18
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.7945444239885546,
+      "inference": 2.5556340720067965,
+      "loss": 0.00023412799055222422,
+      "postprocess": 0.11624593601300148
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "external_coco_test_after": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+    "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+    "split": "test",
+    "precision_mean": 0.49086411486751896,
+    "recall_mean": 0.3236003917070752,
+    "map50_95": 0.25642557791997206,
+    "map50": 0.3698244636061109,
+    "map75": 0.285911422199293,
+    "per_class_map": {
+      "bottle": 0.31356106948262497,
+      "cup": 0.27943786091340905,
+      "ball": 0.409888888888889,
+      "phone": 0.26893440544328023,
+      "remote": 0.32050326483117125,
+      "spoon": 0.08959942412025973,
+      "fork": 0.17665367656464698,
+      "toothbrush": 0.19282603311549543
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.31356106948262497,
+        "map50": 0.4400210880584362,
+        "precision": 0.6555322615742233,
+        "recall": 0.3768472272806892,
+        "instances": 101
+      },
+      "cup": {
+        "map50_95": 0.27943786091340905,
+        "map50": 0.4058839981427556,
+        "precision": 0.6967487824040783,
+        "recall": 0.27036609522088423,
+        "instances": 102
+      },
+      "ball": {
+        "map50_95": 0.409888888888889,
+        "map50": 0.5227777777777779,
+        "precision": 0.22363257747226403,
+        "recall": 0.5,
+        "instances": 2
+      },
+      "phone": {
+        "map50_95": 0.26893440544328023,
+        "map50": 0.4384189115992908,
+        "precision": 0.6800607812595396,
+        "recall": 0.3333333333333333,
+        "instances": 33
+      },
+      "remote": {
+        "map50_95": 0.32050326483117125,
+        "map50": 0.40579114652176707,
+        "precision": 0.6184625952310213,
+        "recall": 0.3181818181818182,
+        "instances": 22
+      },
+      "spoon": {
+        "map50_95": 0.08959942412025973,
+        "map50": 0.13183666283924547,
+        "precision": 0.2712111645683699,
+        "recall": 0.17391304347826086,
+        "instances": 23
+      },
+      "fork": {
+        "map50_95": 0.17665367656464698,
+        "map50": 0.25031698530027313,
+        "precision": 0.29851574122856767,
+        "recall": 0.22727272727272727,
+        "instances": 22
+      },
+      "toothbrush": {
+        "map50_95": 0.19282603311549543,
+        "map50": 0.3635491386093407,
+        "precision": 0.48274901520208735,
+        "recall": 0.3888888888888889,
+        "instances": 18
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.8613026639868622,
+      "inference": 2.4913805760079413,
+      "loss": 0.00022467200324172154,
+      "postprocess": 0.13983100801124237
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "external_openimages_test_before": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+    "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+    "split": "test",
+    "precision_mean": 0.46482586124089675,
+    "recall_mean": 0.33640993463923113,
+    "map50_95": 0.23723085619936574,
+    "map50": 0.3549955462881614,
+    "map75": 0.2688384848355871,
+    "per_class_map": {
+      "bottle": 0.36794922238805505,
+      "cup": 0.23607502606230435,
+      "box": 0.0005997442455242968,
+      "phone": 0.2633849753309004,
+      "remote": 0.4837717662913321,
+      "pen": 0.16185775416807863,
+      "spoon": 0.19878657968746835,
+      "fork": 0.29162356028561537,
+      "toothbrush": 0.1310290773350134
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.36794922238805505,
+        "map50": 0.5423908633538855,
+        "precision": 0.8371428479248546,
+        "recall": 0.28961265617596266,
+        "instances": 142
+      },
+      "cup": {
+        "map50_95": 0.23607502606230435,
+        "map50": 0.37922719973461505,
+        "precision": 0.5432833730139818,
+        "recall": 0.30985915492957744,
+        "instances": 71
+      },
+      "box": {
+        "map50_95": 0.0005997442455242968,
+        "map50": 0.0008567774936061382,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 3
+      },
+      "phone": {
+        "map50_95": 0.2633849753309004,
+        "map50": 0.43279730500084557,
+        "precision": 0.5666645163677545,
+        "recall": 0.3484848484848485,
+        "instances": 66
+      },
+      "remote": {
+        "map50_95": 0.4837717662913321,
+        "map50": 0.5863234701531814,
+        "precision": 0.448762016445927,
+        "recall": 0.7666666666666667,
+        "instances": 30
+      },
+      "pen": {
+        "map50_95": 0.16185775416807863,
+        "map50": 0.23996731247102876,
+        "precision": 0.45839014927361943,
+        "recall": 0.26506024096385544,
+        "instances": 83
+      },
+      "spoon": {
+        "map50_95": 0.19878657968746835,
+        "map50": 0.3382059046316123,
+        "precision": 0.42992077928088956,
+        "recall": 0.3253012048192771,
+        "instances": 83
+      },
+      "fork": {
+        "map50_95": 0.29162356028561537,
+        "map50": 0.4223290100311745,
+        "precision": 0.5380537323675586,
+        "recall": 0.45454545454545453,
+        "instances": 66
+      },
+      "toothbrush": {
+        "map50_95": 0.1310290773350134,
+        "map50": 0.2528620737235031,
+        "precision": 0.3612153364934849,
+        "recall": 0.26815918516743764,
+        "instances": 19
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.49028458025015514,
+      "inference": 2.1022331635872376,
+      "loss": 0.00026070987879381986,
+      "postprocess": 0.09492556790816853
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "external_openimages_test_after": {
+    "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+    "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+    "model_format": ".pt",
+    "precision": "fp32",
+    "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+    "split": "test",
+    "precision_mean": 0.4696527040348138,
+    "recall_mean": 0.4321380868314051,
+    "map50_95": 0.3170633016583725,
+    "map50": 0.4489659379205724,
+    "map75": 0.35705342594945466,
+    "per_class_map": {
+      "bottle": 0.44790771905224763,
+      "cup": 0.3652116675605914,
+      "box": 0.001066630731790624,
+      "phone": 0.43016696740425076,
+      "remote": 0.5738568093989287,
+      "pen": 0.29832236531757056,
+      "spoon": 0.25869853446160757,
+      "fork": 0.2903458573193912,
+      "toothbrush": 0.1879931636789742
+    },
+    "per_class": {
+      "bottle": {
+        "map50_95": 0.44790771905224763,
+        "map50": 0.621352413706409,
+        "precision": 0.8165474181633704,
+        "recall": 0.43885085064992135,
+        "instances": 142
+      },
+      "cup": {
+        "map50_95": 0.3652116675605914,
+        "map50": 0.5475948062027953,
+        "precision": 0.5696875564143803,
+        "recall": 0.4475573202795137,
+        "instances": 71
+      },
+      "box": {
+        "map50_95": 0.001066630731790624,
+        "map50": 0.001401673640167364,
+        "precision": 0.0,
+        "recall": 0.0,
+        "instances": 3
+      },
+      "phone": {
+        "map50_95": 0.43016696740425076,
+        "map50": 0.6430953852016231,
+        "precision": 0.6242625320216149,
+        "recall": 0.6293872221815641,
+        "instances": 66
+      },
+      "remote": {
+        "map50_95": 0.5738568093989287,
+        "map50": 0.6720962186567436,
+        "precision": 0.4529449455592099,
+        "recall": 0.8333333333333334,
+        "instances": 30
+      },
+      "pen": {
+        "map50_95": 0.29832236531757056,
+        "map50": 0.41289315751295236,
+        "precision": 0.4163882557464156,
+        "recall": 0.4457831325301205,
+        "instances": 83
+      },
+      "spoon": {
+        "map50_95": 0.25869853446160757,
+        "map50": 0.40272440298013695,
+        "precision": 0.44947628964000347,
+        "recall": 0.3614457831325301,
+        "instances": 83
+      },
+      "fork": {
+        "map50_95": 0.2903458573193912,
+        "map50": 0.407737712298555,
+        "precision": 0.5048028539603261,
+        "recall": 0.41709566569145257,
+        "instances": 66
+      },
+      "toothbrush": {
+        "map50_95": 0.1879931636789742,
+        "map50": 0.33179767108576924,
+        "precision": 0.39276448480800386,
+        "recall": 0.3157894736842105,
+        "instances": 19
+      }
+    },
+    "speed_ms_per_image": {
+      "preprocess": 0.47219320369976353,
+      "inference": 2.041226768518373,
+      "loss": 0.0002086944395732307,
+      "postprocess": 0.12937800308609887
+    },
+    "gpu": {
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "total_memory_gib": 15.56,
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    }
+  },
+  "train_source_class_positive_images": {
+    "EgoObjects replay": {
+      "0": 2209,
+      "2": 2318,
+      "3": 1675,
+      "6": 1630,
+      "8": 1714,
+      "5": 1320,
+      "7": 1912,
+      "9": 1004,
+      "12": 369,
+      "1": 155,
+      "4": 103
+    },
+    "COCO 2017": {
+      "9": 548,
+      "8": 560,
+      "2": 1039,
+      "0": 920,
+      "5": 651,
+      "6": 438,
+      "10": 73,
+      "3": 47,
+      "4": 15
+    },
+    "Existing 15-class retention": {
+      "12": 1472,
+      "6": 4078,
+      "7": 1848,
+      "9": 2376,
+      "5": 3194,
+      "8": 2701,
+      "2": 6589,
+      "0": 6369,
+      "1": 2706,
+      "3": 3896,
+      "4": 1382,
+      "10": 2490,
+      "13": 1552,
+      "11": 80,
+      "14": 36
+    },
+    "Open Images focus8": {
+      "8": 565,
+      "2": 513,
+      "0": 520,
+      "5": 616,
+      "7": 898,
+      "9": 550,
+      "10": 96,
+      "6": 176,
+      "3": 6,
+      "4": 1
+    }
+  },
+  "data": {
+    "targets": [
+      "bottle",
+      "cup",
+      "phone",
+      "remote",
+      "spoon",
+      "fork",
+      "toothbrush",
+      "pen"
+    ],
+    "parent_dataset": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v5_focus8_clean_15",
+    "seed": 20261015,
+    "sources_and_splits": {
+      "Existing 15-class retention/val": 6927,
+      "Existing 15-class retention/test": 6698,
+      "COCO 2017/test": 125,
+      "COCO 2017/val": 136,
+      "EgoObjects replay/train": 8667,
+      "COCO 2017/train": 2818,
+      "Existing 15-class retention/train": 28239,
+      "Open Images focus8/val": 248,
+      "Open Images focus8/test": 324,
+      "Open Images focus8/train": 3695
+    },
+    "openimages_class_positive_images": {
+      "train": {
+        "8": 565,
+        "2": 513,
+        "0": 520,
+        "5": 616,
+        "7": 898,
+        "9": 550,
+        "10": 96,
+        "6": 176,
+        "3": 6,
+        "4": 1
+      },
+      "val": {
+        "8": 45,
+        "5": 49,
+        "9": 33,
+        "7": 33,
+        "0": 50,
+        "2": 36,
+        "10": 8,
+        "6": 5
+      },
+      "test": {
+        "0": 51,
+        "5": 50,
+        "8": 63,
+        "9": 53,
+        "7": 51,
+        "6": 19,
+        "2": 53,
+        "3": 2,
+        "10": 11
+      }
+    },
+    "openimages_accepted": 4267,
+    "decoded_pixel_train_holdout_intersections": 0,
+    "frozen_image_paths_and_labels_unchanged": true,
+    "frozen_manifest_sha256": "6b8784c39c15ec581f5ee4dbeb6eb54252f50e01a2e7039fb1ab9cd3b736db2b",
+    "labels_policy": "COCO authoritative for mapped COCO classes; LVIS companion labels. Open Images preserves all compatible mapped boxes, excluding group/depiction images.",
+    "integrity": {
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "missing_classes": [],
+      "splits": {
+        "train": {
+          "images": 43419,
+          "labels": 43419
+        },
+        "val": {
+          "images": 6927,
+          "labels": 6927
+        },
+        "test": {
+          "images": 6698,
+          "labels": 6698
+        }
+      },
+      "class_counts": {
+        "0": 24876,
+        "1": 5662,
+        "2": 19758,
+        "3": 18838,
+        "4": 2886,
+        "5": 8338,
+        "6": 10142,
+        "7": 8954,
+        "8": 8897,
+        "9": 6674,
+        "10": 4330,
+        "11": 280,
+        "12": 2931,
+        "13": 10105,
+        "14": 695
+      },
+      "class_counts_by_split": {
+        "train": {
+          "0": 19908,
+          "1": 5381,
+          "2": 16178,
+          "3": 11709,
+          "4": 2123,
+          "5": 6839,
+          "6": 8757,
+          "7": 6435,
+          "8": 7631,
+          "9": 6090,
+          "10": 4240,
+          "11": 223,
+          "12": 2298,
+          "13": 5162,
+          "14": 520
+        },
+        "val": {
+          "0": 2699,
+          "1": 112,
+          "2": 1819,
+          "3": 3252,
+          "4": 390,
+          "5": 983,
+          "6": 690,
+          "7": 1256,
+          "8": 799,
+          "9": 294,
+          "10": 84,
+          "11": 18,
+          "12": 384,
+          "13": 2040,
+          "14": 14
+        },
+        "test": {
+          "0": 2269,
+          "1": 169,
+          "2": 1761,
+          "3": 3877,
+          "4": 373,
+          "5": 516,
+          "6": 695,
+          "7": 1263,
+          "8": 467,
+          "9": 290,
+          "10": 6,
+          "11": 39,
+          "12": 249,
+          "13": 2903,
+          "14": 161
+        }
+      },
+      "missing_classes_by_split": {
+        "train": [],
+        "val": [],
+        "test": []
+      }
+    },
+    "external_evaluations": [
+      "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+      "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml"
+    ]
+  },
+  "weighting": {
+    "purpose": "Explicit sampling weight for requested toothbrush class; repeats are not new photographs.",
+    "toothbrush_positive_weight": 2,
+    "added_training_entries": 2659,
+    "source_counts_before_repeats": {
+      "EgoObjects replay": 8667,
+      "COCO 2017": 2818,
+      "Existing 15-class retention": 28239,
+      "Open Images focus8": 3695
+    },
+    "integrity_after_weighting": {
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "missing_classes": [],
+      "splits": {
+        "train": {
+          "images": 46078,
+          "labels": 46078
+        },
+        "val": {
+          "images": 6927,
+          "labels": 6927
+        },
+        "test": {
+          "images": 6698,
+          "labels": 6698
+        }
+      },
+      "class_counts": {
+        "0": 25691,
+        "1": 5662,
+        "2": 20073,
+        "3": 19299,
+        "4": 2894,
+        "5": 8371,
+        "6": 10143,
+        "7": 8962,
+        "8": 8903,
+        "9": 6680,
+        "10": 8570,
+        "11": 280,
+        "12": 2939,
+        "13": 10105,
+        "14": 713
+      },
+      "class_counts_by_split": {
+        "train": {
+          "0": 20723,
+          "1": 5381,
+          "2": 16493,
+          "3": 12170,
+          "4": 2131,
+          "5": 6872,
+          "6": 8758,
+          "7": 6443,
+          "8": 7637,
+          "9": 6096,
+          "10": 8480,
+          "11": 223,
+          "12": 2306,
+          "13": 5162,
+          "14": 538
+        },
+        "val": {
+          "0": 2699,
+          "1": 112,
+          "2": 1819,
+          "3": 3252,
+          "4": 390,
+          "5": 983,
+          "6": 690,
+          "7": 1256,
+          "8": 799,
+          "9": 294,
+          "10": 84,
+          "11": 18,
+          "12": 384,
+          "13": 2040,
+          "14": 14
+        },
+        "test": {
+          "0": 2269,
+          "1": 169,
+          "2": 1761,
+          "3": 3877,
+          "4": 373,
+          "5": 516,
+          "6": 695,
+          "7": 1263,
+          "8": 467,
+          "9": 290,
+          "10": 6,
+          "11": 39,
+          "12": 249,
+          "13": 2903,
+          "14": 161
+        }
+      },
+      "missing_classes_by_split": {
+        "train": [],
+        "val": [],
+        "test": []
+      }
+    }
+  },
+  "deployment": "training candidate only; existing Jetson deployment unchanged by this experiment",
+  "selection_policy": "Validation only; test evaluated after checkpoint selection and not used to change selection."
+}

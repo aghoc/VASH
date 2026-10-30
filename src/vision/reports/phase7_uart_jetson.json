@@ -1,0 +1,47 @@
+{
+  "phase": 7,
+  "status": "complete",
+  "accepted": true,
+  "protocol": {
+    "frame_bytes": 16,
+    "baudrate": 115200,
+    "byte_order": "little-endian",
+    "checksum": "CRC-16/CCITT-FALSE",
+    "timeout_ms": 250
+  },
+  "platform": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "5.15.148-tegra",
+    "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+    "is_jetson": true
+  },
+  "checks": {
+    "pty_round_trip": true,
+    "target_change_changes_packet": true,
+    "lkg_flagged_without_update": true,
+    "packet_loss_reproduced": true,
+    "checksum_corruption_rejected": true,
+    "active_before_timeout": true,
+    "stale_250ms_emg_fallback": true
+  },
+  "pty_packets": 3,
+  "uart_round_trip_latency_us": {
+    "mean": 198.45066666666665,
+    "p95": 296.4082,
+    "max": 312.492
+  },
+  "mock_receiver": {
+    "latest_sequence": 103,
+    "link_fresh": false,
+    "vision_assistance_active": false,
+    "emg_only_fallback": true,
+    "accepted_packets": 2,
+    "duplicate_packets": 0,
+    "out_of_order_packets": 0,
+    "dropped_packets": 2,
+    "checksum_errors": 1,
+    "frame_errors": 0,
+    "discarded_bytes": 15
+  }
+}

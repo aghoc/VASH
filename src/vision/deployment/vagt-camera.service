@@ -1,0 +1,16 @@
+[Unit]
+Description=VAGT ELP IMX291 live vision
+ConditionPathExists=/dev/v4l/by-id/usb-3.0_USB_Camera_3.0_USB_Camera-video-index0
+
+[Service]
+Type=simple
+WorkingDirectory=/mnt/data/vagt-orca-ai
+ExecStart=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --runtime configs/runtime.yaml --model artifacts/deployment/tensorrt/yolo26m_coco_original_fp16.engine
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/mnt/data/vagt-orca-ai/src
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+
+[Install]
+WantedBy=default.target

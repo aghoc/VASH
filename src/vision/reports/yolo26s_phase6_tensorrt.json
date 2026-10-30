@@ -1,0 +1,41 @@
+{
+  "accepted_target_build": true,
+  "development_only": false,
+  "portability_warning": null,
+  "platform": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "5.15.148-tegra",
+    "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+    "is_jetson": true
+  },
+  "gpu": {
+    "device": 0,
+    "name": "Orin",
+    "total_memory_gib": 7.44,
+    "torch": "2.8.0",
+    "torch_cuda": "12.6"
+  },
+  "tensorrt_version": "10.3.0",
+  "model": "/mnt/data/vagt-orca-ai/artifacts/models/yolo26s_best.pt",
+  "model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "engine": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_best_fp16.engine",
+  "engine_bytes": 22879912,
+  "engine_sha256": "9d05b0229d368e8ae020485eef3d9a5c5cfae70bd7177101b4e254a0f3f46464",
+  "model_family": "YOLO26s",
+  "precision": "fp16",
+  "end2end_nms_free": true,
+  "requested_settings": {
+    "dynamic": false,
+    "workspace_gib": 2,
+    "batch": 1,
+    "precision": "fp16"
+  },
+  "settings": {
+    "dynamic": false,
+    "workspace_gib": 2,
+    "batch": 1,
+    "precision": "fp16",
+    "opset": 17
+  }
+}

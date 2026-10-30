@@ -1,0 +1,113 @@
+{
+  "model_family": "YOLO26s",
+  "training_precision": "fp32",
+  "deployment_precision": "TensorRT FP16",
+  "final_model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_best.pt",
+  "final_model_bytes": 20370165,
+  "final_model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "stages": {
+    "phase3_egoobjects": {
+      "val": {
+        "precision": 0.512485520950842,
+        "recall": 0.27112958576991103,
+        "map50": 0.2733482652855653,
+        "map50_95": 0.20981413678871194
+      },
+      "test": {
+        "precision": 0.43337803220003346,
+        "recall": 0.20164631948539177,
+        "map50": 0.18307409503972746,
+        "map50_95": 0.14273911863848213
+      }
+    },
+    "public_v2": {
+      "val": {
+        "precision": 0.44797993040785616,
+        "recall": 0.2946623024699396,
+        "map50": 0.2996056227390612,
+        "map50_95": 0.23071032563573232
+      },
+      "test": {
+        "precision": 0.35537280941405736,
+        "recall": 0.23130101768803246,
+        "map50": 0.21960901029333463,
+        "map50_95": 0.17297457549739945
+      },
+      "delta_from_phase3": {
+        "val": {
+          "precision": -0.06450559054298582,
+          "recall": 0.023532716700028544,
+          "map50": 0.026257357453495944,
+          "map50_95": 0.02089618884702038
+        },
+        "test": {
+          "precision": -0.0780052227859761,
+          "recall": 0.02965469820264069,
+          "map50": 0.036534915253607164,
+          "map50_95": 0.03023545685891732
+        }
+      }
+    },
+    "adl_v3_final": {
+      "val": {
+        "precision": 0.4209588994944777,
+        "recall": 0.2928991853017319,
+        "map50": 0.2919753756764617,
+        "map50_95": 0.22680837551819943
+      },
+      "test": {
+        "precision": 0.3547815616130824,
+        "recall": 0.23468524441560967,
+        "map50": 0.22046251837739567,
+        "map50_95": 0.17432121528981065
+      },
+      "delta_from_public_v2": {
+        "val": {
+          "precision": -0.027021030913378485,
+          "recall": -0.0017631171682076507,
+          "map50": -0.007630247062599516,
+          "map50_95": -0.0039019501175328875
+        },
+        "test": {
+          "precision": -0.00059124780097497,
+          "recall": 0.003384226727577211,
+          "map50": 0.0008535080840610387,
+          "map50_95": 0.0013466397924112028
+        }
+      },
+      "delta_from_phase3": {
+        "val": {
+          "precision": -0.09152662145636431,
+          "recall": 0.021769599531820893,
+          "map50": 0.01862711039089643,
+          "map50_95": 0.016994238729487493
+        },
+        "test": {
+          "precision": -0.07859647058695107,
+          "recall": 0.0330389249302179,
+          "map50": 0.0373884233376682,
+          "map50_95": 0.03158209665132852
+        }
+      }
+    },
+    "desktop_tensorrt_fp16_reference": {
+      "val": {
+        "precision": 0.501230604379793,
+        "recall": 0.2813920222103652,
+        "map50": 0.2885592020373609,
+        "map50_95": 0.2223499317942474
+      },
+      "delta_from_final_fp32": {
+        "precision": 0.08027170488531538,
+        "recall": -0.011507163091366734,
+        "map50": -0.0034161736391007946,
+        "map50_95": -0.004458443723952044
+      },
+      "accepted_as_jetson_evidence": false
+    }
+  },
+  "selection": {
+    "checkpoint": "adl_v3 epoch 1 best",
+    "reason": "The ADL stage improves frozen-test mAP50-95 over public_v2 while adding egocentric-domain exposure; Jetson FP16 validation remains pending."
+  }
+}

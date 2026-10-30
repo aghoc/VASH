@@ -1,0 +1,39 @@
+{
+  "deployment_accepted": false,
+  "acceptance_reason": "Development benchmark only; requires .engine execution on target Jetson",
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/tensorrt/best_int8_RTX_DEVELOPMENT_ONLY_NOT_FOR_JETSON.engine",
+  "model_sha256": "9264315bfc1a335a5eb3bd3ef139b7192c6dc8e88d30664a64b8691e56c98d73",
+  "model_format": ".engine",
+  "images": 512,
+  "warmup": 20,
+  "iterations": 200,
+  "hold_frames_per_scene": 5,
+  "latency_ms": {
+    "mean": 1.71378296,
+    "p50": 1.722982,
+    "p95": 2.1063766000000004,
+    "p99": 2.3749531199999994,
+    "min": 1.162344,
+    "max": 3.040623
+  },
+  "fps": 583.5044596312242,
+  "detections": 245,
+  "frames_with_plan_proposal": 200,
+  "frames_with_new_plan_update": 54,
+  "peak_torch_cuda_memory_mib": 91.60107421875,
+  "peak_device_memory_used_mib": 940.125,
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "platform": {
+    "machine": "x86_64",
+    "system": "Linux",
+    "release": "7.0.0-28-generic",
+    "jetson_model": null,
+    "is_jetson": false
+  }
+}

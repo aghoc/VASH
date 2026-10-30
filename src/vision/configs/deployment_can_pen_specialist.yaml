@@ -1,0 +1,18 @@
+model: artifacts/models/yolo26s_can_pen_specialist_20261016.pt
+data: data/processed/can_pen_specialist_20261016/data.yaml
+image_size: 640
+device: 0
+onnx:
+  opset: 17
+  simplify: true
+  dynamic: false
+  batch: 1
+tensorrt:
+  dynamic: false
+  workspace_gib: 0.5
+  batch: 1
+  precision: fp16
+benchmark:
+  warmup: 20
+  iterations: 200
+  hold_frames: 5

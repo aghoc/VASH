@@ -1,0 +1,18 @@
+# Hardware-independent seed values. Replace after ORCA Hand calibration (Phase 9).
+# opening = clamp(alpha * bbox_width/image_width + beta, 0, 1)
+calibration:
+  bottle: {alpha: 1.45, beta: 0.22}
+  can: {alpha: 1.40, beta: 0.20}
+  cup: {alpha: 1.50, beta: 0.22}
+  box: {alpha: 1.35, beta: 0.25}
+  ball: {alpha: 1.55, beta: 0.20}
+  phone: {alpha: 1.25, beta: 0.18}
+  remote: {alpha: 1.20, beta: 0.16}
+  pen: {alpha: 0.75, beta: 0.08}
+  spoon: {alpha: 0.80, beta: 0.08}
+  fork: {alpha: 0.80, beta: 0.08}
+  toothbrush: {alpha: 0.80, beta: 0.08}
+  card: {alpha: 0.70, beta: 0.05}
+  key: {alpha: 0.65, beta: 0.05}
+  coin: {alpha: 0.55, beta: 0.03}
+  small_block: {alpha: 0.65, beta: 0.05}

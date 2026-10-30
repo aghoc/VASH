@@ -1,0 +1,20 @@
+{
+  "platform": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+  "power_mode": "25W",
+  "jetson_clocks_enabled": true,
+  "cpu_frequency_khz": 1344000,
+  "gpu_frequency_hz": 918000000,
+  "benchmark": "reports/yolo26s_phase6_benchmark_sustained.json",
+  "iterations": 2000,
+  "duration_seconds": 39,
+  "samples": 39,
+  "maximum_temperature_c": {
+    "cpu": 53.875,
+    "gpu": 55.625,
+    "tj": 55.625
+  },
+  "maximum_input_power_mw": 12577,
+  "thermal_throttling_observed": false,
+  "tegrastats_log": "reports/yolo26s_phase6_tegrastats.log",
+  "tegrastats_log_sha256": "141c0e79887c1c2e91b7e30f02b18ae23a32f3592101058c239f8692419e7097"
+}

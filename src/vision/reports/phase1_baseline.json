@@ -1,0 +1,17 @@
+{
+  "completed_at": "2026-08-07T19:27:00+09:00",
+  "model": "models/pretrained/yolov8n.pt",
+  "model_sha256": "f59b3d833e2ff32e194b5bb8e08d211dc7c5bdf144b90d2c8412c47ccfc83b36",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "torch": "2.13.0+cu130",
+    "cuda": "13.0",
+    "total_memory_gib": 15.56
+  },
+  "single_image_inference_ms": 2.3,
+  "single_image_detections": 6,
+  "video_frames": 10,
+  "video_input": "artifacts/phase1_baseline_input.mp4",
+  "video_visualization": "artifacts/phase1_baseline_visualized.mp4",
+  "device_verified": "cuda:0"
+}

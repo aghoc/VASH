@@ -1,0 +1,26 @@
+required_classes:
+  - bottle
+  - can
+  - cup
+  - box
+  - ball
+  - phone
+  - remote
+  - pen
+  - spoon
+  - fork
+  - toothbrush
+  - card
+  - key
+  - coin
+  - small_block
+required_variations:
+  lighting: [bright, dark]
+  distance: [near, far]
+  background: [plain, cluttered]
+  rotation: [front, rotated]
+  occlusion: [clear, partial]
+  multi_object: [single, multiple]
+  motion: [static, walking_blur]
+minimum_images_per_class: 100
+minimum_sequences_per_class: 3

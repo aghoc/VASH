@@ -1,0 +1,42 @@
+{
+  "accepted_target_build": true,
+  "development_only": false,
+  "portability_warning": null,
+  "platform": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "5.15.148-tegra",
+    "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+    "is_jetson": true
+  },
+  "gpu": {
+    "device": 0,
+    "name": "Orin",
+    "total_memory_gib": 7.44,
+    "torch": "2.8.0",
+    "torch_cuda": "12.6"
+  },
+  "tensorrt_version": "10.3.0",
+  "calibration_backend": "cuda_tensorrt_calibrator",
+  "gpu_only_calibration": true,
+  "model": "/home/jetson-user/vagt-orca-ai/artifacts/models/best.pt",
+  "model_sha256": "3d095807e8e74dfb347005fa5bd2367a88839b1ae8ffe1ee3cbbfebc8c114a90",
+  "calibration": "/home/jetson-user/vagt-orca-ai/data/calibration/jetson_int8/data.yaml",
+  "engine": "/home/jetson-user/vagt-orca-ai/artifacts/deployment/tensorrt/best_int8.engine",
+  "engine_bytes": 5037884,
+  "engine_sha256": "81ed28ad4990b05147fcb84a2778e52f5dafe64007c661840cf347369f4b8343",
+  "precision": "int8",
+  "requested_settings": {
+    "dynamic": true,
+    "workspace_gib": 2,
+    "batch": 4,
+    "precision": "int8"
+  },
+  "settings": {
+    "dynamic": false,
+    "workspace_gib": 2,
+    "batch": 1,
+    "precision": "int8",
+    "opset": 17
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "bundle": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/jetson_bundle/vagt_orca_phase6_inputs.tar.gz",
+  "bundle_sha256": "312acb374fcf4322e74f913718abcb94362c010a6d68e7ff3edf236345d2a1a8",
+  "bundle_bytes": 150556136,
+  "model_sha256": "3d095807e8e74dfb347005fa5bd2367a88839b1ae8ffe1ee3cbbfebc8c114a90",
+  "onnx_sha256": "9d3c33cc8b65bfb07a1e4af8529b52c3c231152fc01d2ad211f0c62943cb4c32",
+  "files": 1108,
+  "uncompressed_bytes": 154389914,
+  "contains_engine": false,
+  "target_build_required": true,
+  "instructions": "/home/developer/Documents/VAGT/vagt-orca-ai/deployment/JETSON_RUNBOOK.md"
+}

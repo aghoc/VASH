@@ -1,0 +1,41 @@
+{
+  "accepted_target_build": false,
+  "development_only": true,
+  "portability_warning": "This engine is GPU/platform-specific and MUST NOT be deployed to Jetson.",
+  "platform": {
+    "machine": "x86_64",
+    "system": "Linux",
+    "release": "7.0.0-29-generic",
+    "jetson_model": null,
+    "is_jetson": false
+  },
+  "gpu": {
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "total_memory_gib": 15.56,
+    "torch": "2.13.0+cu130",
+    "torch_cuda": "13.0"
+  },
+  "tensorrt_version": "11.2.1.2",
+  "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_best.pt",
+  "model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "engine": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_best_fp16_RTX_DEVELOPMENT_ONLY_NOT_FOR_JETSON.engine",
+  "engine_bytes": 83683312,
+  "engine_sha256": "ea0b34db2fdbbdf053aaf99abce6e5ce06c0ad2381cf160987852912a74b4e38",
+  "model_family": "YOLO26s",
+  "precision": "fp16",
+  "end2end_nms_free": true,
+  "requested_settings": {
+    "dynamic": false,
+    "workspace_gib": 2,
+    "batch": 1,
+    "precision": "fp16"
+  },
+  "settings": {
+    "dynamic": false,
+    "workspace_gib": 2,
+    "batch": 1,
+    "precision": "fp16",
+    "opset": 17
+  }
+}

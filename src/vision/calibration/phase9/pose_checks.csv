@@ -1,0 +1,6 @@
+grip,object,class_name,pose_passed,lateral_contact_passed,operator,notes
+POWER,bottle,bottle,,,,
+TRIPOD,pen,pen,,,,
+PINCH,coin,coin,,,,
+LATERAL_PINCH,card,card,,,,
+LATERAL_PINCH,key,key,,,,

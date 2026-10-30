@@ -1,0 +1,3327 @@
+{
+  "date": "2026-10-15",
+  "camera_used": false,
+  "new_training": false,
+  "deployment_changed": false,
+  "common_requested_classes": [
+    "bottle",
+    "cup",
+    "phone",
+    "remote",
+    "spoon",
+    "fork",
+    "toothbrush"
+  ],
+  "comparison": {
+    "coco": {
+      "original_s": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26s.pt",
+        "model_sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b",
+        "checkpoint_classes": 80,
+        "checkpoint_modified": false,
+        "new_training": false,
+        "domain": "coco",
+        "dataset": {
+          "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/pretrained_baseline_20261015/datasets/coco/data.yaml",
+          "source_yaml": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+          "source_yaml_sha256": "a1ca6a62595b78a4dab93c7f15f764c17f49224fd643f3c3477ee22a133606c3",
+          "images": 125,
+          "mapped_instances": {
+            "phone": 33,
+            "bottle": 101,
+            "cup": 102,
+            "remote": 22,
+            "spoon": 23,
+            "fork": 22,
+            "toothbrush": 18,
+            "ball": 2
+          },
+          "filename_prefix_counts": {
+            "coco": 125
+          },
+          "image_names_and_original_labels_sha256": "c9a1050606e760d4f4934a10d8cf4d1b6df5180c97f7c5b3ab976ca046178fd7",
+          "images_duplicated": false,
+          "source_labels_modified": false
+        },
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "end2end": true,
+        "views": "single",
+        "output_filter_coco_ids": [
+          32,
+          39,
+          41,
+          42,
+          44,
+          65,
+          67,
+          79
+        ],
+        "per_class": {
+          "ball": {
+            "ap50_95": 0.7121666666666667,
+            "ap50": 0.995,
+            "instances": 2
+          },
+          "bottle": {
+            "ap50_95": 0.5032585785677595,
+            "ap50": 0.6361760759887911,
+            "instances": 101
+          },
+          "cup": {
+            "ap50_95": 0.5567408808675165,
+            "ap50": 0.72780212386665,
+            "instances": 102
+          },
+          "fork": {
+            "ap50_95": 0.3175202177970858,
+            "ap50": 0.5423181686350015,
+            "instances": 22
+          },
+          "spoon": {
+            "ap50_95": 0.21856430075474095,
+            "ap50": 0.30641222282557656,
+            "instances": 23
+          },
+          "remote": {
+            "ap50_95": 0.5654306037540416,
+            "ap50": 0.7229019109687528,
+            "instances": 22
+          },
+          "phone": {
+            "ap50_95": 0.42704128048931367,
+            "ap50": 0.6309323024673801,
+            "instances": 33
+          },
+          "toothbrush": {
+            "ap50_95": 0.40454660144805876,
+            "ap50": 0.6183275742224562,
+            "instances": 18
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 48,
+              "fp": 15,
+              "fn": 53,
+              "images": 125,
+              "positive_images": 49,
+              "negative_images": 76,
+              "false_positive_negative_images": 6,
+              "precision": 0.7619047619047619,
+              "recall": 0.4752475247524752,
+              "negative_image_fp_rate": 0.07894736842105263
+            },
+            "cup": {
+              "tp": 54,
+              "fp": 10,
+              "fn": 48,
+              "images": 125,
+              "positive_images": 47,
+              "negative_images": 78,
+              "false_positive_negative_images": 2,
+              "precision": 0.84375,
+              "recall": 0.5294117647058824,
+              "negative_image_fp_rate": 0.02564102564102564
+            },
+            "ball": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 1,
+              "images": 125,
+              "positive_images": 2,
+              "negative_images": 123,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 17,
+              "fp": 5,
+              "fn": 16,
+              "images": 125,
+              "positive_images": 30,
+              "negative_images": 95,
+              "false_positive_negative_images": 2,
+              "precision": 0.7727272727272727,
+              "recall": 0.5151515151515151,
+              "negative_image_fp_rate": 0.021052631578947368
+            },
+            "remote": {
+              "tp": 10,
+              "fp": 3,
+              "fn": 12,
+              "images": 125,
+              "positive_images": 15,
+              "negative_images": 110,
+              "false_positive_negative_images": 0,
+              "precision": 0.7692307692307693,
+              "recall": 0.45454545454545453,
+              "negative_image_fp_rate": 0.0
+            },
+            "spoon": {
+              "tp": 1,
+              "fp": 3,
+              "fn": 22,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 2,
+              "precision": 0.25,
+              "recall": 0.043478260869565216,
+              "negative_image_fp_rate": 0.018518518518518517
+            },
+            "fork": {
+              "tp": 6,
+              "fp": 0,
+              "fn": 16,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.2727272727272727,
+              "negative_image_fp_rate": 0.0
+            },
+            "toothbrush": {
+              "tp": 9,
+              "fp": 3,
+              "fn": 9,
+              "images": 125,
+              "positive_images": 9,
+              "negative_images": 116,
+              "false_positive_negative_images": 0,
+              "precision": 0.75,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.3122861119627487,
+          "inference": 2.0512483679922298,
+          "loss": 0.0002304480003658682,
+          "postprocess": 0.04217684001196176
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "can_coin": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+        "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+        "checkpoint_classes": 15,
+        "domain": "coco",
+        "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+        "split": "test",
+        "images": 125,
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "rect": false,
+        "end2end": true,
+        "views": "single",
+        "conf_for_ap": 0.001,
+        "new_training": false,
+        "checkpoint_modified": false,
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.28013044903766987,
+            "ap50": 0.41438103954931615,
+            "instances": 101
+          },
+          "cup": {
+            "ap50_95": 0.23610009375326896,
+            "ap50": 0.3582610907039636,
+            "instances": 102
+          },
+          "ball": {
+            "ap50_95": 0.4553039215686274,
+            "ap50": 0.5146078431372548,
+            "instances": 2
+          },
+          "phone": {
+            "ap50_95": 0.19547472744956346,
+            "ap50": 0.3825474617389,
+            "instances": 33
+          },
+          "remote": {
+            "ap50_95": 0.2618723380396857,
+            "ap50": 0.3346824672570997,
+            "instances": 22
+          },
+          "spoon": {
+            "ap50_95": 0.07313950344787405,
+            "ap50": 0.11845962103181905,
+            "instances": 23
+          },
+          "fork": {
+            "ap50_95": 0.14092573820135693,
+            "ap50": 0.22556051405940877,
+            "instances": 22
+          },
+          "toothbrush": {
+            "ap50_95": 0.17303174551655198,
+            "ap50": 0.3215818036368572,
+            "instances": 18
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 19,
+              "fp": 4,
+              "fn": 82,
+              "images": 125,
+              "positive_images": 49,
+              "negative_images": 76,
+              "false_positive_negative_images": 1,
+              "precision": 0.8260869565217391,
+              "recall": 0.18811881188118812,
+              "negative_image_fp_rate": 0.013157894736842105
+            },
+            "can": {
+              "tp": 0,
+              "fp": 5,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 4,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.032
+            },
+            "cup": {
+              "tp": 14,
+              "fp": 2,
+              "fn": 88,
+              "images": 125,
+              "positive_images": 47,
+              "negative_images": 78,
+              "false_positive_negative_images": 1,
+              "precision": 0.875,
+              "recall": 0.13725490196078433,
+              "negative_image_fp_rate": 0.01282051282051282
+            },
+            "box": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.008
+            },
+            "ball": {
+              "tp": 1,
+              "fp": 2,
+              "fn": 1,
+              "images": 125,
+              "positive_images": 2,
+              "negative_images": 123,
+              "false_positive_negative_images": 2,
+              "precision": 0.3333333333333333,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.016260162601626018
+            },
+            "phone": {
+              "tp": 7,
+              "fp": 0,
+              "fn": 26,
+              "images": 125,
+              "positive_images": 30,
+              "negative_images": 95,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.21212121212121213,
+              "negative_image_fp_rate": 0.0
+            },
+            "remote": {
+              "tp": 4,
+              "fp": 1,
+              "fn": 18,
+              "images": 125,
+              "positive_images": 15,
+              "negative_images": 110,
+              "false_positive_negative_images": 1,
+              "precision": 0.8,
+              "recall": 0.18181818181818182,
+              "negative_image_fp_rate": 0.00909090909090909
+            },
+            "pen": {
+              "tp": 0,
+              "fp": 3,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.008
+            },
+            "spoon": {
+              "tp": 2,
+              "fp": 3,
+              "fn": 21,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 1,
+              "precision": 0.4,
+              "recall": 0.08695652173913043,
+              "negative_image_fp_rate": 0.009259259259259259
+            },
+            "fork": {
+              "tp": 3,
+              "fp": 2,
+              "fn": 19,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 1,
+              "precision": 0.6,
+              "recall": 0.13636363636363635,
+              "negative_image_fp_rate": 0.009259259259259259
+            },
+            "toothbrush": {
+              "tp": 3,
+              "fp": 3,
+              "fn": 15,
+              "images": 125,
+              "positive_images": 9,
+              "negative_images": 116,
+              "false_positive_negative_images": 1,
+              "precision": 0.5,
+              "recall": 0.16666666666666666,
+              "negative_image_fp_rate": 0.008620689655172414
+            },
+            "card": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "key": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "coin": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "small_block": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.3701005840266589,
+          "inference": 1.9627550480363423,
+          "loss": 0.000219295994611457,
+          "postprocess": 0.0539383519499097
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "focus8_student": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_refined_v8.pt",
+        "model_sha256": "f7a489b05d50382d240cf8a2396b7f1db5d07f6400e7b63825960dfb9b0040ac",
+        "checkpoint_classes": 15,
+        "domain": "coco",
+        "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+        "split": "test",
+        "images": 125,
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "rect": false,
+        "end2end": true,
+        "views": "single",
+        "conf_for_ap": 0.001,
+        "new_training": false,
+        "checkpoint_modified": false,
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.3139501809881062,
+            "ap50": 0.4525274575222932,
+            "instances": 101
+          },
+          "cup": {
+            "ap50_95": 0.2857600828940773,
+            "ap50": 0.4256995993047181,
+            "instances": 102
+          },
+          "ball": {
+            "ap50_95": 0.46401851851851844,
+            "ap50": 0.5320370370370369,
+            "instances": 2
+          },
+          "phone": {
+            "ap50_95": 0.22369195316728802,
+            "ap50": 0.4115509998434231,
+            "instances": 33
+          },
+          "remote": {
+            "ap50_95": 0.29226257510340753,
+            "ap50": 0.374886388982884,
+            "instances": 22
+          },
+          "spoon": {
+            "ap50_95": 0.07036719353433374,
+            "ap50": 0.11737389895568345,
+            "instances": 23
+          },
+          "fork": {
+            "ap50_95": 0.1435607646595684,
+            "ap50": 0.23864392163742357,
+            "instances": 22
+          },
+          "toothbrush": {
+            "ap50_95": 0.23090631932092615,
+            "ap50": 0.4465591862503948,
+            "instances": 18
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 25,
+              "fp": 9,
+              "fn": 76,
+              "images": 125,
+              "positive_images": 49,
+              "negative_images": 76,
+              "false_positive_negative_images": 1,
+              "precision": 0.7352941176470589,
+              "recall": 0.24752475247524752,
+              "negative_image_fp_rate": 0.013157894736842105
+            },
+            "can": {
+              "tp": 0,
+              "fp": 5,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 3,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.024
+            },
+            "cup": {
+              "tp": 21,
+              "fp": 2,
+              "fn": 81,
+              "images": 125,
+              "positive_images": 47,
+              "negative_images": 78,
+              "false_positive_negative_images": 0,
+              "precision": 0.9130434782608695,
+              "recall": 0.20588235294117646,
+              "negative_image_fp_rate": 0.0
+            },
+            "box": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.008
+            },
+            "ball": {
+              "tp": 1,
+              "fp": 2,
+              "fn": 1,
+              "images": 125,
+              "positive_images": 2,
+              "negative_images": 123,
+              "false_positive_negative_images": 2,
+              "precision": 0.3333333333333333,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.016260162601626018
+            },
+            "phone": {
+              "tp": 6,
+              "fp": 1,
+              "fn": 27,
+              "images": 125,
+              "positive_images": 30,
+              "negative_images": 95,
+              "false_positive_negative_images": 1,
+              "precision": 0.8571428571428571,
+              "recall": 0.18181818181818182,
+              "negative_image_fp_rate": 0.010526315789473684
+            },
+            "remote": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 17,
+              "images": 125,
+              "positive_images": 15,
+              "negative_images": 110,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.22727272727272727,
+              "negative_image_fp_rate": 0.0
+            },
+            "pen": {
+              "tp": 0,
+              "fp": 4,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.008
+            },
+            "spoon": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 21,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 1,
+              "precision": 0.5,
+              "recall": 0.08695652173913043,
+              "negative_image_fp_rate": 0.009259259259259259
+            },
+            "fork": {
+              "tp": 2,
+              "fp": 2,
+              "fn": 20,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 1,
+              "precision": 0.5,
+              "recall": 0.09090909090909091,
+              "negative_image_fp_rate": 0.009259259259259259
+            },
+            "toothbrush": {
+              "tp": 3,
+              "fp": 2,
+              "fn": 15,
+              "images": 125,
+              "positive_images": 9,
+              "negative_images": 116,
+              "false_positive_negative_images": 0,
+              "precision": 0.6,
+              "recall": 0.16666666666666666,
+              "negative_image_fp_rate": 0.0
+            },
+            "card": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "key": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "coin": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "small_block": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 125,
+              "positive_images": 0,
+              "negative_images": 125,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.34045778401196003,
+          "inference": 1.8389276559464633,
+          "loss": 0.000234208011534065,
+          "postprocess": 0.0484259279910475
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "original_m": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26m.pt",
+        "model_sha256": "401cea9ab23ad19246ff7744859816bc599f350e93c9dd30367b6f0a0745d0b7",
+        "checkpoint_classes": 80,
+        "checkpoint_modified": false,
+        "new_training": false,
+        "domain": "coco",
+        "dataset": {
+          "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/pretrained_baseline_20261015/datasets/coco/data.yaml",
+          "source_yaml": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+          "source_yaml_sha256": "a1ca6a62595b78a4dab93c7f15f764c17f49224fd643f3c3477ee22a133606c3",
+          "images": 125,
+          "mapped_instances": {
+            "phone": 33,
+            "bottle": 101,
+            "cup": 102,
+            "remote": 22,
+            "spoon": 23,
+            "fork": 22,
+            "toothbrush": 18,
+            "ball": 2
+          },
+          "filename_prefix_counts": {
+            "coco": 125
+          },
+          "image_names_and_original_labels_sha256": "c9a1050606e760d4f4934a10d8cf4d1b6df5180c97f7c5b3ab976ca046178fd7",
+          "images_duplicated": false,
+          "source_labels_modified": false
+        },
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "end2end": true,
+        "views": "single",
+        "output_filter_coco_ids": [
+          32,
+          39,
+          41,
+          42,
+          44,
+          65,
+          67,
+          79
+        ],
+        "per_class": {
+          "ball": {
+            "ap50_95": 0.595,
+            "ap50": 0.8283333333333331,
+            "instances": 2
+          },
+          "bottle": {
+            "ap50_95": 0.5707690263623164,
+            "ap50": 0.7193690863361297,
+            "instances": 101
+          },
+          "cup": {
+            "ap50_95": 0.6320474001879254,
+            "ap50": 0.7906121376607421,
+            "instances": 102
+          },
+          "fork": {
+            "ap50_95": 0.42274405141067267,
+            "ap50": 0.5937604856927926,
+            "instances": 22
+          },
+          "spoon": {
+            "ap50_95": 0.25330030044920976,
+            "ap50": 0.34563176219503694,
+            "instances": 23
+          },
+          "remote": {
+            "ap50_95": 0.5825796649938998,
+            "ap50": 0.7462239375033329,
+            "instances": 22
+          },
+          "phone": {
+            "ap50_95": 0.4789534231431734,
+            "ap50": 0.6881562805189063,
+            "instances": 33
+          },
+          "toothbrush": {
+            "ap50_95": 0.5225693280008319,
+            "ap50": 0.7294046717171717,
+            "instances": 18
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 59,
+              "fp": 22,
+              "fn": 42,
+              "images": 125,
+              "positive_images": 49,
+              "negative_images": 76,
+              "false_positive_negative_images": 5,
+              "precision": 0.7283950617283951,
+              "recall": 0.5841584158415841,
+              "negative_image_fp_rate": 0.06578947368421052
+            },
+            "cup": {
+              "tp": 64,
+              "fp": 8,
+              "fn": 38,
+              "images": 125,
+              "positive_images": 47,
+              "negative_images": 78,
+              "false_positive_negative_images": 1,
+              "precision": 0.8888888888888888,
+              "recall": 0.6274509803921569,
+              "negative_image_fp_rate": 0.01282051282051282
+            },
+            "ball": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 1,
+              "images": 125,
+              "positive_images": 2,
+              "negative_images": 123,
+              "false_positive_negative_images": 0,
+              "precision": 1.0,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 18,
+              "fp": 5,
+              "fn": 15,
+              "images": 125,
+              "positive_images": 30,
+              "negative_images": 95,
+              "false_positive_negative_images": 3,
+              "precision": 0.782608695652174,
+              "recall": 0.5454545454545454,
+              "negative_image_fp_rate": 0.031578947368421054
+            },
+            "remote": {
+              "tp": 13,
+              "fp": 2,
+              "fn": 9,
+              "images": 125,
+              "positive_images": 15,
+              "negative_images": 110,
+              "false_positive_negative_images": 0,
+              "precision": 0.8666666666666667,
+              "recall": 0.5909090909090909,
+              "negative_image_fp_rate": 0.0
+            },
+            "spoon": {
+              "tp": 4,
+              "fp": 5,
+              "fn": 19,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 3,
+              "precision": 0.4444444444444444,
+              "recall": 0.17391304347826086,
+              "negative_image_fp_rate": 0.027777777777777776
+            },
+            "fork": {
+              "tp": 8,
+              "fp": 2,
+              "fn": 14,
+              "images": 125,
+              "positive_images": 17,
+              "negative_images": 108,
+              "false_positive_negative_images": 0,
+              "precision": 0.8,
+              "recall": 0.36363636363636365,
+              "negative_image_fp_rate": 0.0
+            },
+            "toothbrush": {
+              "tp": 9,
+              "fp": 2,
+              "fn": 9,
+              "images": 125,
+              "positive_images": 9,
+              "negative_images": 116,
+              "false_positive_negative_images": 0,
+              "precision": 0.8181818181818182,
+              "recall": 0.5,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.30035276801208965,
+          "inference": 4.607274176029023,
+          "loss": 0.00023563994909636676,
+          "postprocess": 0.04950728005496785
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      }
+    },
+    "openimages": {
+      "original_s": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26s.pt",
+        "model_sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b",
+        "checkpoint_classes": 80,
+        "checkpoint_modified": false,
+        "new_training": false,
+        "domain": "openimages",
+        "dataset": {
+          "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/pretrained_baseline_20261015/datasets/openimages/data.yaml",
+          "source_yaml": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+          "source_yaml_sha256": "8287f1e49a640a7743bc304f0a7b7f6bb31d0b0f35671dd4f68b935cc76784bb",
+          "images": 324,
+          "mapped_instances": {
+            "bottle": 142,
+            "phone": 66,
+            "spoon": 83,
+            "fork": 66,
+            "remote": 30,
+            "cup": 71,
+            "toothbrush": 19
+          },
+          "filename_prefix_counts": {
+            "oi": 324
+          },
+          "image_names_and_original_labels_sha256": "d64f5687d592589ec620cdce02bd04cc6e102212ea2e4e5ddc944edf0c474d6a",
+          "images_duplicated": false,
+          "source_labels_modified": false
+        },
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "end2end": true,
+        "views": "single",
+        "output_filter_coco_ids": [
+          32,
+          39,
+          41,
+          42,
+          44,
+          65,
+          67,
+          79
+        ],
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.6297533037484453,
+            "ap50": 0.7535638978518715,
+            "instances": 142
+          },
+          "cup": {
+            "ap50_95": 0.5860087508754974,
+            "ap50": 0.6129168668421876,
+            "instances": 71
+          },
+          "fork": {
+            "ap50_95": 0.6370123507543817,
+            "ap50": 0.7596997932678162,
+            "instances": 66
+          },
+          "spoon": {
+            "ap50_95": 0.5168279696453533,
+            "ap50": 0.6512064852414381,
+            "instances": 83
+          },
+          "remote": {
+            "ap50_95": 0.8207996482484058,
+            "ap50": 0.8519522197350138,
+            "instances": 30
+          },
+          "phone": {
+            "ap50_95": 0.7481751320728478,
+            "ap50": 0.8112413179088938,
+            "instances": 66
+          },
+          "toothbrush": {
+            "ap50_95": 0.5892606953350099,
+            "ap50": 0.6721138183950228,
+            "instances": 19
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 87,
+              "fp": 20,
+              "fn": 55,
+              "images": 324,
+              "positive_images": 51,
+              "negative_images": 273,
+              "false_positive_negative_images": 8,
+              "precision": 0.8130841121495327,
+              "recall": 0.6126760563380281,
+              "negative_image_fp_rate": 0.029304029304029304
+            },
+            "cup": {
+              "tp": 61,
+              "fp": 59,
+              "fn": 10,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 36,
+              "precision": 0.5083333333333333,
+              "recall": 0.8591549295774648,
+              "negative_image_fp_rate": 0.13284132841328414
+            },
+            "ball": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.0030864197530864196
+            },
+            "phone": {
+              "tp": 45,
+              "fp": 9,
+              "fn": 21,
+              "images": 324,
+              "positive_images": 50,
+              "negative_images": 274,
+              "false_positive_negative_images": 2,
+              "precision": 0.8333333333333334,
+              "recall": 0.6818181818181818,
+              "negative_image_fp_rate": 0.0072992700729927005
+            },
+            "remote": {
+              "tp": 24,
+              "fp": 9,
+              "fn": 6,
+              "images": 324,
+              "positive_images": 19,
+              "negative_images": 305,
+              "false_positive_negative_images": 3,
+              "precision": 0.7272727272727273,
+              "recall": 0.8,
+              "negative_image_fp_rate": 0.009836065573770493
+            },
+            "spoon": {
+              "tp": 42,
+              "fp": 7,
+              "fn": 41,
+              "images": 324,
+              "positive_images": 63,
+              "negative_images": 261,
+              "false_positive_negative_images": 2,
+              "precision": 0.8571428571428571,
+              "recall": 0.5060240963855421,
+              "negative_image_fp_rate": 0.007662835249042145
+            },
+            "fork": {
+              "tp": 39,
+              "fp": 7,
+              "fn": 27,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 4,
+              "precision": 0.8478260869565217,
+              "recall": 0.5909090909090909,
+              "negative_image_fp_rate": 0.014760147601476014
+            },
+            "toothbrush": {
+              "tp": 13,
+              "fp": 10,
+              "fn": 6,
+              "images": 324,
+              "positive_images": 11,
+              "negative_images": 313,
+              "false_positive_negative_images": 6,
+              "precision": 0.5652173913043478,
+              "recall": 0.6842105263157895,
+              "negative_image_fp_rate": 0.019169329073482427
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.34202642904414526,
+          "inference": 1.9663710030794457,
+          "loss": 0.00025409879549162143,
+          "postprocess": 0.04733016667609106
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "can_coin": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+        "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+        "checkpoint_classes": 15,
+        "domain": "openimages",
+        "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+        "split": "test",
+        "images": 324,
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "rect": false,
+        "end2end": true,
+        "views": "single",
+        "conf_for_ap": 0.001,
+        "new_training": false,
+        "checkpoint_modified": false,
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.362338875098267,
+            "ap50": 0.5565941863161842,
+            "instances": 142
+          },
+          "cup": {
+            "ap50_95": 0.23881660820119127,
+            "ap50": 0.3792037427396634,
+            "instances": 71
+          },
+          "box": {
+            "ap50_95": 0.0005101522842639594,
+            "ap50": 0.000850253807106599,
+            "instances": 3
+          },
+          "phone": {
+            "ap50_95": 0.2571981958385059,
+            "ap50": 0.4176724500328621,
+            "instances": 66
+          },
+          "remote": {
+            "ap50_95": 0.4687618652803457,
+            "ap50": 0.6113817654724182,
+            "instances": 30
+          },
+          "pen": {
+            "ap50_95": 0.15210139037111148,
+            "ap50": 0.23113219934086668,
+            "instances": 83
+          },
+          "spoon": {
+            "ap50_95": 0.23414536381392162,
+            "ap50": 0.3798820586174486,
+            "instances": 83
+          },
+          "fork": {
+            "ap50_95": 0.2456498910576755,
+            "ap50": 0.3646894084977888,
+            "instances": 66
+          },
+          "toothbrush": {
+            "ap50_95": 0.23936934978677948,
+            "ap50": 0.40525525030736037,
+            "instances": 19
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 28,
+              "fp": 1,
+              "fn": 114,
+              "images": 324,
+              "positive_images": 51,
+              "negative_images": 273,
+              "false_positive_negative_images": 1,
+              "precision": 0.9655172413793104,
+              "recall": 0.19718309859154928,
+              "negative_image_fp_rate": 0.003663003663003663
+            },
+            "can": {
+              "tp": 0,
+              "fp": 42,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 29,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.08950617283950617
+            },
+            "cup": {
+              "tp": 17,
+              "fp": 5,
+              "fn": 54,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 4,
+              "precision": 0.7727272727272727,
+              "recall": 0.23943661971830985,
+              "negative_image_fp_rate": 0.014760147601476014
+            },
+            "box": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 3,
+              "images": 324,
+              "positive_images": 2,
+              "negative_images": 322,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.003105590062111801
+            },
+            "ball": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 15,
+              "fp": 11,
+              "fn": 51,
+              "images": 324,
+              "positive_images": 50,
+              "negative_images": 274,
+              "false_positive_negative_images": 5,
+              "precision": 0.5769230769230769,
+              "recall": 0.22727272727272727,
+              "negative_image_fp_rate": 0.01824817518248175
+            },
+            "remote": {
+              "tp": 19,
+              "fp": 16,
+              "fn": 11,
+              "images": 324,
+              "positive_images": 19,
+              "negative_images": 305,
+              "false_positive_negative_images": 4,
+              "precision": 0.5428571428571428,
+              "recall": 0.6333333333333333,
+              "negative_image_fp_rate": 0.013114754098360656
+            },
+            "pen": {
+              "tp": 17,
+              "fp": 12,
+              "fn": 66,
+              "images": 324,
+              "positive_images": 51,
+              "negative_images": 273,
+              "false_positive_negative_images": 0,
+              "precision": 0.5862068965517241,
+              "recall": 0.20481927710843373,
+              "negative_image_fp_rate": 0.0
+            },
+            "spoon": {
+              "tp": 18,
+              "fp": 8,
+              "fn": 65,
+              "images": 324,
+              "positive_images": 63,
+              "negative_images": 261,
+              "false_positive_negative_images": 2,
+              "precision": 0.6923076923076923,
+              "recall": 0.21686746987951808,
+              "negative_image_fp_rate": 0.007662835249042145
+            },
+            "fork": {
+              "tp": 20,
+              "fp": 15,
+              "fn": 46,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 7,
+              "precision": 0.5714285714285714,
+              "recall": 0.30303030303030304,
+              "negative_image_fp_rate": 0.025830258302583026
+            },
+            "toothbrush": {
+              "tp": 5,
+              "fp": 3,
+              "fn": 14,
+              "images": 324,
+              "positive_images": 11,
+              "negative_images": 313,
+              "false_positive_negative_images": 2,
+              "precision": 0.625,
+              "recall": 0.2631578947368421,
+              "negative_image_fp_rate": 0.006389776357827476
+            },
+            "card": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "key": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.0030864197530864196
+            },
+            "coin": {
+              "tp": 0,
+              "fp": 5,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 5,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.015432098765432098
+            },
+            "small_block": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.3361550277672287,
+          "inference": 1.941227820972006,
+          "loss": 0.00021395678714601851,
+          "postprocess": 0.04589552776855676
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "focus8_student": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_refined_v8.pt",
+        "model_sha256": "f7a489b05d50382d240cf8a2396b7f1db5d07f6400e7b63825960dfb9b0040ac",
+        "checkpoint_classes": 15,
+        "domain": "openimages",
+        "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+        "split": "test",
+        "images": 324,
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "rect": false,
+        "end2end": true,
+        "views": "single",
+        "conf_for_ap": 0.001,
+        "new_training": false,
+        "checkpoint_modified": false,
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.43454801859424014,
+            "ap50": 0.635603432101322,
+            "instances": 142
+          },
+          "cup": {
+            "ap50_95": 0.387065404253215,
+            "ap50": 0.5883667440876279,
+            "instances": 71
+          },
+          "box": {
+            "ap50_95": 0.0,
+            "ap50": 0.0,
+            "instances": 3
+          },
+          "phone": {
+            "ap50_95": 0.3998996058134494,
+            "ap50": 0.6084839027862379,
+            "instances": 66
+          },
+          "remote": {
+            "ap50_95": 0.5014237100879625,
+            "ap50": 0.6410791613243152,
+            "instances": 30
+          },
+          "pen": {
+            "ap50_95": 0.2911133513180741,
+            "ap50": 0.43828567195640533,
+            "instances": 83
+          },
+          "spoon": {
+            "ap50_95": 0.29088108178229793,
+            "ap50": 0.4637879397211965,
+            "instances": 83
+          },
+          "fork": {
+            "ap50_95": 0.26843400825863134,
+            "ap50": 0.3995471087939573,
+            "instances": 66
+          },
+          "toothbrush": {
+            "ap50_95": 0.28941349777719966,
+            "ap50": 0.4826411767759105,
+            "instances": 19
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 54,
+              "fp": 5,
+              "fn": 88,
+              "images": 324,
+              "positive_images": 51,
+              "negative_images": 273,
+              "false_positive_negative_images": 2,
+              "precision": 0.9152542372881356,
+              "recall": 0.38028169014084506,
+              "negative_image_fp_rate": 0.007326007326007326
+            },
+            "can": {
+              "tp": 0,
+              "fp": 16,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 14,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.043209876543209874
+            },
+            "cup": {
+              "tp": 27,
+              "fp": 9,
+              "fn": 44,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 5,
+              "precision": 0.75,
+              "recall": 0.38028169014084506,
+              "negative_image_fp_rate": 0.01845018450184502
+            },
+            "box": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 3,
+              "images": 324,
+              "positive_images": 2,
+              "negative_images": 322,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0
+            },
+            "ball": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 26,
+              "fp": 10,
+              "fn": 40,
+              "images": 324,
+              "positive_images": 50,
+              "negative_images": 274,
+              "false_positive_negative_images": 5,
+              "precision": 0.7222222222222222,
+              "recall": 0.3939393939393939,
+              "negative_image_fp_rate": 0.01824817518248175
+            },
+            "remote": {
+              "tp": 22,
+              "fp": 15,
+              "fn": 8,
+              "images": 324,
+              "positive_images": 19,
+              "negative_images": 305,
+              "false_positive_negative_images": 6,
+              "precision": 0.5945945945945946,
+              "recall": 0.7333333333333333,
+              "negative_image_fp_rate": 0.019672131147540985
+            },
+            "pen": {
+              "tp": 32,
+              "fp": 26,
+              "fn": 51,
+              "images": 324,
+              "positive_images": 51,
+              "negative_images": 273,
+              "false_positive_negative_images": 8,
+              "precision": 0.5517241379310345,
+              "recall": 0.3855421686746988,
+              "negative_image_fp_rate": 0.029304029304029304
+            },
+            "spoon": {
+              "tp": 24,
+              "fp": 13,
+              "fn": 59,
+              "images": 324,
+              "positive_images": 63,
+              "negative_images": 261,
+              "false_positive_negative_images": 4,
+              "precision": 0.6486486486486487,
+              "recall": 0.2891566265060241,
+              "negative_image_fp_rate": 0.01532567049808429
+            },
+            "fork": {
+              "tp": 19,
+              "fp": 12,
+              "fn": 47,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 7,
+              "precision": 0.6129032258064516,
+              "recall": 0.2878787878787879,
+              "negative_image_fp_rate": 0.025830258302583026
+            },
+            "toothbrush": {
+              "tp": 6,
+              "fp": 1,
+              "fn": 13,
+              "images": 324,
+              "positive_images": 11,
+              "negative_images": 313,
+              "false_positive_negative_images": 1,
+              "precision": 0.8571428571428571,
+              "recall": 0.3157894736842105,
+              "negative_image_fp_rate": 0.003194888178913738
+            },
+            "card": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "key": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "coin": {
+              "tp": 0,
+              "fp": 2,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 2,
+              "precision": 0.0,
+              "recall": null,
+              "negative_image_fp_rate": 0.006172839506172839
+            },
+            "small_block": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.34468202157307887,
+          "inference": 1.8380758919877813,
+          "loss": 0.0002086110916822275,
+          "postprocess": 0.045633533941495615
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "original_m": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26m.pt",
+        "model_sha256": "401cea9ab23ad19246ff7744859816bc599f350e93c9dd30367b6f0a0745d0b7",
+        "checkpoint_classes": 80,
+        "checkpoint_modified": false,
+        "new_training": false,
+        "domain": "openimages",
+        "dataset": {
+          "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/pretrained_baseline_20261015/datasets/openimages/data.yaml",
+          "source_yaml": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+          "source_yaml_sha256": "8287f1e49a640a7743bc304f0a7b7f6bb31d0b0f35671dd4f68b935cc76784bb",
+          "images": 324,
+          "mapped_instances": {
+            "bottle": 142,
+            "phone": 66,
+            "spoon": 83,
+            "fork": 66,
+            "remote": 30,
+            "cup": 71,
+            "toothbrush": 19
+          },
+          "filename_prefix_counts": {
+            "oi": 324
+          },
+          "image_names_and_original_labels_sha256": "d64f5687d592589ec620cdce02bd04cc6e102212ea2e4e5ddc944edf0c474d6a",
+          "images_duplicated": false,
+          "source_labels_modified": false
+        },
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "end2end": true,
+        "views": "single",
+        "output_filter_coco_ids": [
+          32,
+          39,
+          41,
+          42,
+          44,
+          65,
+          67,
+          79
+        ],
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.6955494038140364,
+            "ap50": 0.8183099816365546,
+            "instances": 142
+          },
+          "cup": {
+            "ap50_95": 0.6402855105880499,
+            "ap50": 0.6661808505850235,
+            "instances": 71
+          },
+          "fork": {
+            "ap50_95": 0.7064627056394017,
+            "ap50": 0.8387860926302021,
+            "instances": 66
+          },
+          "spoon": {
+            "ap50_95": 0.5895510914806855,
+            "ap50": 0.7365727511293433,
+            "instances": 83
+          },
+          "remote": {
+            "ap50_95": 0.8703637211845651,
+            "ap50": 0.9030206368889232,
+            "instances": 30
+          },
+          "phone": {
+            "ap50_95": 0.8135021986809494,
+            "ap50": 0.8633812212620989,
+            "instances": 66
+          },
+          "toothbrush": {
+            "ap50_95": 0.5434730884413439,
+            "ap50": 0.6258691885835349,
+            "instances": 19
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 98,
+              "fp": 19,
+              "fn": 44,
+              "images": 324,
+              "positive_images": 51,
+              "negative_images": 273,
+              "false_positive_negative_images": 7,
+              "precision": 0.8376068376068376,
+              "recall": 0.6901408450704225,
+              "negative_image_fp_rate": 0.02564102564102564
+            },
+            "cup": {
+              "tp": 63,
+              "fp": 59,
+              "fn": 8,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 37,
+              "precision": 0.5163934426229508,
+              "recall": 0.8873239436619719,
+              "negative_image_fp_rate": 0.13653136531365315
+            },
+            "ball": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "images": 324,
+              "positive_images": 0,
+              "negative_images": 324,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": null,
+              "negative_image_fp_rate": 0.0
+            },
+            "phone": {
+              "tp": 51,
+              "fp": 11,
+              "fn": 15,
+              "images": 324,
+              "positive_images": 50,
+              "negative_images": 274,
+              "false_positive_negative_images": 5,
+              "precision": 0.8225806451612904,
+              "recall": 0.7727272727272727,
+              "negative_image_fp_rate": 0.01824817518248175
+            },
+            "remote": {
+              "tp": 25,
+              "fp": 11,
+              "fn": 5,
+              "images": 324,
+              "positive_images": 19,
+              "negative_images": 305,
+              "false_positive_negative_images": 3,
+              "precision": 0.6944444444444444,
+              "recall": 0.8333333333333334,
+              "negative_image_fp_rate": 0.009836065573770493
+            },
+            "spoon": {
+              "tp": 48,
+              "fp": 13,
+              "fn": 35,
+              "images": 324,
+              "positive_images": 63,
+              "negative_images": 261,
+              "false_positive_negative_images": 5,
+              "precision": 0.7868852459016393,
+              "recall": 0.5783132530120482,
+              "negative_image_fp_rate": 0.019157088122605363
+            },
+            "fork": {
+              "tp": 52,
+              "fp": 9,
+              "fn": 14,
+              "images": 324,
+              "positive_images": 53,
+              "negative_images": 271,
+              "false_positive_negative_images": 5,
+              "precision": 0.8524590163934426,
+              "recall": 0.7878787878787878,
+              "negative_image_fp_rate": 0.01845018450184502
+            },
+            "toothbrush": {
+              "tp": 16,
+              "fp": 22,
+              "fn": 3,
+              "images": 324,
+              "positive_images": 11,
+              "negative_images": 313,
+              "false_positive_negative_images": 14,
+              "precision": 0.42105263157894735,
+              "recall": 0.8421052631578947,
+              "negative_image_fp_rate": 0.04472843450479233
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.329494663573213,
+          "inference": 4.650636824082517,
+          "loss": 0.00022320368714892177,
+          "postprocess": 0.051227932090114336
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      }
+    },
+    "frozen": {
+      "original_s": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26s.pt",
+        "model_sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b",
+        "checkpoint_classes": 80,
+        "checkpoint_modified": false,
+        "new_training": false,
+        "domain": "frozen",
+        "dataset": {
+          "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/pretrained_baseline_20261015/datasets/frozen/data.yaml",
+          "source_yaml": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+          "source_yaml_sha256": "8d1560574d7fcae9aae7570d46c5fb6119c9f3b9fc9782a6aee29e507dd362fa",
+          "images": 6103,
+          "mapped_instances": {
+            "cup": 1761,
+            "ball": 373,
+            "bottle": 2251,
+            "remote": 695,
+            "phone": 516,
+            "fork": 289,
+            "spoon": 467,
+            "toothbrush": 6
+          },
+          "filename_prefix_counts": {
+            "ego": 6085,
+            "lvis": 18
+          },
+          "image_names_and_original_labels_sha256": "a350f10dce524b6245961f68010bf989fc7ea3f9213ceea6351864d2d6fcf8e2",
+          "images_duplicated": false,
+          "source_labels_modified": false
+        },
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "end2end": true,
+        "views": "single",
+        "output_filter_coco_ids": [
+          32,
+          39,
+          41,
+          42,
+          44,
+          65,
+          67,
+          79
+        ],
+        "per_class": {
+          "ball": {
+            "ap50_95": 0.517080098227151,
+            "ap50": 0.6069708489358099,
+            "instances": 373
+          },
+          "bottle": {
+            "ap50_95": 0.4027221595582261,
+            "ap50": 0.5047458548810311,
+            "instances": 2251
+          },
+          "cup": {
+            "ap50_95": 0.4626484230839889,
+            "ap50": 0.5499953581839097,
+            "instances": 1761
+          },
+          "fork": {
+            "ap50_95": 0.5490074358850848,
+            "ap50": 0.667853042843728,
+            "instances": 289
+          },
+          "spoon": {
+            "ap50_95": 0.1793342011768198,
+            "ap50": 0.23143574268249556,
+            "instances": 467
+          },
+          "remote": {
+            "ap50_95": 0.4153016767503946,
+            "ap50": 0.4910772247931431,
+            "instances": 695
+          },
+          "phone": {
+            "ap50_95": 0.3868408032869254,
+            "ap50": 0.44883318221880575,
+            "instances": 516
+          },
+          "toothbrush": {
+            "ap50_95": 3.271213322759715e-06,
+            "ap50": 3.271213322759715e-05,
+            "instances": 6
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 1142,
+              "fp": 1133,
+              "fn": 1109,
+              "images": 6103,
+              "positive_images": 1460,
+              "negative_images": 4643,
+              "false_positive_negative_images": 388,
+              "precision": 0.501978021978022,
+              "recall": 0.5073300755219903,
+              "negative_image_fp_rate": 0.08356665948740039
+            },
+            "cup": {
+              "tp": 1218,
+              "fp": 1135,
+              "fn": 543,
+              "images": 6103,
+              "positive_images": 1441,
+              "negative_images": 4662,
+              "false_positive_negative_images": 639,
+              "precision": 0.5176370590735232,
+              "recall": 0.6916524701873935,
+              "negative_image_fp_rate": 0.13706563706563707
+            },
+            "ball": {
+              "tp": 108,
+              "fp": 10,
+              "fn": 265,
+              "images": 6103,
+              "positive_images": 347,
+              "negative_images": 5756,
+              "false_positive_negative_images": 9,
+              "precision": 0.9152542372881356,
+              "recall": 0.289544235924933,
+              "negative_image_fp_rate": 0.0015635858234885338
+            },
+            "phone": {
+              "tp": 178,
+              "fp": 115,
+              "fn": 338,
+              "images": 6103,
+              "positive_images": 516,
+              "negative_images": 5587,
+              "false_positive_negative_images": 96,
+              "precision": 0.6075085324232082,
+              "recall": 0.3449612403100775,
+              "negative_image_fp_rate": 0.017182745659566852
+            },
+            "remote": {
+              "tp": 242,
+              "fp": 57,
+              "fn": 453,
+              "images": 6103,
+              "positive_images": 655,
+              "negative_images": 5448,
+              "false_positive_negative_images": 44,
+              "precision": 0.8093645484949833,
+              "recall": 0.34820143884892085,
+              "negative_image_fp_rate": 0.008076358296622614
+            },
+            "spoon": {
+              "tp": 84,
+              "fp": 96,
+              "fn": 383,
+              "images": 6103,
+              "positive_images": 467,
+              "negative_images": 5636,
+              "false_positive_negative_images": 49,
+              "precision": 0.4666666666666667,
+              "recall": 0.17987152034261242,
+              "negative_image_fp_rate": 0.008694109297374025
+            },
+            "fork": {
+              "tp": 138,
+              "fp": 31,
+              "fn": 151,
+              "images": 6103,
+              "positive_images": 289,
+              "negative_images": 5814,
+              "false_positive_negative_images": 21,
+              "precision": 0.8165680473372781,
+              "recall": 0.47750865051903113,
+              "negative_image_fp_rate": 0.003611971104231166
+            },
+            "toothbrush": {
+              "tp": 0,
+              "fp": 16,
+              "fn": 6,
+              "images": 6103,
+              "positive_images": 6,
+              "negative_images": 6097,
+              "false_positive_negative_images": 16,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0026242414302115793
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.3203990689756014,
+          "inference": 1.8728906259295837,
+          "loss": 0.00021469162230812656,
+          "postprocess": 0.046910312147417726
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "can_coin": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_can_coin_retention.pt",
+        "model_sha256": "5ba5715728b996cfb11fca6b01072bd54256e38a313c27e691eb7ba34ea68726",
+        "checkpoint_classes": 15,
+        "domain": "frozen",
+        "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+        "split": "test",
+        "images": 6103,
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "rect": false,
+        "end2end": true,
+        "views": "single",
+        "conf_for_ap": 0.001,
+        "new_training": false,
+        "checkpoint_modified": false,
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.21232054471108053,
+            "ap50": 0.294092920086233,
+            "instances": 2251
+          },
+          "can": {
+            "ap50_95": 0.0001782806753602448,
+            "ap50": 0.0002437595562236535,
+            "instances": 23
+          },
+          "cup": {
+            "ap50_95": 0.4221431393280658,
+            "ap50": 0.5303661155288786,
+            "instances": 1761
+          },
+          "box": {
+            "ap50_95": 0.04093242600503486,
+            "ap50": 0.06489049727761986,
+            "instances": 3877
+          },
+          "ball": {
+            "ap50_95": 0.40260356065754965,
+            "ap50": 0.5123385028915407,
+            "instances": 373
+          },
+          "phone": {
+            "ap50_95": 0.3280741774325527,
+            "ap50": 0.421346020301334,
+            "instances": 516
+          },
+          "remote": {
+            "ap50_95": 0.2667045225124606,
+            "ap50": 0.3321199970615667,
+            "instances": 695
+          },
+          "pen": {
+            "ap50_95": 0.16650588776229253,
+            "ap50": 0.2586728624036981,
+            "instances": 1263
+          },
+          "spoon": {
+            "ap50_95": 0.12045923276272452,
+            "ap50": 0.17033989586388837,
+            "instances": 467
+          },
+          "fork": {
+            "ap50_95": 0.4011243391676046,
+            "ap50": 0.5430738954453361,
+            "instances": 289
+          },
+          "toothbrush": {
+            "ap50_95": 0.0,
+            "ap50": 0.0,
+            "instances": 6
+          },
+          "card": {
+            "ap50_95": 0.008219271764887405,
+            "ap50": 0.014674052323373665,
+            "instances": 39
+          },
+          "key": {
+            "ap50_95": 0.05024025892557164,
+            "ap50": 0.07057138576495357,
+            "instances": 249
+          },
+          "coin": {
+            "ap50_95": 2.6693507781615987e-05,
+            "ap50": 2.7873100822017045e-05,
+            "instances": 62
+          },
+          "small_block": {
+            "ap50_95": 0.00011426392968305964,
+            "ap50": 0.00034116762665997003,
+            "instances": 161
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 528,
+              "fp": 463,
+              "fn": 1723,
+              "images": 6103,
+              "positive_images": 1460,
+              "negative_images": 4643,
+              "false_positive_negative_images": 254,
+              "precision": 0.5327951564076691,
+              "recall": 0.23456241670368724,
+              "negative_image_fp_rate": 0.05470600904587551
+            },
+            "can": {
+              "tp": 0,
+              "fp": 82,
+              "fn": 23,
+              "images": 6103,
+              "positive_images": 20,
+              "negative_images": 6083,
+              "false_positive_negative_images": 76,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.012493835278645405
+            },
+            "cup": {
+              "tp": 719,
+              "fp": 334,
+              "fn": 1042,
+              "images": 6103,
+              "positive_images": 1441,
+              "negative_images": 4662,
+              "false_positive_negative_images": 192,
+              "precision": 0.6828110161443495,
+              "recall": 0.4082907438955139,
+              "negative_image_fp_rate": 0.04118404118404118
+            },
+            "box": {
+              "tp": 177,
+              "fp": 587,
+              "fn": 3700,
+              "images": 6103,
+              "positive_images": 2558,
+              "negative_images": 3545,
+              "false_positive_negative_images": 202,
+              "precision": 0.23167539267015708,
+              "recall": 0.04565385607428424,
+              "negative_image_fp_rate": 0.056981664315937944
+            },
+            "ball": {
+              "tp": 152,
+              "fp": 79,
+              "fn": 221,
+              "images": 6103,
+              "positive_images": 347,
+              "negative_images": 5756,
+              "false_positive_negative_images": 68,
+              "precision": 0.658008658008658,
+              "recall": 0.4075067024128686,
+              "negative_image_fp_rate": 0.0118137595552467
+            },
+            "phone": {
+              "tp": 154,
+              "fp": 59,
+              "fn": 362,
+              "images": 6103,
+              "positive_images": 516,
+              "negative_images": 5587,
+              "false_positive_negative_images": 47,
+              "precision": 0.7230046948356808,
+              "recall": 0.29844961240310075,
+              "negative_image_fp_rate": 0.008412385895829605
+            },
+            "remote": {
+              "tp": 180,
+              "fp": 102,
+              "fn": 515,
+              "images": 6103,
+              "positive_images": 655,
+              "negative_images": 5448,
+              "false_positive_negative_images": 93,
+              "precision": 0.6382978723404256,
+              "recall": 0.2589928057553957,
+              "negative_image_fp_rate": 0.017070484581497798
+            },
+            "pen": {
+              "tp": 222,
+              "fp": 187,
+              "fn": 1041,
+              "images": 6103,
+              "positive_images": 815,
+              "negative_images": 5288,
+              "false_positive_negative_images": 101,
+              "precision": 0.5427872860635696,
+              "recall": 0.17577197149643706,
+              "negative_image_fp_rate": 0.01909984871406959
+            },
+            "spoon": {
+              "tp": 60,
+              "fp": 63,
+              "fn": 407,
+              "images": 6103,
+              "positive_images": 467,
+              "negative_images": 5636,
+              "false_positive_negative_images": 37,
+              "precision": 0.4878048780487805,
+              "recall": 0.1284796573875803,
+              "negative_image_fp_rate": 0.006564939673527325
+            },
+            "fork": {
+              "tp": 104,
+              "fp": 15,
+              "fn": 185,
+              "images": 6103,
+              "positive_images": 289,
+              "negative_images": 5814,
+              "false_positive_negative_images": 5,
+              "precision": 0.8739495798319328,
+              "recall": 0.35986159169550175,
+              "negative_image_fp_rate": 0.0008599931200550396
+            },
+            "toothbrush": {
+              "tp": 0,
+              "fp": 16,
+              "fn": 6,
+              "images": 6103,
+              "positive_images": 6,
+              "negative_images": 6097,
+              "false_positive_negative_images": 14,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.002296211251435132
+            },
+            "card": {
+              "tp": 0,
+              "fp": 2,
+              "fn": 39,
+              "images": 6103,
+              "positive_images": 13,
+              "negative_images": 6090,
+              "false_positive_negative_images": 2,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0003284072249589491
+            },
+            "key": {
+              "tp": 12,
+              "fp": 20,
+              "fn": 237,
+              "images": 6103,
+              "positive_images": 249,
+              "negative_images": 5854,
+              "false_positive_negative_images": 20,
+              "precision": 0.375,
+              "recall": 0.04819277108433735,
+              "negative_image_fp_rate": 0.0034164673727365906
+            },
+            "coin": {
+              "tp": 0,
+              "fp": 18,
+              "fn": 62,
+              "images": 6103,
+              "positive_images": 29,
+              "negative_images": 6074,
+              "false_positive_negative_images": 18,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0029634507737899243
+            },
+            "small_block": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 161,
+              "images": 6103,
+              "positive_images": 5,
+              "negative_images": 6098,
+              "false_positive_negative_images": 1,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.00016398819285011479
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.31393471670106843,
+          "inference": 1.830995635918014,
+          "loss": 0.0002193599818648632,
+          "postprocess": 0.04570469556373343
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "focus8_student": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_refined_v8.pt",
+        "model_sha256": "f7a489b05d50382d240cf8a2396b7f1db5d07f6400e7b63825960dfb9b0040ac",
+        "checkpoint_classes": 15,
+        "domain": "frozen",
+        "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+        "split": "test",
+        "images": 6103,
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "rect": false,
+        "end2end": true,
+        "views": "single",
+        "conf_for_ap": 0.001,
+        "new_training": false,
+        "checkpoint_modified": false,
+        "per_class": {
+          "bottle": {
+            "ap50_95": 0.22469829221085585,
+            "ap50": 0.3049490946728744,
+            "instances": 2251
+          },
+          "can": {
+            "ap50_95": 3.68635233139861e-05,
+            "ap50": 5.956893739052787e-05,
+            "instances": 23
+          },
+          "cup": {
+            "ap50_95": 0.43731081896265406,
+            "ap50": 0.5403394724914736,
+            "instances": 1761
+          },
+          "box": {
+            "ap50_95": 0.03792099663990226,
+            "ap50": 0.06130512540774541,
+            "instances": 3877
+          },
+          "ball": {
+            "ap50_95": 0.4043499387346922,
+            "ap50": 0.5142505254024652,
+            "instances": 373
+          },
+          "phone": {
+            "ap50_95": 0.34061943308685694,
+            "ap50": 0.41834356697750696,
+            "instances": 516
+          },
+          "remote": {
+            "ap50_95": 0.2682147319993094,
+            "ap50": 0.3271281079540358,
+            "instances": 695
+          },
+          "pen": {
+            "ap50_95": 0.16622606694114633,
+            "ap50": 0.2547348867433067,
+            "instances": 1263
+          },
+          "spoon": {
+            "ap50_95": 0.12269253990225712,
+            "ap50": 0.17132295831964828,
+            "instances": 467
+          },
+          "fork": {
+            "ap50_95": 0.4156715152215568,
+            "ap50": 0.557116432532262,
+            "instances": 289
+          },
+          "toothbrush": {
+            "ap50_95": 3.8064722484746786e-06,
+            "ap50": 2.4575513851653262e-05,
+            "instances": 6
+          },
+          "card": {
+            "ap50_95": 0.005893701445424658,
+            "ap50": 0.010814505864844202,
+            "instances": 39
+          },
+          "key": {
+            "ap50_95": 0.03920078755136319,
+            "ap50": 0.05639392705931831,
+            "instances": 249
+          },
+          "coin": {
+            "ap50_95": 8.384572386808272e-06,
+            "ap50": 8.384572386808272e-06,
+            "instances": 62
+          },
+          "small_block": {
+            "ap50_95": 9.871327344918635e-05,
+            "ap50": 0.00022074815137016095,
+            "instances": 161
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 571,
+              "fp": 516,
+              "fn": 1680,
+              "images": 6103,
+              "positive_images": 1460,
+              "negative_images": 4643,
+              "false_positive_negative_images": 267,
+              "precision": 0.5252989880404784,
+              "recall": 0.25366503776099514,
+              "negative_image_fp_rate": 0.057505922894680164
+            },
+            "can": {
+              "tp": 0,
+              "fp": 57,
+              "fn": 23,
+              "images": 6103,
+              "positive_images": 20,
+              "negative_images": 6083,
+              "false_positive_negative_images": 54,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.008877198750616473
+            },
+            "cup": {
+              "tp": 679,
+              "fp": 255,
+              "fn": 1082,
+              "images": 6103,
+              "positive_images": 1441,
+              "negative_images": 4662,
+              "false_positive_negative_images": 152,
+              "precision": 0.7269807280513919,
+              "recall": 0.3855763770584895,
+              "negative_image_fp_rate": 0.03260403260403261
+            },
+            "box": {
+              "tp": 80,
+              "fp": 327,
+              "fn": 3797,
+              "images": 6103,
+              "positive_images": 2558,
+              "negative_images": 3545,
+              "false_positive_negative_images": 120,
+              "precision": 0.19656019656019655,
+              "recall": 0.020634511220015476,
+              "negative_image_fp_rate": 0.03385049365303244
+            },
+            "ball": {
+              "tp": 161,
+              "fp": 79,
+              "fn": 212,
+              "images": 6103,
+              "positive_images": 347,
+              "negative_images": 5756,
+              "false_positive_negative_images": 67,
+              "precision": 0.6708333333333333,
+              "recall": 0.4316353887399464,
+              "negative_image_fp_rate": 0.011640027797081306
+            },
+            "phone": {
+              "tp": 179,
+              "fp": 106,
+              "fn": 337,
+              "images": 6103,
+              "positive_images": 516,
+              "negative_images": 5587,
+              "false_positive_negative_images": 75,
+              "precision": 0.6280701754385964,
+              "recall": 0.34689922480620156,
+              "negative_image_fp_rate": 0.013424020046536603
+            },
+            "remote": {
+              "tp": 163,
+              "fp": 74,
+              "fn": 532,
+              "images": 6103,
+              "positive_images": 655,
+              "negative_images": 5448,
+              "false_positive_negative_images": 68,
+              "precision": 0.6877637130801688,
+              "recall": 0.23453237410071942,
+              "negative_image_fp_rate": 0.012481644640234948
+            },
+            "pen": {
+              "tp": 285,
+              "fp": 325,
+              "fn": 978,
+              "images": 6103,
+              "positive_images": 815,
+              "negative_images": 5288,
+              "false_positive_negative_images": 178,
+              "precision": 0.4672131147540984,
+              "recall": 0.22565320665083136,
+              "negative_image_fp_rate": 0.033661119515885025
+            },
+            "spoon": {
+              "tp": 62,
+              "fp": 74,
+              "fn": 405,
+              "images": 6103,
+              "positive_images": 467,
+              "negative_images": 5636,
+              "false_positive_negative_images": 41,
+              "precision": 0.45588235294117646,
+              "recall": 0.13276231263383298,
+              "negative_image_fp_rate": 0.007274662881476224
+            },
+            "fork": {
+              "tp": 108,
+              "fp": 22,
+              "fn": 181,
+              "images": 6103,
+              "positive_images": 289,
+              "negative_images": 5814,
+              "false_positive_negative_images": 10,
+              "precision": 0.8307692307692308,
+              "recall": 0.3737024221453287,
+              "negative_image_fp_rate": 0.0017199862401100791
+            },
+            "toothbrush": {
+              "tp": 0,
+              "fp": 15,
+              "fn": 6,
+              "images": 6103,
+              "positive_images": 6,
+              "negative_images": 6097,
+              "false_positive_negative_images": 15,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.002460226340823356
+            },
+            "card": {
+              "tp": 0,
+              "fp": 2,
+              "fn": 39,
+              "images": 6103,
+              "positive_images": 13,
+              "negative_images": 6090,
+              "false_positive_negative_images": 2,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0003284072249589491
+            },
+            "key": {
+              "tp": 11,
+              "fp": 19,
+              "fn": 238,
+              "images": 6103,
+              "positive_images": 249,
+              "negative_images": 5854,
+              "false_positive_negative_images": 18,
+              "precision": 0.36666666666666664,
+              "recall": 0.04417670682730924,
+              "negative_image_fp_rate": 0.0030748206354629312
+            },
+            "coin": {
+              "tp": 0,
+              "fp": 8,
+              "fn": 62,
+              "images": 6103,
+              "positive_images": 29,
+              "negative_images": 6074,
+              "false_positive_negative_images": 8,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0013170892327955218
+            },
+            "small_block": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 161,
+              "images": 6103,
+              "positive_images": 5,
+              "negative_images": 6098,
+              "false_positive_negative_images": 0,
+              "precision": null,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.3224441010842771,
+          "inference": 1.8527141296104503,
+          "loss": 0.00021775750018613221,
+          "postprocess": 0.04734525578304046
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      },
+      "original_m": {
+        "model": "/home/developer/Documents/VAGT/vagt-orca-ai/models/pretrained/yolo26m.pt",
+        "model_sha256": "401cea9ab23ad19246ff7744859816bc599f350e93c9dd30367b6f0a0745d0b7",
+        "checkpoint_classes": 80,
+        "checkpoint_modified": false,
+        "new_training": false,
+        "domain": "frozen",
+        "dataset": {
+          "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/pretrained_baseline_20261015/datasets/frozen/data.yaml",
+          "source_yaml": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+          "source_yaml_sha256": "8d1560574d7fcae9aae7570d46c5fb6119c9f3b9fc9782a6aee29e507dd362fa",
+          "images": 6103,
+          "mapped_instances": {
+            "cup": 1761,
+            "ball": 373,
+            "bottle": 2251,
+            "remote": 695,
+            "phone": 516,
+            "fork": 289,
+            "spoon": 467,
+            "toothbrush": 6
+          },
+          "filename_prefix_counts": {
+            "ego": 6085,
+            "lvis": 18
+          },
+          "image_names_and_original_labels_sha256": "a350f10dce524b6245961f68010bf989fc7ea3f9213ceea6351864d2d6fcf8e2",
+          "images_duplicated": false,
+          "source_labels_modified": false
+        },
+        "image_size": 640,
+        "batch": 16,
+        "precision": "fp32",
+        "end2end": true,
+        "views": "single",
+        "output_filter_coco_ids": [
+          32,
+          39,
+          41,
+          42,
+          44,
+          65,
+          67,
+          79
+        ],
+        "per_class": {
+          "ball": {
+            "ap50_95": 0.6784803789375372,
+            "ap50": 0.7767184715444956,
+            "instances": 373
+          },
+          "bottle": {
+            "ap50_95": 0.4522848951290914,
+            "ap50": 0.5549483974909478,
+            "instances": 2251
+          },
+          "cup": {
+            "ap50_95": 0.5009257391826287,
+            "ap50": 0.5813604220120474,
+            "instances": 1761
+          },
+          "fork": {
+            "ap50_95": 0.7766139875122952,
+            "ap50": 0.8846604592324359,
+            "instances": 289
+          },
+          "spoon": {
+            "ap50_95": 0.23306465410143012,
+            "ap50": 0.2999257773209236,
+            "instances": 467
+          },
+          "remote": {
+            "ap50_95": 0.4926871518321236,
+            "ap50": 0.5779563925938598,
+            "instances": 695
+          },
+          "phone": {
+            "ap50_95": 0.4784206061911907,
+            "ap50": 0.5754974164586912,
+            "instances": 516
+          },
+          "toothbrush": {
+            "ap50_95": 0.0,
+            "ap50": 0.0,
+            "instances": 6
+          }
+        },
+        "operating_point": {
+          "confidence": 0.35,
+          "matching_iou": 0.5,
+          "per_class": {
+            "bottle": {
+              "tp": 1268,
+              "fp": 1234,
+              "fn": 983,
+              "images": 6103,
+              "positive_images": 1460,
+              "negative_images": 4643,
+              "false_positive_negative_images": 401,
+              "precision": 0.5067945643485212,
+              "recall": 0.5633051976899156,
+              "negative_image_fp_rate": 0.08636657333620504
+            },
+            "cup": {
+              "tp": 1289,
+              "fp": 1196,
+              "fn": 472,
+              "images": 6103,
+              "positive_images": 1441,
+              "negative_images": 4662,
+              "false_positive_negative_images": 671,
+              "precision": 0.5187122736418511,
+              "recall": 0.7319704713231119,
+              "negative_image_fp_rate": 0.14392964392964394
+            },
+            "ball": {
+              "tp": 186,
+              "fp": 16,
+              "fn": 187,
+              "images": 6103,
+              "positive_images": 347,
+              "negative_images": 5756,
+              "false_positive_negative_images": 8,
+              "precision": 0.9207920792079208,
+              "recall": 0.49865951742627346,
+              "negative_image_fp_rate": 0.001389854065323141
+            },
+            "phone": {
+              "tp": 230,
+              "fp": 129,
+              "fn": 286,
+              "images": 6103,
+              "positive_images": 516,
+              "negative_images": 5587,
+              "false_positive_negative_images": 114,
+              "precision": 0.6406685236768802,
+              "recall": 0.44573643410852715,
+              "negative_image_fp_rate": 0.020404510470735635
+            },
+            "remote": {
+              "tp": 310,
+              "fp": 95,
+              "fn": 385,
+              "images": 6103,
+              "positive_images": 655,
+              "negative_images": 5448,
+              "false_positive_negative_images": 61,
+              "precision": 0.7654320987654321,
+              "recall": 0.4460431654676259,
+              "negative_image_fp_rate": 0.011196769456681351
+            },
+            "spoon": {
+              "tp": 116,
+              "fp": 91,
+              "fn": 351,
+              "images": 6103,
+              "positive_images": 467,
+              "negative_images": 5636,
+              "false_positive_negative_images": 31,
+              "precision": 0.5603864734299517,
+              "recall": 0.24839400428265523,
+              "negative_image_fp_rate": 0.005500354861603975
+            },
+            "fork": {
+              "tp": 231,
+              "fp": 34,
+              "fn": 58,
+              "images": 6103,
+              "positive_images": 289,
+              "negative_images": 5814,
+              "false_positive_negative_images": 27,
+              "precision": 0.8716981132075472,
+              "recall": 0.7993079584775087,
+              "negative_image_fp_rate": 0.0046439628482972135
+            },
+            "toothbrush": {
+              "tp": 0,
+              "fp": 34,
+              "fn": 6,
+              "images": 6103,
+              "positive_images": 6,
+              "negative_images": 6097,
+              "false_positive_negative_images": 29,
+              "precision": 0.0,
+              "recall": 0.0,
+              "negative_image_fp_rate": 0.0047564375922584876
+            }
+          },
+          "backend": {
+            "device": "cuda:0",
+            "end2end": true
+          },
+          "scope": "Annotation-based public-test measurements; not actual-camera accuracy. Partial annotations can count unlabelled objects as false positives."
+        },
+        "speed_ms_per_image": {
+          "preprocess": 0.30893685219903705,
+          "inference": 4.639703155330661,
+          "loss": 0.00020891315584223123,
+          "postprocess": 0.04668278470165022
+        },
+        "gpu": {
+          "device": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_gib": 15.56,
+          "torch": "2.13.0+cu130",
+          "torch_cuda": "13.0"
+        }
+      }
+    }
+  },
+  "seven_class_macro_ap": {
+    "coco": {
+      "original_s": 0.4275860662397881,
+      "can_coin": 0.19438208506371013,
+      "focus8_student": 0.2229284385239582,
+      "original_m": 0.49470902779257564
+    },
+    "openimages": {
+      "original_s": 0.6468339786685631,
+      "can_coin": 0.2923257355823838,
+      "focus8_student": 0.36738076093814226,
+      "original_m": 0.6941696742612903
+    },
+    "frozen": {
+      "original_s": 0.3422654244221089,
+      "can_coin": 0.25011799370206983,
+      "focus8_student": 0.25845873397939123,
+      "original_m": 0.4191424334212514
+    }
+  },
+  "historical_hybrid_profile": {
+    "coco": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_refined_v8.pt",
+      "model_sha256": "f7a489b05d50382d240cf8a2396b7f1db5d07f6400e7b63825960dfb9b0040ac",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_coco_clean/data.yaml",
+      "split": "test",
+      "views": "center",
+      "specialist": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26m_focus8_coco_teacher_v8.pt",
+      "specialist_sha256": "d8cf7ccd9e221d13167df0b0659f3206fcab575af6c4f3b9ff1e634cc48a5153",
+      "specialist_classes": [
+        0,
+        2,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "strategy": "route",
+      "small_primary_size": 0,
+      "image_size": 640,
+      "batch": 16,
+      "rect": false,
+      "precision": "fp32",
+      "map50_95": 0.49132569502329365,
+      "map50": 0.6438014375669927,
+      "per_class_map": {
+        "bottle": 0.5710244624020631,
+        "cup": 0.633354819614922,
+        "ball": 0.46401851851851844,
+        "phone": 0.48072176990365695,
+        "remote": 0.5825382104319055,
+        "spoon": 0.25413370319037315,
+        "fork": 0.42216835923518914,
+        "toothbrush": 0.5226457168897207
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.5710244624020631,
+          "map50": 0.7187427334749804,
+          "precision": 0.6734447358591144,
+          "recall": 0.6237623762376238,
+          "instances": 101
+        },
+        "cup": {
+          "map50_95": 0.633354819614922,
+          "map50": 0.7955531392696684,
+          "precision": 0.7824036255785638,
+          "recall": 0.6698050347933358,
+          "instances": 102
+        },
+        "ball": {
+          "map50_95": 0.46401851851851844,
+          "map50": 0.5320370370370369,
+          "precision": 0.218797391637937,
+          "recall": 0.5,
+          "instances": 2
+        },
+        "phone": {
+          "map50_95": 0.48072176990365695,
+          "map50": 0.6906596146585312,
+          "precision": 0.7024795349902804,
+          "recall": 0.5454545454545454,
+          "instances": 33
+        },
+        "remote": {
+          "map50_95": 0.5825382104319055,
+          "map50": 0.7462239375033329,
+          "precision": 0.7622596459552461,
+          "recall": 0.5909090909090909,
+          "instances": 22
+        },
+        "spoon": {
+          "map50_95": 0.25413370319037315,
+          "map50": 0.34524217365765775,
+          "precision": 0.41767398292557645,
+          "recall": 0.3122097338053322,
+          "instances": 23
+        },
+        "fork": {
+          "map50_95": 0.42216835923518914,
+          "map50": 0.5917843043286742,
+          "precision": 0.7849308477892487,
+          "recall": 0.49783961057035264,
+          "instances": 22
+        },
+        "toothbrush": {
+          "map50_95": 0.5226457168897207,
+          "map50": 0.7301685606060605,
+          "precision": 0.7117744049271749,
+          "recall": 0.5,
+          "instances": 18
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.3070843040186446,
+        "inference": 8.889604960029828,
+        "loss": 0.0002204799820901826,
+        "postprocess": 0.03156125599343795
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "openimages": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_refined_v8.pt",
+      "model_sha256": "f7a489b05d50382d240cf8a2396b7f1db5d07f6400e7b63825960dfb9b0040ac",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/runs/focus8_20261015/external_openimages/data.yaml",
+      "split": "test",
+      "views": "center",
+      "specialist": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26m_focus8_coco_teacher_v8.pt",
+      "specialist_sha256": "d8cf7ccd9e221d13167df0b0659f3206fcab575af6c4f3b9ff1e634cc48a5153",
+      "specialist_classes": [
+        0,
+        2,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "strategy": "route",
+      "small_primary_size": 0,
+      "image_size": 640,
+      "batch": 16,
+      "rect": false,
+      "precision": "fp32",
+      "map50_95": 0.5716900691228841,
+      "map50": 0.6553428693270869,
+      "per_class_map": {
+        "bottle": 0.695521348050401,
+        "cup": 0.6402836416010664,
+        "box": 0.0,
+        "phone": 0.8134562874848837,
+        "remote": 0.8703637211845651,
+        "pen": 0.2862652003305794,
+        "spoon": 0.5889804015122022,
+        "fork": 0.7068669335009142,
+        "toothbrush": 0.5434730884413439
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.695521348050401,
+          "map50": 0.8183138160821699,
+          "precision": 0.8009321262892127,
+          "recall": 0.7464788732394366,
+          "instances": 142
+        },
+        "cup": {
+          "map50_95": 0.6402836416010664,
+          "map50": 0.6661176926902865,
+          "precision": 0.48999178897400586,
+          "recall": 0.9154929577464789,
+          "instances": 71
+        },
+        "box": {
+          "map50_95": 0.0,
+          "map50": 0.0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "instances": 3
+        },
+        "phone": {
+          "map50_95": 0.8134562874848837,
+          "map50": 0.86337579716555,
+          "precision": 0.8027148667838853,
+          "recall": 0.8014531217982146,
+          "instances": 66
+        },
+        "remote": {
+          "map50_95": 0.8703637211845651,
+          "map50": 0.9030206368889232,
+          "precision": 0.6462431815844848,
+          "recall": 0.9,
+          "instances": 30
+        },
+        "pen": {
+          "map50_95": 0.2862652003305794,
+          "map50": 0.4462310105373047,
+          "precision": 0.5460736880556172,
+          "recall": 0.4928096983375887,
+          "instances": 83
+        },
+        "spoon": {
+          "map50_95": 0.5889804015122022,
+          "map50": 0.7364719840449474,
+          "precision": 0.7060224852687706,
+          "recall": 0.6626506024096386,
+          "instances": 83
+        },
+        "fork": {
+          "map50_95": 0.7068669335009142,
+          "map50": 0.838685697951064,
+          "precision": 0.7515856638742795,
+          "recall": 0.8251971795649939,
+          "instances": 66
+        },
+        "toothbrush": {
+          "map50_95": 0.5434730884413439,
+          "map50": 0.6258691885835349,
+          "precision": 0.4264161053286043,
+          "recall": 0.9473684210526315,
+          "instances": 19
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.31217053397141836,
+        "inference": 8.897966129631113,
+        "loss": 0.00021216357798735255,
+        "postprocess": 0.0331295987614143
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    },
+    "frozen": {
+      "model": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26s_focus8_refined_v8.pt",
+      "model_sha256": "f7a489b05d50382d240cf8a2396b7f1db5d07f6400e7b63825960dfb9b0040ac",
+      "data": "/home/developer/Documents/VAGT/vagt-orca-ai/data/processed/public_v3_adl_balanced_v2_15/data.yaml",
+      "split": "test",
+      "views": "center",
+      "specialist": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/models/yolo26m_focus8_coco_teacher_v8.pt",
+      "specialist_sha256": "d8cf7ccd9e221d13167df0b0659f3206fcab575af6c4f3b9ff1e634cc48a5153",
+      "specialist_classes": [
+        0,
+        2,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "strategy": "route",
+      "small_primary_size": 0,
+      "image_size": 640,
+      "batch": 16,
+      "rect": false,
+      "precision": "fp32",
+      "map50_95": 0.24150753536112282,
+      "map50": 0.29475865627677217,
+      "per_class_map": {
+        "bottle": 0.4522777239765774,
+        "can": 3.687225073313783e-05,
+        "cup": 0.5008918697134931,
+        "box": 0.037921621939137666,
+        "ball": 0.4043499387346922,
+        "phone": 0.47836899630390495,
+        "remote": 0.492675195777535,
+        "pen": 0.20116476484307003,
+        "spoon": 0.23303914214565413,
+        "fork": 0.7766852552079564,
+        "toothbrush": 0.0,
+        "card": 0.005893764126889326,
+        "key": 0.03920078755136319,
+        "coin": 8.384572386808272e-06,
+        "small_block": 9.871327344918635e-05
+      },
+      "per_class": {
+        "bottle": {
+          "map50_95": 0.4522777239765774,
+          "map50": 0.5549479244991448,
+          "precision": 0.4343456853447972,
+          "recall": 0.5970679697912039,
+          "instances": 2251
+        },
+        "can": {
+          "map50_95": 3.687225073313783e-05,
+          "map50": 5.9590359237536654e-05,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 23
+        },
+        "cup": {
+          "map50_95": 0.5008918697134931,
+          "map50": 0.5813465949335901,
+          "precision": 0.4726138622832732,
+          "recall": 0.7643384440658717,
+          "instances": 1761
+        },
+        "box": {
+          "map50_95": 0.037921621939137666,
+          "map50": 0.06130620113398769,
+          "precision": 0.21114323703453985,
+          "recall": 0.026096142260066763,
+          "instances": 3877
+        },
+        "ball": {
+          "map50_95": 0.4043499387346922,
+          "map50": 0.5142505254024652,
+          "precision": 0.6303806117046779,
+          "recall": 0.4906166219839142,
+          "instances": 373
+        },
+        "phone": {
+          "map50_95": 0.47836899630390495,
+          "map50": 0.5754614093652044,
+          "precision": 0.577057181749473,
+          "recall": 0.4883720930232558,
+          "instances": 516
+        },
+        "remote": {
+          "map50_95": 0.492675195777535,
+          "map50": 0.5779393495587202,
+          "precision": 0.7282366974368997,
+          "recall": 0.4906474820143885,
+          "instances": 695
+        },
+        "pen": {
+          "map50_95": 0.20116476484307003,
+          "map50": 0.3040723879705118,
+          "precision": 0.4338055399045852,
+          "recall": 0.35629453681710216,
+          "instances": 1263
+        },
+        "spoon": {
+          "map50_95": 0.23303914214565413,
+          "map50": 0.29990078898531375,
+          "precision": 0.4950370144850908,
+          "recall": 0.2762312633832976,
+          "instances": 467
+        },
+        "fork": {
+          "map50_95": 0.7766852552079564,
+          "map50": 0.884657395015231,
+          "precision": 0.815329189623741,
+          "recall": 0.8304498269896193,
+          "instances": 289
+        },
+        "toothbrush": {
+          "map50_95": 0.0,
+          "map50": 0.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 6
+        },
+        "card": {
+          "map50_95": 0.005893764126889326,
+          "map50": 0.010814617145101006,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 39
+        },
+        "key": {
+          "map50_95": 0.03920078755136319,
+          "map50": 0.05639392705931831,
+          "precision": 0.32890476319416545,
+          "recall": 0.05906712598720852,
+          "instances": 249
+        },
+        "coin": {
+          "map50_95": 8.384572386808272e-06,
+          "map50": 8.384572386808272e-06,
+          "precision": 0.0,
+          "recall": 0.0,
+          "instances": 62
+        },
+        "small_block": {
+          "map50_95": 9.871327344918635e-05,
+          "map50": 0.00022074815137016095,
+          "precision": 1.0,
+          "recall": 0.0,
+          "instances": 161
+        }
+      },
+      "speed_ms_per_image": {
+        "preprocess": 0.3193951841695468,
+        "inference": 8.735894361627869,
+        "loss": 0.0002004315939281304,
+        "postprocess": 0.03237228838554449
+      },
+      "gpu": {
+        "device": 0,
+        "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+        "total_memory_gib": 15.56,
+        "torch": "2.13.0+cu130",
+        "torch_cuda": "13.0"
+      }
+    }
+  },
+  "max_abs_hybrid_vs_original_m_ap_points": 0.17683467604835412
+}

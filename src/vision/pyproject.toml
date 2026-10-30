@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vagt-orca-ai"
+version = "0.1.0"
+description = "GPU-only egocentric object detection and grip planning pipeline for VAGT-ORCA"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "numpy>=1.26,<3",
+  "opencv-python>=4.9,<5",
+  "PyYAML>=6.0,<7",
+  "typing-extensions>=4.4,<5",
+  "ultralytics>=8.4.33,<8.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9", "ruff>=0.9,<1"]
+data = ["huggingface-hub[hf-xet]>=1,<2"]
+deployment = [
+    "onnx>=1.17,<2",
+    "onnxruntime-gpu>=1.20,<2",
+    "onnxslim>=0.1.82,<1",
+]
+desktop-trt = [
+    "nvidia-cublas-cu12>=12,<13",
+    "nvidia-cuda-runtime-cu12>=12,<13",
+    "nvidia-cudnn-cu12>=9,<10",
+    "nvidia-cufft-cu12>=11,<12",
+    "nvidia-curand-cu12>=10,<11",
+    "nvidia-modelopt[onnx]>=0.44,<1",
+    "tensorrt-cu13>=11,<12",
+]
+
+[project.scripts]
+vagt-orca = "vagt_orca.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vagt_orca"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

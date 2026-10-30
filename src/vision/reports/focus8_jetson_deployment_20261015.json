@@ -1,0 +1,1179 @@
+{
+  "comparison": {
+    "predeploy": {
+      "camera_was_active": true,
+      "old_engine_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+      "candidate_model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+      "camera_images_accessed": false
+    },
+    "export": {
+      "accepted_target_build": true,
+      "development_only": false,
+      "portability_warning": null,
+      "platform": {
+        "machine": "aarch64",
+        "system": "Linux",
+        "release": "5.15.148-tegra",
+        "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+        "is_jetson": true
+      },
+      "gpu": {
+        "device": 0,
+        "name": "Orin",
+        "total_memory_gib": 7.44,
+        "torch": "2.8.0",
+        "torch_cuda": "12.6"
+      },
+      "tensorrt_version": "10.3.0",
+      "model": "/mnt/data/vagt-orca-ai/artifacts/models/yolo26s_focus8_v5.pt",
+      "model_sha256": "c60b573217426a0f600cbc7d2dea9fc67a9708ce53e4ce46fbc7248d9c794439",
+      "engine": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+      "engine_bytes": 22687266,
+      "engine_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+      "model_family": "YOLO26s",
+      "precision": "fp16",
+      "end2end_nms_free": true,
+      "requested_settings": {
+        "dynamic": false,
+        "workspace_gib": 1,
+        "batch": 1,
+        "precision": "fp16"
+      },
+      "settings": {
+        "dynamic": false,
+        "workspace_gib": 1,
+        "batch": 1,
+        "precision": "fp16",
+        "opset": 17
+      }
+    },
+    "validation": {
+      "old": {
+        "frozen": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+          "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/data/processed/egoobjects_15/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.37946353431585417,
+          "recall_mean": 0.272176885883921,
+          "map50_95": 0.21705593687880315,
+          "map50": 0.2849494338693693,
+          "map75": 0.2499154613489186,
+          "per_class_map": {
+            "bottle": 0.3548556064279165,
+            "can": 0.0003164186596755984,
+            "cup": 0.3006641061459462,
+            "box": 0.04822068442279222,
+            "ball": 0.6684327532939791,
+            "phone": 0.25875534740761685,
+            "remote": 0.348821419842808,
+            "pen": 0.1820019039451061,
+            "spoon": 0.2663274643670155,
+            "fork": 0.4524088822644253,
+            "toothbrush": 0.07952017138396589,
+            "card": 0.005585909754508684,
+            "key": 0.2853590669290992,
+            "coin": 0.0024034507833400032,
+            "small_block": 0.0021658675538520434
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.3548556064279165,
+              "map50": 0.49149678185895207,
+              "precision": 0.543507457959126,
+              "recall": 0.5404002965159377,
+              "instances": 2698
+            },
+            "can": {
+              "map50_95": 0.0003164186596755984,
+              "map50": 0.0006035295198082834,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 61
+            },
+            "cup": {
+              "map50_95": 0.3006641061459462,
+              "map50": 0.3815276107021135,
+              "precision": 0.41300877937716685,
+              "recall": 0.41859185918591857,
+              "instances": 1818
+            },
+            "box": {
+              "map50_95": 0.04822068442279222,
+              "map50": 0.07605824767912715,
+              "precision": 0.2804009880021048,
+              "recall": 0.07896309593726568,
+              "instances": 3252
+            },
+            "ball": {
+              "map50_95": 0.6684327532939791,
+              "map50": 0.822653818176307,
+              "precision": 0.6776495814449163,
+              "recall": 0.8,
+              "instances": 390
+            },
+            "phone": {
+              "map50_95": 0.25875534740761685,
+              "map50": 0.3209199319569589,
+              "precision": 0.58131767527961,
+              "recall": 0.2451678535096643,
+              "instances": 983
+            },
+            "remote": {
+              "map50_95": 0.348821419842808,
+              "map50": 0.4493479947731238,
+              "precision": 0.583493472731527,
+              "recall": 0.427536231884058,
+              "instances": 690
+            },
+            "pen": {
+              "map50_95": 0.1820019039451061,
+              "map50": 0.30454666672537667,
+              "precision": 0.639686888271777,
+              "recall": 0.2085987261146497,
+              "instances": 1256
+            },
+            "spoon": {
+              "map50_95": 0.2663274643670155,
+              "map50": 0.34840533784497124,
+              "precision": 0.6025294067078466,
+              "recall": 0.3454317897371715,
+              "instances": 799
+            },
+            "fork": {
+              "map50_95": 0.4524088822644253,
+              "map50": 0.5690677202618005,
+              "precision": 0.700929656736194,
+              "recall": 0.5068027210884354,
+              "instances": 294
+            },
+            "toothbrush": {
+              "map50_95": 0.07952017138396589,
+              "map50": 0.11856796707733461,
+              "precision": 0.16697730697730698,
+              "recall": 0.13095238095238096,
+              "instances": 84
+            },
+            "card": {
+              "map50_95": 0.005585909754508684,
+              "map50": 0.007617824226263267,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 18
+            },
+            "key": {
+              "map50_95": 0.2853590669290992,
+              "map50": 0.37542641820499756,
+              "precision": 0.502451801250237,
+              "recall": 0.3802083333333333,
+              "instances": 384
+            },
+            "coin": {
+              "map50_95": 0.0024034507833400032,
+              "map50": 0.0037872249666252014,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 18
+            },
+            "small_block": {
+              "map50_95": 0.0021658675538520434,
+              "map50": 0.0042144340667796265,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 14
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.7052529605201032,
+            "inference": 19.97707116326787,
+            "loss": 0.025493160062967767,
+            "postprocess": 1.0277145001529884
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        },
+        "coco": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+          "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/eval/coco/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.34480313698007503,
+          "recall_mean": 0.294630060431388,
+          "map50_95": 0.21311603113397143,
+          "map50": 0.3149885305056876,
+          "map75": 0.24022294357464374,
+          "per_class_map": {
+            "bottle": 0.25858688590619683,
+            "cup": 0.2205251349086023,
+            "ball": 0.0,
+            "phone": 0.1078701310501828,
+            "remote": 0.1608665728755422,
+            "spoon": 0.11149477661793825,
+            "fork": 0.29553211613436164,
+            "toothbrush": 0.5500526315789473
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.25858688590619683,
+              "map50": 0.4574492087701533,
+              "precision": 0.6153461370975496,
+              "recall": 0.44333437680739934,
+              "instances": 83
+            },
+            "cup": {
+              "map50_95": 0.2205251349086023,
+              "map50": 0.3202353700989323,
+              "precision": 0.5194480390263523,
+              "recall": 0.2543859649122807,
+              "instances": 114
+            },
+            "ball": {
+              "map50_95": 0.0,
+              "map50": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 1
+            },
+            "phone": {
+              "map50_95": 0.1078701310501828,
+              "map50": 0.19897703101657585,
+              "precision": 0.27526469484190075,
+              "recall": 0.1344901887181299,
+              "instances": 34
+            },
+            "remote": {
+              "map50_95": 0.1608665728755422,
+              "map50": 0.2212824034104899,
+              "precision": 0.31476346630496826,
+              "recall": 0.21212121212121213,
+              "instances": 33
+            },
+            "spoon": {
+              "map50_95": 0.11149477661793825,
+              "map50": 0.1733209712604819,
+              "precision": 0.3139617719909691,
+              "recall": 0.152610473778357,
+              "instances": 33
+            },
+            "fork": {
+              "map50_95": 0.29553211613436164,
+              "map50": 0.4814722068572885,
+              "precision": 0.3734334641775658,
+              "recall": 0.49343160044705825,
+              "instances": 29
+            },
+            "toothbrush": {
+              "map50_95": 0.5500526315789473,
+              "map50": 0.6671710526315789,
+              "precision": 0.34620752240129404,
+              "recall": 0.6666666666666666,
+              "instances": 3
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.7551910220776175,
+            "inference": 20.020900772060617,
+            "loss": 0.02826241177110526,
+            "postprocess": 1.0132121691312663
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        },
+        "openimages": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+          "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/eval/openimages/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.5117460795684838,
+          "recall_mean": 0.3459689253834741,
+          "map50_95": 0.2424347282613903,
+          "map50": 0.37872618319072765,
+          "map75": 0.24317878035520968,
+          "per_class_map": {
+            "bottle": 0.34964086539381145,
+            "cup": 0.3746462878142306,
+            "phone": 0.32374978857629827,
+            "remote": 0.25206120018922806,
+            "pen": 0.1130371977897034,
+            "spoon": 0.2661099819555177,
+            "fork": 0.22241235127941272,
+            "toothbrush": 0.037820153092920264
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.34964086539381145,
+              "map50": 0.5292905097339959,
+              "precision": 0.8447745274443971,
+              "recall": 0.313953488372093,
+              "instances": 86
+            },
+            "cup": {
+              "map50_95": 0.3746462878142306,
+              "map50": 0.5538207866035794,
+              "precision": 0.6713223207846863,
+              "recall": 0.5108243958243959,
+              "instances": 40
+            },
+            "phone": {
+              "map50_95": 0.32374978857629827,
+              "map50": 0.4831174345130486,
+              "precision": 0.5879271130626145,
+              "recall": 0.3709677419354839,
+              "instances": 62
+            },
+            "remote": {
+              "map50_95": 0.25206120018922806,
+              "map50": 0.43770238095238095,
+              "precision": 0.3498718420034586,
+              "recall": 0.625,
+              "instances": 8
+            },
+            "pen": {
+              "map50_95": 0.1130371977897034,
+              "map50": 0.1980736117755783,
+              "precision": 0.41702143513737716,
+              "recall": 0.22704098720358884,
+              "instances": 41
+            },
+            "spoon": {
+              "map50_95": 0.2661099819555177,
+              "map50": 0.3682034138303144,
+              "precision": 0.5037416753103028,
+              "recall": 0.31746031746031744,
+              "instances": 63
+            },
+            "fork": {
+              "map50_95": 0.22241235127941272,
+              "map50": 0.38055802969235825,
+              "precision": 0.6233015934635713,
+              "recall": 0.32558139534883723,
+              "instances": 43
+            },
+            "toothbrush": {
+              "map50_95": 0.037820153092920264,
+              "map50": 0.07904329842456542,
+              "precision": 0.09600812934146268,
+              "recall": 0.07692307692307693,
+              "instances": 13
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.797345379024723,
+            "inference": 20.013814806442234,
+            "loss": 0.02887722583240717,
+            "postprocess": 1.0501865201659242
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        },
+        "public": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+          "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/eval/public/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.41563305585138144,
+          "recall_mean": 0.5642934265568944,
+          "map50_95": 0.35988309436632715,
+          "map50": 0.4835895041817044,
+          "map75": 0.4301217962373357,
+          "per_class_map": {
+            "bottle": 0.11608333333333334,
+            "can": 0.6525645845942546,
+            "cup": 0.0054670329670329695,
+            "coin": 0.6654174265706876
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.11608333333333334,
+              "map50": 0.16583333333333333,
+              "precision": 0.08306709032925445,
+              "recall": 0.49840254197552675,
+              "instances": 1
+            },
+            "can": {
+              "map50_95": 0.6525645845942546,
+              "map50": 0.7658896878959963,
+              "precision": 0.6563065229731897,
+              "recall": 0.7647058823529411,
+              "instances": 51
+            },
+            "cup": {
+              "map50_95": 0.0054670329670329695,
+              "map50": 0.010934065934065939,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 1
+            },
+            "coin": {
+              "map50_95": 0.6654174265706876,
+              "map50": 0.9917009295634218,
+              "precision": 0.9231586101030816,
+              "recall": 0.9940652818991098,
+              "instances": 2022
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.70577923159525,
+            "inference": 20.004923885562306,
+            "loss": 0.025823138969526826,
+            "postprocess": 1.0190496239582794
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        }
+      },
+      "new": {
+        "frozen": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+          "model_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/data/processed/egoobjects_15/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.4335556573201142,
+          "recall_mean": 0.2848912181437648,
+          "map50_95": 0.21836478512103402,
+          "map50": 0.28412582028006717,
+          "map75": 0.2515911095203769,
+          "per_class_map": {
+            "bottle": 0.36334022468328864,
+            "can": 0.0004525593434966457,
+            "cup": 0.31428685863397476,
+            "box": 0.046117253805308234,
+            "ball": 0.6525932269632327,
+            "phone": 0.27514623649749376,
+            "remote": 0.34359246612191224,
+            "pen": 0.19260596864019774,
+            "spoon": 0.262821585032281,
+            "fork": 0.4437019930832736,
+            "toothbrush": 0.08992597743400761,
+            "card": 0.007016538469578701,
+            "key": 0.2786817486242796,
+            "coin": 0.002757815709163028,
+            "small_block": 0.0024313237740225665
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.36334022468328864,
+              "map50": 0.4967892671080091,
+              "precision": 0.5216927877522674,
+              "recall": 0.5722757598220904,
+              "instances": 2698
+            },
+            "can": {
+              "map50_95": 0.0004525593434966457,
+              "map50": 0.0008508443972907148,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 61
+            },
+            "cup": {
+              "map50_95": 0.31428685863397476,
+              "map50": 0.39597684422069185,
+              "precision": 0.43416016744030633,
+              "recall": 0.4163916391639164,
+              "instances": 1818
+            },
+            "box": {
+              "map50_95": 0.046117253805308234,
+              "map50": 0.07220801246922301,
+              "precision": 0.27321616171507496,
+              "recall": 0.07841328413284133,
+              "instances": 3252
+            },
+            "ball": {
+              "map50_95": 0.6525932269632327,
+              "map50": 0.7971012911908746,
+              "precision": 0.6735896267517247,
+              "recall": 0.7794871794871795,
+              "instances": 390
+            },
+            "phone": {
+              "map50_95": 0.27514623649749376,
+              "map50": 0.335004161898508,
+              "precision": 0.5582368770696087,
+              "recall": 0.3149504540145436,
+              "instances": 983
+            },
+            "remote": {
+              "map50_95": 0.34359246612191224,
+              "map50": 0.43562600203279356,
+              "precision": 0.5593761132653386,
+              "recall": 0.4246376811594203,
+              "instances": 690
+            },
+            "pen": {
+              "map50_95": 0.19260596864019774,
+              "map50": 0.31617741072665906,
+              "precision": 0.5901498417980691,
+              "recall": 0.24601910828025478,
+              "instances": 1256
+            },
+            "spoon": {
+              "map50_95": 0.262821585032281,
+              "map50": 0.33933199566402994,
+              "precision": 0.5438890210403325,
+              "recall": 0.3541927409261577,
+              "instances": 799
+            },
+            "fork": {
+              "map50_95": 0.4437019930832736,
+              "map50": 0.5524218282448206,
+              "precision": 0.6588081558841793,
+              "recall": 0.4965986394557823,
+              "instances": 294
+            },
+            "toothbrush": {
+              "map50_95": 0.08992597743400761,
+              "map50": 0.13554888994217806,
+              "precision": 0.18614886187349952,
+              "recall": 0.20238095238095238,
+              "instances": 84
+            },
+            "card": {
+              "map50_95": 0.007016538469578701,
+              "map50": 0.009686356894766074,
+              "precision": 1.0,
+              "recall": 0.0,
+              "instances": 18
+            },
+            "key": {
+              "map50_95": 0.2786817486242796,
+              "map50": 0.36635670696806055,
+              "precision": 0.504067245211313,
+              "recall": 0.3880208333333333,
+              "instances": 384
+            },
+            "coin": {
+              "map50_95": 0.002757815709163028,
+              "map50": 0.004412349061482215,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 18
+            },
+            "small_block": {
+              "map50_95": 0.0024313237740225665,
+              "map50": 0.004395343381619846,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 14
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.7182302268305722,
+            "inference": 20.013903388266247,
+            "loss": 0.024626822716885086,
+            "postprocess": 1.005771791922254
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        },
+        "coco": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+          "model_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/eval/coco/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.40328516708421325,
+          "recall_mean": 0.2989370084548331,
+          "map50_95": 0.21719384418241527,
+          "map50": 0.31965134995093725,
+          "map75": 0.2552590834981285,
+          "per_class_map": {
+            "bottle": 0.2793024320789745,
+            "cup": 0.24878450244363784,
+            "ball": 0.0,
+            "phone": 0.10872641243474976,
+            "remote": 0.17522739610157684,
+            "spoon": 0.12861810897426212,
+            "fork": 0.34035023475945436,
+            "toothbrush": 0.45654166666666673
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.2793024320789745,
+              "map50": 0.48564710281305457,
+              "precision": 0.6877056840538277,
+              "recall": 0.43373493975903615,
+              "instances": 83
+            },
+            "cup": {
+              "map50_95": 0.24878450244363784,
+              "map50": 0.3566800176512189,
+              "precision": 0.5835033122614822,
+              "recall": 0.2631578947368421,
+              "instances": 114
+            },
+            "ball": {
+              "map50_95": 0.0,
+              "map50": 0.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 1
+            },
+            "phone": {
+              "map50_95": 0.10872641243474976,
+              "map50": 0.19402022129552982,
+              "precision": 0.3106295882527997,
+              "recall": 0.14705882352941177,
+              "instances": 34
+            },
+            "remote": {
+              "map50_95": 0.17522739610157684,
+              "map50": 0.2412671396859942,
+              "precision": 0.37228330356025596,
+              "recall": 0.21212121212121213,
+              "instances": 33
+            },
+            "spoon": {
+              "map50_95": 0.12861810897426212,
+              "map50": 0.21094082007569354,
+              "precision": 0.43806916326757595,
+              "recall": 0.15151515151515152,
+              "instances": 33
+            },
+            "fork": {
+              "map50_95": 0.34035023475945436,
+              "map50": 0.511691212371721,
+              "precision": 0.4915723287247203,
+              "recall": 0.5172413793103449,
+              "instances": 29
+            },
+            "toothbrush": {
+              "map50_95": 0.45654166666666673,
+              "map50": 0.5569642857142858,
+              "precision": 0.34251795655304423,
+              "recall": 0.6666666666666666,
+              "instances": 3
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.8203843602842853,
+            "inference": 19.996809463243476,
+            "loss": 0.02821674262483665,
+            "postprocess": 1.0535749485343866
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        },
+        "openimages": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+          "model_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/eval/openimages/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.573864348337362,
+          "recall_mean": 0.456136163123812,
+          "map50_95": 0.3287241229276293,
+          "map50": 0.4752836376449644,
+          "map75": 0.36425026465976085,
+          "per_class_map": {
+            "bottle": 0.3996187266688226,
+            "cup": 0.4896662168050242,
+            "phone": 0.47710225761959946,
+            "remote": 0.29397894532584956,
+            "pen": 0.23785383860236725,
+            "spoon": 0.3277595654995153,
+            "fork": 0.22495275189821712,
+            "toothbrush": 0.17886068100163902
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.3996187266688226,
+              "map50": 0.6009329598898834,
+              "precision": 0.8389068826593462,
+              "recall": 0.42393990364033723,
+              "instances": 86
+            },
+            "cup": {
+              "map50_95": 0.4896662168050242,
+              "map50": 0.6743324977466298,
+              "precision": 0.6173635337931213,
+              "recall": 0.575,
+              "instances": 40
+            },
+            "phone": {
+              "map50_95": 0.47710225761959946,
+              "map50": 0.6607942695085969,
+              "precision": 0.725813046215345,
+              "recall": 0.5645161290322581,
+              "instances": 62
+            },
+            "remote": {
+              "map50_95": 0.29397894532584956,
+              "map50": 0.38670288497564625,
+              "precision": 0.2949315653284227,
+              "recall": 0.625,
+              "instances": 8
+            },
+            "pen": {
+              "map50_95": 0.23785383860236725,
+              "map50": 0.39637530466783605,
+              "precision": 0.4055819805819806,
+              "recall": 0.43902439024390244,
+              "instances": 41
+            },
+            "spoon": {
+              "map50_95": 0.3277595654995153,
+              "map50": 0.4795069503302959,
+              "precision": 0.7203864891196881,
+              "recall": 0.36507936507936506,
+              "instances": 63
+            },
+            "fork": {
+              "map50_95": 0.22495275189821712,
+              "map50": 0.35733424353610177,
+              "precision": 0.6480160284508106,
+              "recall": 0.3488372093023256,
+              "instances": 43
+            },
+            "toothbrush": {
+              "map50_95": 0.17886068100163902,
+              "map50": 0.24628999050472508,
+              "precision": 0.3399152605501812,
+              "recall": 0.3076923076923077,
+              "instances": 13
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.6344136209837825,
+            "inference": 19.96960592740863,
+            "loss": 0.02598922577956933,
+            "postprocess": 1.0316198024189625
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        },
+        "public": {
+          "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+          "model_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+          "model_format": ".engine",
+          "precision": "fp16",
+          "data": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/eval/public/data.yaml",
+          "split": "val",
+          "batch": 1,
+          "image_size": 640,
+          "precision_mean": 0.5036756618963206,
+          "recall_mean": 0.6375671493095447,
+          "map50_95": 0.3733919956289243,
+          "map50": 0.49697589591899444,
+          "map75": 0.43731633753461097,
+          "per_class_map": {
+            "bottle": 0.1393,
+            "can": 0.655807023009167,
+            "cup": 0.022613636363636364,
+            "coin": 0.6758473231428938
+          },
+          "per_class": {
+            "bottle": {
+              "map50_95": 0.1393,
+              "map50": 0.199,
+              "precision": 0.18109407342445688,
+              "recall": 1.0,
+              "instances": 1
+            },
+            "can": {
+              "map50_95": 0.655807023009167,
+              "map50": 0.7521614213629567,
+              "precision": 0.8550201306192591,
+              "recall": 0.5783292370075231,
+              "instances": 51
+            },
+            "cup": {
+              "map50_95": 0.022613636363636364,
+              "map50": 0.04522727272727273,
+              "precision": 0.0,
+              "recall": 0.0,
+              "instances": 1
+            },
+            "coin": {
+              "map50_95": 0.6758473231428938,
+              "map50": 0.9915148895857484,
+              "precision": 0.9785884435415666,
+              "recall": 0.971939360230656,
+              "instances": 2022
+            }
+          },
+          "speed_ms_per_image": {
+            "preprocess": 2.7258406375999127,
+            "inference": 19.92886526974626,
+            "loss": 0.02718048229422736,
+            "postprocess": 1.0105750544991
+          },
+          "gpu": {
+            "device": 0,
+            "name": "Orin",
+            "total_memory_gib": 7.44,
+            "torch": "2.8.0",
+            "torch_cuda": "12.6"
+          }
+        }
+      }
+    },
+    "benchmark": {
+      "old": {
+        "deployment_accepted": true,
+        "acceptance_reason": "Jetson TensorRT benchmark complete",
+        "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine",
+        "model_sha256": "b24d8fffcd1702a176b7743a7bade6de09b7b0202dfe63591ba16308e60263f0",
+        "model_format": ".engine",
+        "precision": "fp16",
+        "images": 24,
+        "warmup": 20,
+        "iterations": 200,
+        "hold_frames_per_scene": 5,
+        "latency_ms": {
+          "mean": 32.19812412000001,
+          "p50": 32.6658285,
+          "p95": 36.306431100000005,
+          "p99": 37.33734124999999,
+          "min": 23.472572,
+          "max": 38.776218
+        },
+        "fps": 31.057709954563638,
+        "detections": 240,
+        "frames_with_plan_proposal": 127,
+        "frames_with_new_plan_update": 13,
+        "uart_packet_serialization": {
+          "enabled": true,
+          "frame_bytes": 16,
+          "packets": 220,
+          "included_in_latency": true
+        },
+        "peak_torch_cuda_memory_mib": 10.5546875,
+        "peak_device_memory_used_mib": 3107.89453125,
+        "gpu": {
+          "device": 0,
+          "name": "Orin",
+          "total_memory_gib": 7.44,
+          "torch": "2.8.0",
+          "torch_cuda": "12.6"
+        },
+        "platform": {
+          "machine": "aarch64",
+          "system": "Linux",
+          "release": "5.15.148-tegra",
+          "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+          "is_jetson": true
+        }
+      },
+      "new": {
+        "deployment_accepted": true,
+        "acceptance_reason": "Jetson TensorRT benchmark complete",
+        "model": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+        "model_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+        "model_format": ".engine",
+        "precision": "fp16",
+        "images": 24,
+        "warmup": 20,
+        "iterations": 200,
+        "hold_frames_per_scene": 5,
+        "latency_ms": {
+          "mean": 36.432048630000004,
+          "p50": 37.8930055,
+          "p95": 40.70398985,
+          "p99": 40.797329149999996,
+          "min": 28.260474,
+          "max": 45.900373
+        },
+        "fps": 27.44836037511624,
+        "detections": 285,
+        "frames_with_plan_proposal": 177,
+        "frames_with_new_plan_update": 26,
+        "uart_packet_serialization": {
+          "enabled": true,
+          "frame_bytes": 16,
+          "packets": 220,
+          "included_in_latency": true
+        },
+        "peak_torch_cuda_memory_mib": 10.5546875,
+        "peak_device_memory_used_mib": 2960.1484375,
+        "gpu": {
+          "device": 0,
+          "name": "Orin",
+          "total_memory_gib": 7.44,
+          "torch": "2.8.0",
+          "torch_cuda": "12.6"
+        },
+        "platform": {
+          "machine": "aarch64",
+          "system": "Linux",
+          "release": "5.15.148-tegra",
+          "jetson_model": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+          "is_jetson": true
+        }
+      }
+    }
+  },
+  "acceptance": {
+    "accepted_for_service": true,
+    "checks": {
+      "native_fp16_end2end_export": true,
+      "same_validation_settings": true,
+      "all_15_classes_evaluated": true,
+      "frozen_target_macro_at_least_98_percent": true,
+      "each_external_domain_at_least_90_percent": true,
+      "equal_domain_macro_improved": true,
+      "no_material_frozen_target_drops": true,
+      "other_7_classes_macro_at_least_90_percent": true,
+      "can_coin_public_val_retained": true,
+      "pipeline_p95_at_most_50ms": true,
+      "pipeline_p95_at_most_120_percent_of_old": true
+    },
+    "domains": {
+      "frozen": {
+        "classes": [
+          "bottle",
+          "cup",
+          "phone",
+          "remote",
+          "spoon",
+          "fork",
+          "toothbrush",
+          "pen"
+        ],
+        "old_macro": 0.28041936272310003,
+        "new_macro": 0.28567766376580367,
+        "per_class": {
+          "bottle": {
+            "old": 0.3548556064279165,
+            "new": 0.36334022468328864
+          },
+          "cup": {
+            "old": 0.3006641061459462,
+            "new": 0.31428685863397476
+          },
+          "phone": {
+            "old": 0.25875534740761685,
+            "new": 0.27514623649749376
+          },
+          "remote": {
+            "old": 0.348821419842808,
+            "new": 0.34359246612191224
+          },
+          "spoon": {
+            "old": 0.2663274643670155,
+            "new": 0.262821585032281
+          },
+          "fork": {
+            "old": 0.4524088822644253,
+            "new": 0.4437019930832736
+          },
+          "toothbrush": {
+            "old": 0.07952017138396589,
+            "new": 0.08992597743400761
+          },
+          "pen": {
+            "old": 0.1820019039451061,
+            "new": 0.19260596864019774
+          }
+        }
+      },
+      "coco": {
+        "classes": [
+          "bottle",
+          "cup",
+          "phone",
+          "remote",
+          "spoon",
+          "fork",
+          "toothbrush"
+        ],
+        "old_macro": 0.24356117843882447,
+        "new_macro": 0.2482215362084746,
+        "per_class": {
+          "bottle": {
+            "old": 0.25858688590619683,
+            "new": 0.2793024320789745
+          },
+          "cup": {
+            "old": 0.2205251349086023,
+            "new": 0.24878450244363784
+          },
+          "phone": {
+            "old": 0.1078701310501828,
+            "new": 0.10872641243474976
+          },
+          "remote": {
+            "old": 0.1608665728755422,
+            "new": 0.17522739610157684
+          },
+          "spoon": {
+            "old": 0.11149477661793825,
+            "new": 0.12861810897426212
+          },
+          "fork": {
+            "old": 0.29553211613436164,
+            "new": 0.34035023475945436
+          },
+          "toothbrush": {
+            "old": 0.5500526315789473,
+            "new": 0.45654166666666673
+          }
+        }
+      },
+      "openimages": {
+        "classes": [
+          "bottle",
+          "cup",
+          "phone",
+          "remote",
+          "spoon",
+          "fork",
+          "toothbrush",
+          "pen"
+        ],
+        "old_macro": 0.24243472826139031,
+        "new_macro": 0.3287241229276293,
+        "per_class": {
+          "bottle": {
+            "old": 0.34964086539381145,
+            "new": 0.3996187266688226
+          },
+          "cup": {
+            "old": 0.3746462878142306,
+            "new": 0.4896662168050242
+          },
+          "phone": {
+            "old": 0.32374978857629827,
+            "new": 0.47710225761959946
+          },
+          "remote": {
+            "old": 0.25206120018922806,
+            "new": 0.29397894532584956
+          },
+          "spoon": {
+            "old": 0.2661099819555177,
+            "new": 0.3277595654995153
+          },
+          "fork": {
+            "old": 0.22241235127941272,
+            "new": 0.22495275189821712
+          },
+          "toothbrush": {
+            "old": 0.037820153092920264,
+            "new": 0.17886068100163902
+          },
+          "pen": {
+            "old": 0.1130371977897034,
+            "new": 0.23785383860236725
+          }
+        }
+      }
+    },
+    "material_frozen_target_drops": [],
+    "can_coin_public_val": {
+      "can": {
+        "old": 0.6525645845942546,
+        "new": 0.655807023009167
+      },
+      "coin": {
+        "old": 0.6654174265706876,
+        "new": 0.6758473231428938
+      }
+    },
+    "pipeline": {
+      "old": {
+        "p95_ms": 36.306431100000005,
+        "fps": 31.057709954563638
+      },
+      "new": {
+        "p95_ms": 40.70398985,
+        "fps": 27.44836037511624
+      }
+    },
+    "evaluation_split": "validation_only",
+    "camera_images_accessed": false
+  },
+  "deployment": {
+    "applied": true,
+    "camera_images_accessed": false,
+    "engine": "/mnt/data/vagt-orca-ai/artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine",
+    "engine_sha256": "748ec009527b76679afab7a9e875c2099aad9feb916c6337cfb981c984d9f26a",
+    "previous_exec_start": "{ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --model artifacts/deployment/tensorrt/yolo26s_can_coin_retention_fp16.engine ; ignore_errors=no ; start_time=[Thu 2026-10-15 19:29:04 KST] ; stop_time=[n/a] ; pid=7021 ; code=(null) ; status=0/0 }",
+    "backup_manifest": "/mnt/data/vagt-orca-ai/runs/focus8_targeted_20261015/predeploy_files/manifest.json",
+    "active_exec_start": "{ path=/mnt/data/vagt-orca-ai/.venv/bin/python ; argv[]=/mnt/data/vagt-orca-ai/.venv/bin/python tools/camera_live_view.py --source elp --host 127.0.0.1 --port 8765 --model artifacts/deployment/tensorrt/yolo26s_focus8_v5_fp16.engine ; ignore_errors=no ; start_time=[Thu 2026-10-15 19:29:42 KST] ; stop_time=[n/a] ; pid=7107 ; code=(null) ; status=0/0 }",
+    "service_active": true,
+    "service_restarts": 0,
+    "health_initial": {
+      "ready": true,
+      "source": "elp",
+      "frames": 20,
+      "read_failures": 0,
+      "uptime_seconds": 5.3,
+      "fps": 18.71,
+      "pipeline_mean_ms": 47.56,
+      "pipeline_p95_ms": 28.89
+    },
+    "health_final": {
+      "ready": true,
+      "source": "elp",
+      "frames": 326,
+      "read_failures": 0,
+      "uptime_seconds": 20.3,
+      "fps": 20.34,
+      "pipeline_mean_ms": 28.06,
+      "pipeline_p95_ms": 28.47
+    },
+    "verification_unix": 1792060203.1160903
+  }
+}

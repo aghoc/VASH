@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-08-12T19:35:00+09:00",
+  "status": "accepted_and_promoted",
+  "base_model": "artifacts/models/best_phase3.pt",
+  "model": "artifacts/models/best.pt",
+  "model_sha256": "f1acf9aa7ee59240aba2ad18a13d4bf59b9a761e19b0dab177a618d273cef749",
+  "best_epoch": 3,
+  "stopped_during_epoch": 7,
+  "stop_reason": "validation mAP50-95 declined for epochs 4 through 6 after the epoch 3 maximum",
+  "training": {
+    "dataset": "data/processed/public_v2_focus_15/data.yaml",
+    "train_images": 19692,
+    "base_train_images": 11372,
+    "lvis_train_images": 8320,
+    "lvis_annotations": 26591,
+    "validation_images": 6560,
+    "test_images": 6103,
+    "image_size": 640,
+    "batch": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0002,
+    "amp": false,
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER"
+  },
+  "baseline": {
+    "val": {
+      "precision": 0.47828291706474346,
+      "recall": 0.24858535501156964,
+      "map50": 0.2456260802061544,
+      "map50_95": 0.18333342038217795
+    },
+    "test": {
+      "precision": 0.40878165395295163,
+      "recall": 0.20648746496609205,
+      "map50": 0.1824457710331232,
+      "map50_95": 0.13608898006152526
+    }
+  },
+  "candidate": {
+    "val": {
+      "precision": 0.4798460206997231,
+      "recall": 0.27630645916476776,
+      "map50": 0.2687823145039737,
+      "map50_95": 0.20071160071423452
+    },
+    "test": {
+      "precision": 0.41325467752285344,
+      "recall": 0.21859141270065266,
+      "map50": 0.20710766077294268,
+      "map50_95": 0.1563844251712244
+    }
+  },
+  "relative_change_percent": {
+    "val_map50_95": 9.478,
+    "val_recall": 11.151,
+    "test_map50_95": 14.913,
+    "test_recall": 5.861
+  },
+  "data_usage": {
+    "used_for_detector_training": [
+      "EgoObjects v1",
+      "LVIS v1 annotations with COCO images"
+    ],
+    "not_used": {
+      "own_AR_glass": "not yet collected",
+      "Human Grasping Database for ADL": "grip-mapping reference, not detector training data",
+      "EPIC-KITCHENS": "optional; official downloads were not usable at training time and CC BY-NC 4.0 limits production use",
+      "HANDS": "optional grip-mapping reference; no stable download used",
+      "Ego4D": "explicitly deferred by the plan"
+    }
+  },
+  "deployment_note": "ONNX and TensorRT artifacts still correspond to the Phase 3 checkpoint and must be regenerated before deployment."
+}

@@ -1,0 +1,14 @@
+{
+  "bundle": "/home/developer/Documents/VAGT/vagt-orca-ai/artifacts/deployment/jetson_bundle/vagt_orca_yolo26s_fp16_inputs.tar.gz",
+  "bundle_sha256": "7a91cefe1d9fc46c826da3424089d729938b2a593871ae377a03df4372bd7c4d",
+  "bundle_bytes": 89161183,
+  "model_sha256": "36446774b1da4a61dcfe3da4d386c30686e09bb0abf13deb3b4d5fac09b705f5",
+  "onnx_sha256": "d94db44fe919a07fec6e578ace40a0cbda92a4cddd665a10ca7ffce76a6153c7",
+  "files": 215,
+  "uncompressed_bytes": 96700523,
+  "contains_engine": false,
+  "target_build_required": true,
+  "model_family": "YOLO26s",
+  "deployment_precision": "fp16",
+  "instructions": "/home/developer/Documents/VAGT/vagt-orca-ai/deployment/JETSON_RUNBOOK.md"
+}
