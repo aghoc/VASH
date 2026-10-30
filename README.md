@@ -1,2 +1,2 @@
-# VASH-ORCA
+# VASH
 Vision-Anchored Self-Healing Prosthetic Hand
