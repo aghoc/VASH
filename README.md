@@ -1,6 +1,28 @@
-# VASH
+<p align="center">
+  <img src="fig/vash-logo.png" alt="VASH 로고" width="620">
+</p>
 
-**Vision-Anchored Self-Healing Prosthetic Hand**
+<p align="center">
+  <strong>VASH</strong> &nbsp; <em>Vision-Anchored Self-Healing Prosthetic Hand</em><br>
+  근전도와 비전 AI를 결합한 사용자 중심 로봇 의수
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/EMG-16%20Channels-2563eb?style=flat-square" alt="16채널 EMG">
+  <img src="https://img.shields.io/badge/Vision-AI-0f766e?style=flat-square" alt="Vision AI">
+  <img src="https://img.shields.io/badge/ORCA%20Hand-16%20DoF-475569?style=flat-square" alt="16자유도 ORCA Hand">
+  <img src="https://img.shields.io/badge/Status-Research-f59e0b?style=flat-square" alt="연구 개발 단계">
+</p>
+
+<p align="center">
+  <a href="#배경과-목표">프로젝트 소개</a> ·
+  <a href="#시스템-구성">시스템 구성</a> ·
+  <a href="#제작-및-시연">제작 및 시연</a> ·
+  <a href="#평가-결과">평가 결과</a> ·
+  <a href="#향후-과제">향후 과제</a>
+</p>
+
+---
 
 ![VASH 의수 시스템 overview](fig/ai-assisted-prosthetic-system-overview.png)
 
