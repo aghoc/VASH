@@ -15,6 +15,7 @@
 </p>
 
 <p align="center">
+  <a href="#overview">Overview</a> ·
   <a href="#배경과-목표">프로젝트 소개</a> ·
   <a href="#시스템-구성">시스템 구성</a> ·
   <a href="#제작-및-시연">제작 및 시연</a> ·
@@ -23,6 +24,8 @@
 </p>
 
 ---
+
+## Overview
 
 ![VASH 의수 시스템 overview](fig/ai-assisted-prosthetic-system-overview.png)
 
