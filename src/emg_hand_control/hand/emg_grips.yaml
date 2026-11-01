@@ -1,0 +1,356 @@
+# 근전도 쥐기 자세 — 관절 가동범위(ROM) 비율 0~1 (ORCA demo_poses.yaml 과 같은 단위)
+# 기준: 팀 노트북에서 실물 손으로 재생 확인한 ORCA 원래 자세 (open_hand, power_grasp, pinch — demo_result/pinch_result.json)
+#   ※ 실물 확인 (10-29): ORCA open_hand 엄지(mcp 0.85)는 이 손에서 엄지를 '접고', power_grasp 엄지(mcp 0.20)는 '폄'
+#     → 엄지 mcp·dip 는 비율이 클수록 굽힘으로 보고 open 0.15 / fist 0.85 로 바꿈 (집기 엄지는 잘 됨 → 그대로). 이전 값: backup/emg_grips_v1.yaml
+# 약지·소지 mcp·pip 는 적지 않음 → coupling 으로 중지에서 예측
+# 세기 level(0~1): 각도 = open + level × (쥐기 − open)
+
+open:            # v6 (10-31): 엄지는 open_thumb (손으로 만든 값) 이 있으면 그것
+  _copy:
+    open_thumb: [thumb_cmc, thumb_abd, thumb_mcp, thumb_dip]
+                 # v5: 엄지 MCP(손톱에서 두 번째 마디)가 너무 펴짐 → 0.05→0.20
+                 # v4 (10-29 --sweep 결과): 엄지 cmc 0.0·abd 1.0 이 자연스러움 → 끝 멈춤에 계속 눌리지 않게 0.03·0.95
+                 # v3: 엄지 더 뒤로 펴고(mcp·dip 0.05) 덜 세워 검지 쪽으로(abd 0.55→0.40),
+                 #   네 손가락 벌림: ORCA 값(검지 0.10·약지 0.70·소지 0.85)이 이 손에선 중지 쪽으로 모임 → 반대로 (검지 0.75·약지 0.35·소지 0.25)
+                 #   ※ 벌림·엄지 abd 방향은 추정 — 반대로 움직이면 값을 1 − 값 으로 (이전: backup/emg_grips_v2.yaml)
+  thumb_cmc: 0.03
+  thumb_abd: 0.95
+  thumb_mcp: 0.20
+  thumb_dip: 0.05
+  index_abd: 0.75
+  middle_abd: 0.50
+  ring_abd: 0.35
+  pinky_abd: 0.25
+  index_mcp: 0.15
+  middle_mcp: 0.15
+  index_pip: 0.10
+  middle_pip: 0.10
+
+preshape:        # 쥐기 확정 전: 네 손가락 살짝 굽힘 + 엄지는 집기 쪽으로 절반
+  thumb_cmc: 0.25
+  thumb_abd: 0.80
+  thumb_mcp: 0.30
+  thumb_dip: 0.45
+  index_abd: 0.60
+  middle_abd: 0.50
+  ring_abd: 0.45
+  pinky_abd: 0.40
+  index_mcp: 0.35
+  middle_mcp: 0.35
+  index_pip: 0.30
+  middle_pip: 0.30
+
+fist:            # ORCA power_grasp 에서 엄지만 굽힘 쪽으로 바꿈 (벌림은 open 유지)
+  thumb_cmc: 0.35
+  thumb_abd: 0.55
+  thumb_mcp: 0.85
+  thumb_dip: 0.85
+  index_abd: 0.10
+  middle_abd: 0.50
+  ring_abd: 0.70
+  pinky_abd: 0.85
+  index_mcp: 0.85
+  middle_mcp: 0.85
+  index_pip: 0.90
+  middle_pip: 0.90
+
+pinch:           # ORCA pinch 기준, 중지만 펴서 듦 (근전도 '집기 (중지 펴기)')
+  thumb_cmc: 0.45
+  thumb_abd: 0.65
+  thumb_mcp: 0.40
+  thumb_dip: 0.75
+  index_abd: 0.30
+  middle_abd: 0.50
+  ring_abd: 0.70
+  pinky_abd: 0.85
+  index_mcp: 0.70
+  index_pip: 0.75
+  middle_mcp: 0.15        # ORCA 원래 0.30 → open 값으로 (중지 펴기)
+  middle_pip: 0.10        # ORCA 원래 0.20 → open 값으로
+
+tripod:          # 검지·중지 같이 굽혀 엄지와 만남 (근전도 '세손가락 (중지 굽힘)')
+                 #   v7 (10-29 사진): 병뚜껑 쥐기처럼 — 손가락은 MCP 로 앞으로 뻗고(0.60) PIP 는 조금만(0.78→0.40, 갈고리 모양 해소),
+                 #       엄지는 손가락 앞쪽으로 마주보게(cmc 0.50→0.60, abd 0.70→0.55) 덜 굽혀 뻗음(mcp 0.30, dip 0.78→0.50),
+                 #       검지·중지 살짝 벌려 원을 만듦(abd 0.55/0.45), 약지·소지 덜 말림(tuck 0.10/0.15)
+                 #   v6: v5 는 검지·중지가 너무 내려와 엄지가 검지 두 번째 마디에 닿음 → MCP 0.68→0.55 (손가락 높이 올림), PIP 0.72→0.78 (손끝을 엄지 쪽으로 말기),
+                 #       엄지 mcp 0.45→0.35 (덜 굽혀 더 멀리 뻗어 손끝 쪽에 닿게)
+                 #   v5: v3(0.55/0.55)은 손끝 사이 ~1 cm 뜸 → 검지·중지 0.68/0.72, 엄지 mcp 0.45·dip 0.78
+                 #   전류 제한 위치 제어라 닿는 지점보다 조금 더 굽게 명령하면 손끝이 서로 눌러 멈춤 (300 mA 상한) → 집을 때 힘이 생김
+  thumb_cmc: 0.60
+  thumb_abd: 0.55
+  thumb_mcp: 0.30
+  thumb_dip: 0.50
+  index_abd: 0.55
+  middle_abd: 0.45
+  ring_abd: 0.70
+  pinky_abd: 0.85
+  index_mcp: 0.60
+  index_pip: 0.40
+  middle_mcp: 0.60
+  middle_pip: 0.40
+
+relax:           # 대기 자세 (v9, 10-30): 사람 손이 쉴 때처럼 살짝 오므림. 휴식이면 open 대신 이 자세
+                 #   손 펴기 동작일 때만 open 으로 쭉 폄. 쥐기는 이 자세에서 출발해 세기만큼 굽힘
+  thumb_cmc: 0.15
+  thumb_abd: 0.80
+  thumb_mcp: 0.30
+  thumb_dip: 0.25
+  index_abd: 0.65
+  middle_abd: 0.50
+  ring_abd: 0.42
+  pinky_abd: 0.35
+  index_mcp: 0.30
+  middle_mcp: 0.33
+  index_pip: 0.28
+  middle_pip: 0.30
+
+# 손으로 만든 자세(taught_poses.yaml) 위에 덮어쓰는 값 (v9, 10-30 실시간 영상)
+#   집기: 손으로 만든 자세에서 중지가 반쯤 굽어 있음(mcp 0.49) → 세손가락(0.75)과 구분이 안 됨 → 중지는 펴고, 약지·소지는 중지 따라 예측
+#   주먹: 검지 mcp 0.81 → 0.90 (끝까지 쥐기)
+#   v12 (10-30 저녁): 모든 자세를 손으로 다시 만들기로 함 → 덮어쓰기 끔 (손으로 만든 값을 그대로 사용). 이전 값:
+#   pinch: {middle_mcp: 0.15, middle_pip: 0.10, _coupled: [ring_mcp, ring_pip, pinky_mcp, pinky_pip]}, fist: {index_mcp: 0.90}
+override: {}
+
+# 손가락 하나씩 (v10, 10-30): 대기 자세(relax)에서 그 손가락만 굽힘. 근전도 '엄지/검지/중지 굽히기' 녹화로 학습한 모델일 때 사용
+#   확률 섞기(--blend)로 동작끼리 섞이면 손가락별 자세가 연속으로 바뀜 (예: 검지 + 엄지 → 집기 쪽)
+thumb_flex:      # 엄지만 손바닥 쪽으로 접기
+  _base: relax
+  thumb_cmc: 0.55
+  thumb_abd: 0.35
+  thumb_mcp: 0.75
+  thumb_dip: 0.70
+index_flex:      # 검지만 굽히기
+  _base: relax
+  index_mcp: 0.85
+  index_pip: 0.80
+middle_flex:     # 중지만 굽히기 → 약지·소지는 중지를 따라 (아래 tuck 으로 덜, --ring-lag/--pinky-lag 로 늦게)
+  _base: relax
+  middle_mcp: 0.85
+  middle_pip: 0.80
+
+# 가위 (v11, 10-30): 검지·중지 펴서 V, 약지·소지 접고 엄지가 그 위를 덮음
+#   약지·소지를 직접 적었으므로 '중지 따라가기' 규칙이 적용되지 않음 (이전 설계에서 가위가 안 된 이유)
+#   ※ 벌림 방향은 추정 — V 가 안 벌어지면 middle_abd 를 0.65 쪽으로 바꿔 볼 것
+scissors:
+  thumb_cmc: 0.55
+  thumb_abd: 0.30
+  thumb_mcp: 0.70
+  thumb_dip: 0.60
+  index_abd: 0.90
+  middle_abd: 0.30
+  ring_abd: 0.55
+  pinky_abd: 0.60
+  index_mcp: 0.08
+  index_pip: 0.05
+  middle_mcp: 0.08
+  middle_pip: 0.05
+  ring_mcp: 0.90
+  ring_pip: 0.90
+  pinky_mcp: 0.90
+  pinky_pip: 0.90
+
+# 기준점 경로 (v11, 10-30): 쥐는 정도 c (0~1, 근전도 세기) → 관절 묶음별 진행 비율 [c, 비율]
+#   묶음: thumb / index / middle / ring / pinky (굽힘) / spread (네 손가락 벌림). 없는 묶음은 c 그대로
+#   사람 손 순서를 경로에 넣음 — 주먹: 손가락 먼저 모으고 굽힘 → 중지가 거의 다 굽은 뒤(c 0.8) 엄지가 덮음 (bebionic Power 도 같은 순서)
+#                               집기·세손가락: 엄지가 먼저 마주보며 자리 잡고 → 검지(·중지)가 다가감 (bebionic Precision: 엄지 중간에서 멈추고 검지만)
+paths:
+  fist:            # v15 (10-31 영상): ① 손가락이 갈고리처럼(PIP 먼저) 굽고 MCP 가 따라 손바닥으로 말림, 그동안 엄지는 옆에서 기다림
+                   #   ② 손가락이 거의 다 말린 뒤(c 0.6~) 엄지가 손가락 앞쪽 위로 포물선을 그리며 넘어감 (arcs: 끝을 띄움)
+                   #   ③ 마지막에 엄지가 접혀 눌러 덮음 (c 0.85~)
+    index_pip:  [[0.3, 0.55], [0.6, 0.95], [1.0, 1.0]]
+    middle_pip: [[0.3, 0.55], [0.6, 0.95], [1.0, 1.0]]
+    ring_pip:   [[0.35, 0.5], [0.65, 0.92], [1.0, 1.0]]
+    pinky_pip:  [[0.4, 0.45], [0.7, 0.9], [1.0, 1.0]]
+    index_mcp:  [[0.3, 0.2], [0.65, 0.88], [1.0, 1.0]]
+    middle_mcp: [[0.3, 0.2], [0.65, 0.9], [1.0, 1.0]]
+    ring_mcp:   [[0.35, 0.18], [0.7, 0.88], [1.0, 1.0]]
+    pinky_mcp:  [[0.4, 0.15], [0.75, 0.85], [1.0, 1.0]]
+    spread:     [[0.3, 0.8], [1.0, 1.0]]
+    thumb_cmc:  [[0.6, 0.0], [0.85, 0.8], [1.0, 1.0]]     # 엄지 돌아 넘어감 (손가락 거의 다 말린 뒤)
+    thumb_abd:  [[0.6, 0.0], [0.85, 0.8], [1.0, 1.0]]
+    thumb_mcp:  [[0.8, 0.0], [0.95, 0.8], [1.0, 1.0]]     # 마지막에 접혀 덮음
+    thumb_dip:  [[0.8, 0.0], [0.95, 0.8], [1.0, 1.0]]
+  wrap:            # v20 (10-31): via 의 마지막 구간(엄지 벌린 준비 자세 → 끝까지 쥐기)을 0~1 로 본 관절별 타이밍
+                   #   ① 네 손가락 먼저 감쌈 (0.8 에 다 닫힘, 약지·소지는 조금 늦게)
+                   #   ② 그사이 엄지 뿌리(돌림·벌림)가 곧게 편 채 손가락 앞쪽으로 돌아옴 (0.3~0.85)
+                   #   ③ 손가락이 다 접힌 뒤 엄지 MCP·끝마디가 접혀 잠금 (0.8~1.0) — 엄지가 손가락과 같이 들어와 부딪히던 문제
+    index_mcp:  [[0.65, 0.85], [0.8, 1.0]]                 # v22: 뿌리(MCP)는 먼저 닫힘
+    middle_mcp: [[0.65, 0.85], [0.8, 1.0]]
+    ring_mcp:   [[0.7, 0.83], [0.85, 1.0]]
+    pinky_mcp:  [[0.75, 0.8], [0.9, 1.0]]
+    index_pip:  [[0.5, 0.2], [0.8, 0.5], [0.95, 1.0]]      # 끝 쪽(PIP)은 덜 접힌 채 따라오다 마지막에 다 접힘 → 닿기 전까지 손이 넓게 벌어져 물체를 가늠할 여유
+    middle_pip: [[0.5, 0.2], [0.8, 0.5], [0.95, 1.0]]
+    ring_pip:   [[0.5, 0.2], [0.82, 0.5], [0.97, 1.0]]
+    pinky_pip:  [[0.5, 0.2], [0.85, 0.5], [1.0, 1.0]]
+    spread:    [[0.5, 1.0]]
+    thumb_cmc: [[0.6, 0.0], [0.9, 0.9], [1.0, 1.0]]                 # v24: 손가락이 거의 감싼 뒤(0.6~) 엄지 뿌리가 돌아와 C 자를 닫음
+    thumb_abd: [[0.6, 0.0], [0.9, 0.9], [1.0, 1.0]]
+    thumb_mcp: [[0.4, 0.0], [0.7, 0.3], [0.88, 0.3], [1.0, 1.0]]   # 중간에 살짝(30° 미만) 접고 기다렸다가 → 마지막에 잠금
+    thumb_dip: [[0.88, 0.0], [1.0, 1.0]]
+  cylinder:        # 엄지가 먼저 마주보며 C 자로 벌어짐(돌림·벌림 0.3 에 80 %) → 손가락·엄지가 함께 감쌈
+    spread:    [[0.3, 0.7], [1.0, 1.0]]
+    thumb_cmc: [[0.3, 0.8], [1.0, 1.0]]
+    thumb_abd: [[0.3, 0.8], [1.0, 1.0]]
+    thumb_mcp: [[0.3, 0.1], [1.0, 1.0]]
+    thumb_dip: [[0.3, 0.1], [1.0, 1.0]]
+    ring:      [[0.4, 0.3], [1.0, 1.0]]
+    pinky:     [[0.45, 0.25], [1.0, 1.0]]
+  pinch:
+    spread: [[0.3, 1.0]]
+    thumb:  [[0.4, 0.6], [0.7, 0.9], [1.0, 1.0]]
+    index:  [[0.4, 0.3], [0.7, 0.7], [1.0, 1.0]]
+  tripod:
+    spread: [[0.3, 1.0]]
+    thumb:  [[0.4, 0.55], [0.7, 0.85], [1.0, 1.0]]
+    index:  [[0.4, 0.35], [0.7, 0.75], [1.0, 1.0]]
+    middle: [[0.4, 0.35], [0.7, 0.75], [1.0, 1.0]]
+    ring:   [[0.6, 0.3], [1.0, 1.0]]
+    pinky:  [[0.6, 0.3], [1.0, 1.0]]
+  scissors:
+    spread: [[0.4, 1.0]]
+    ring:   [[0.5, 0.7], [1.0, 1.0]]
+    pinky:  [[0.5, 0.7], [1.0, 1.0]]
+    thumb:  [[0.3, 0.4], [0.6, 0.85], [1.0, 1.0]]     # v13: 엄지가 더 일찍 덮음 (이전 0.4→0.1, 0.8→0.7 은 끝까지 쥐어야만 엄지가 왔음)
+
+# 손가락 하나 굽히기 자세: 손으로 만든 값(taught_poses.yaml) 중 그 손가락 관절만 쓰고 나머지는 대기 자세(_base: relax)
+#   (10-30: 손으로 만들 때 다른 손가락이 대기 자세보다 더 펴져 있어서, 그대로 쓰면 한 손가락 굽힐 때 다른 손가락이 펴짐)
+#   중지는 약지·소지를 적지 않음 → 중지에서 예측 (coupling tuck, --ring-lag/--pinky-lag 로 늦게 따라옴)
+#   v14 (10-31): 엄지 척(thumb_ext)·검지 가리키기(index_ext)는 나머지 손가락을 접은 전체 모양 그대로 사용 (손으로 만든 16 관절 전부)
+# 손 펴기 엄지만 손으로 다시 만들기 (10-31): teach_pose.py open_thumb → 엄지 4 관절만 open 에 덮어씀 (네 손가락은 지금 open 그대로)
+taught_keep_copy: [open]
+open_thumb:
+  _base: open
+
+taught_only:
+  open_thumb:  [thumb_cmc, thumb_abd, thumb_mcp, thumb_dip]
+  middle_ext:  [middle_mcp, middle_pip, middle_abd]
+  thumb_flex:  [thumb_cmc, thumb_abd, thumb_mcp, thumb_dip]
+  index_flex:  [index_mcp, index_pip, index_abd]
+  middle_flex: [middle_mcp, middle_pip, middle_abd]
+
+# 손가락 하나 펴기 (v12, 10-30): 대기 자세에서 그 손가락만 쭉 폄 (전체 손 펴기 open 과 구별). teach_pose 로 손으로 다시 만들면 그 손가락 값만 사용
+thumb_ext:       # 엄지만 펴기 (엄지 척 처럼 바깥으로)
+  _base: relax
+  thumb_cmc: 0.05
+  thumb_abd: 0.90
+  thumb_mcp: 0.12
+  thumb_dip: 0.10
+index_ext:       # 검지만 펴기 (가리키기)
+  _base: relax
+  index_mcp: 0.10
+  index_pip: 0.08
+  index_abd: 0.70
+middle_ext:      # 중지만 펴기 → 약지·소지는 중지를 조금 따라 펴짐
+  _base: relax
+  middle_mcp: 0.10
+  middle_pip: 0.08
+
+# 원통 쥐기 (v16, 10-31): 컵·페트병처럼 굵은 물체 — 엄지를 먼저 크게 벌려 마주보게(C 자) → 엄지와 네 손가락이 함께 감쌈
+#   바위 주먹(fist)과 근전도는 같은 '주먹'. 쥐기 모드에서는 이 자세, 동작 모드에서는 바위 (mode_map)
+#   손으로 다시 만들 때: 의수에 페트병을 쥐여 주고 그 모양으로 teach_pose.py cylinder → 접촉 감지가 생기면 물체 크기에 맞춰 손가락이 각자 멈춤
+cylinder:
+  _base: relax
+  thumb_cmc: 0.65
+  thumb_abd: 0.30
+  thumb_mcp: 0.40
+  thumb_dip: 0.30
+  index_abd: 0.55
+  middle_abd: 0.50
+  index_mcp: 0.70
+  index_pip: 0.60
+  middle_mcp: 0.72
+  middle_pip: 0.62
+
+# 감싸 쥐기 (v17, 10-31): 다 쥔 모양을 정하지 않음 — 엄지만 먼저 C 자로 벌린 뒤, 손가락·엄지가 '끝까지 쥐는 위치'를 향해 닫힘
+#   물체에 닿으면 전류 상한 때문에 각 손가락이 거기서 멈추고 상한만큼 누름 → 물체 크기에 맞춰 감싸고, 무거우면 상한을 올려 더 세게
+#   (손으로 만든 cylinder 는 그 모양에서 멈춰 작은 물체에 못 닿고 무거운 물체를 못 누르던 문제)
+wrap:
+  _base: wrap_pre  # v24 (10-31 측정): 엄지 최종 위치 = 손으로 만든 주먹의 엄지 (손가락 위를 덮는 자리)
+  _copy:           #   v23 은 엄지 뿌리를 준비 자세에 고정해서 C 자를 못 닫고 쥐다 만 것처럼 보였음
+    fist: [thumb_cmc, thumb_abd]
+  thumb_mcp: 0.92  # v25: 엄지 두 마디는 끝까지 접는 쪽을 목표로 → 물체·손가락에 닿으면 전류로 감지해서 거기서 멈춤 (닿음 고정)
+  thumb_dip: 0.90
+  index_abd: 0.50
+  middle_abd: 0.50
+  ring_abd: 0.50
+  pinky_abd: 0.50
+  index_mcp: 0.95
+  index_pip: 0.95
+  middle_mcp: 0.95
+  middle_pip: 0.95
+  ring_mcp: 0.95
+  ring_pip: 0.95
+  pinky_mcp: 0.95
+  pinky_pip: 0.95
+
+# 감싸 쥐기 준비 자세 (v19, 10-31 영상): 엄지를 검지 반대쪽으로 손바닥과 같은 면에서 벌리고, 손가락도 살짝 펴서 물체가 들어갈 공간을 만듦
+#   관절 방향을 추정하지 말고 손으로 만들기: teach_pose.py wrap_pre  (아래는 손으로 만들기 전 임시값)
+wrap_pre:
+  _base: relax
+  thumb_cmc: 0.0
+  thumb_abd: 1.0
+  thumb_mcp: 0.15
+  thumb_dip: 0.10
+  index_mcp: 0.15
+  index_pip: 0.15
+  middle_mcp: 0.15
+  middle_pip: 0.15
+
+# 중간 자세 (via): 대기(0) → 준비 자세(c) → 자세(1) 로 이어 감 (이 자세는 paths·arcs 대신 사용)
+via:
+  wrap: [[0.35, wrap_pre]]      # 0~0.35 엄지 벌리며 준비 → 0.35~1 끝까지 감싸 쥐기 (닿으면 각자 멈춤)
+
+mode_map:
+  mode_grasp:
+    "주먹": wrap
+  mode_gesture:
+    "주먹": fist          # 동작 모드를 쓸 때는 바위
+
+# 호(arcs): [시작 c, 끝 c, 크기] — 그 구간에서 관절을 펴는 쪽(open)으로 잠깐 띄웠다 돌아옴 (크기 = 대기→펴기 거리의 비율)
+#   주먹 엄지: 넘어가는 동안(0.6~0.95) 끝을 손바닥 위로 띄워 포물선 → 손가락에 걸리지 않고 앞쪽에 내려앉음
+arcs:
+  fist:
+    thumb_mcp: [0.6, 0.95, 0.5]
+    thumb_dip: [0.6, 0.95, 0.6]
+
+emg_map:
+  "엄지 펴기": thumb_ext
+  "검지 펴기": index_ext
+  "중지 펴기": middle_ext
+  "가위": scissors
+  "손 펴기": open
+  "주먹": fist          # 10-31: 그냥 주먹 = 바위. 손 펴기 직후(--open-window 1.5 s) 주먹 = 감싸 쥐기 (emg_bridge_guarded.py)
+  "쥐기": wrap
+  "집기 (중지 펴기)": pinch
+  "세손가락 (중지 굽힘)": tripod
+  "엄지": thumb_flex
+  "검지": index_flex
+  "중지": middle_flex
+
+# 약지·소지 (비율 단위):  손가락 = open값 + gain × (중지 − 중지 open값) + tuck[자세]
+#   ORCA 원래 자세와 맞춤: open 0.15/0.10 → 약지·소지 0.15/0.10, power_grasp 0.85/0.90 → 0.85/0.90 (gain 1 이면 일치)
+#   약지가 중지를 가장 많이 따라감 (독립성 엄지 > 검지 > 소지 > 중지 > 약지, Häger-Ross & Schieber 2000) → 약지 1.0, 소지 0.95
+#   tuck: 세손가락은 약지·소지를 더 말아 손끝 모임을 방해하지 않게, 집기는 ORCA pinch 의 약지·소지(0.20/0.15)가 나오게
+coupling:
+  ring:  {gain: 1.0}
+  pinky: {gain: 0.95}
+  tuck:
+    open:     {ring: 0.0,  pinky: 0.0}
+    relax:    {ring: 0.04, pinky: 0.08}
+    middle_flex: {ring: -0.15, pinky: -0.30}
+    middle_ext:  {ring: 0.15, pinky: 0.25}       # 중지만 펼 때 약지·소지는 덜 따라 펴짐     # 중지만 굽힐 때 약지는 꽤, 소지는 조금 따라옴 (사람 손 손가락 묶임)
+    preshape: {ring: 0.0,  pinky: 0.0}
+    fist:     {ring: 0.0,  pinky: 0.0}
+    pinch:    {ring: 0.05, pinky: 0.05}
+    tripod:   {ring: 0.10, pinky: 0.15}
+
+# 주먹 엄지 = 중지 굽힘 진행도(p, open 0 → fist 1)를 따라 연속으로 움직임 (v8, 10-29)
+#   이전(v7 thumb_after): 손가락이 다 굽은 뒤 엄지가 따로 굽어 동작이 끊기고 부자연스러움
+#   사람 손: 손가락이 굽는 동안 엄지가 서서히 손바닥 쪽으로 오고, 중지가 거의 다 굽으면(≈90°) 엄지 끝마디(dip)부터 접히며 감쌈
+#   start: 관절마다 p 가 이 값을 넘으면 움직이기 시작해 p = 1 에서 fist 값 도착 (부드러운 S 곡선)
+#     cmc·abd 0.30 = 손가락과 겹쳐서 일찍 시작 (엄지가 검지 밑으로 들어가면 0.4~0.5 로 올림)
+#     dip 0.60 → mcp 0.70 = 중지가 거의 다 굽었을 때 끝마디부터 접힘
+#   펼 때는 거꾸로: 중지가 펴지기 시작하면 엄지 끝마디부터 먼저 풀림
+# v11: 주먹 엄지 순서는 위 paths.fist.thumb 로 옮김 (중지가 c 0.8 에서 92 % 굽은 뒤 엄지가 덮음). 이전 값:
+#   fist: {driver: middle_mcp, start: {thumb_cmc: 0.30, thumb_abd: 0.30, thumb_dip: 0.60, thumb_mcp: 0.70}}
+thumb_follow: {}

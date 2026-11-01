@@ -1,0 +1,6 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Library") (type "KiCad") (uri "${KIPRJMOD}/Library.pretty") (options "") (descr ""))
+	(lib (name "ads1299_Library") (type "KiCad") (uri "${KIPRJMOD}/ads1299_Library.pretty") (options "") (descr ""))
+	(lib (name "lod_Library") (type "KiCad") (uri "${KIPRJMOD}/lod_Library.pretty") (options "") (descr ""))
+)

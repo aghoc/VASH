@@ -1,0 +1,7 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "ads1299IPAG") (type "KiCad") (uri "${KIPRJMOD}/ads1299IPAG.kicad_sym") (options "") (descr "ADS1299IPAG 8채널 AFE"))
+	(lib (name "3LT1763CS8-5#PBF") (type "KiCad") (uri "${KIPRJMOD}/LT1763CS8-5-PBF.kicad_sym") (options "") (descr "LT1763-5 저잡음 LDO"))
+	(lib (name "Connector") (type "KiCad") (uri "${KIPRJMOD}/Connector.kicad_sym") (options "") (descr "커넥터 (Conn_01x22_Socket 포함)"))
+	(lib (name "MAX1683") (type "KiCad") (uri "${KIPRJMOD}/MAX1683EUK.kicad_sym") (options "") (descr "MAX1683 차지펌프 승압"))
+)

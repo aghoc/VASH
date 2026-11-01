@@ -1,0 +1,95 @@
+﻿ADS1299 EMG board - competition revision
+========================================
+Board : 27 x 96 mm, 2 layer, ENIG
+MCU   : ESP32-S3-DevKitC-1 (stacked via J4 / J5)
+
+
+FILE LAYOUT
+-----------
+emg_ads1299.kicad_pro      project
+emg_ads1299.kicad_sch      schematic
+emg_ads1299.kicad_pcb      board
+emg_ads1299.kicad_prl      local UI state (KiCad regenerates this)
+
+fp-lib-table               footprint library table  (${KIPRJMOD} relative)
+sym-lib-table              symbol library table
+
+Library.pretty/            project footprints
+    HRS_TF31-17S-0.5SH_800_.kicad_mod    (unused in this revision)
+    WireTerminal_2x09_P2.54mm.kicad_mod  <- J1 electrode terminal
+ads1299_Library.pretty/    PAG64_TEX.kicad_mod   (U1 TQFP-64)
+lod_Library.pretty/        SO-8_S_LIT.kicad_mod  (U3 LDO)
+
+ads1299IPAG.kicad_sym      U1 symbol
+LT1763CS8-5-PBF.kicad_sym  U3 symbol
+MAX1683EUK.kicad_sym       U2 symbol
+Connector.kicad_sym        J4 / J5 symbols (single row only)
+
+MY_3D/                     3D models
+_vendor_originals/         untouched vendor downloads (reference only)
+
+CHANGELOG_competition.md   what changed in this revision + J1 wiring table
+cleanup.ps1                one-shot filename cleanup script
+gerber/                    plot output (create at plot time, upload this)
+
+
+KEY PARTS
+---------
+U1   ADS1299IPAG        8 ch 24-bit AFE, TQFP-64, 0.5 mm pitch
+U2   MAX1683EUK+T       2x charge pump, SOT-23-5, 35 kHz, 45 mA
+U3   LT1763CS8-5-PBF    low noise LDO, SO-8
+J1   2x9 THT terminal   electrode lead wires, 2.54 mm, pad 1.7 / drill 1.0
+J4   1x22 socket        ESP32-S3 header J1 side
+J5   1x22 socket        ESP32-S3 header J3 side
+NT1  NetTie-2           single point AGND / DGND join
+
+
+POWER CHAIN
+-----------
+J4.21 (5V from devkit)
+  -> C45 10uF -> MAX1683 (C43 3.3uF flying cap)
+  -> VBOOST 9.1 V + C44 10uF
+  -> R24 10R -> VLDO_IN 8.95 V + C37 10uF      (RC: fc 1.6 kHz, -27 dB @ 35 kHz)
+  -> LT1763-5 (BYP C35 10nF, SHDN tied to IN)
+  -> +5VA 5.00 V + C36 10uF -> U1 AVDD x6
+LDO dissipation (8.95 - 5) x 15 mA = 59 mW
+
+DVDD 3.3 V comes from J4.1 (devkit 3V3).
+
+
+ESP32-S3 PIN MAP
+----------------
+ADS1299 *DRDY  (47)  ->  J4.15  ->  GPIO9
+ADS1299 *CS    (39)  ->  J4.16  ->  GPIO10   FSPICS0
+ADS1299 DIN    (34)  ->  J4.17  ->  GPIO11   FSPID  (MOSI)
+ADS1299 SCLK   (40)  ->  J4.18  ->  GPIO12   FSPICLK
+ADS1299 DOUT   (43)  ->  J4.19  ->  GPIO13   FSPIQ  (MISO)
+ADS1299 START  (38)  ->  J4.20  ->  GPIO14
+ADS1299 *RESET (36)  ->  J5.17  ->  GPIO47
+ADS1299 *PWDN  (35)  ->  J5.18  ->  GPIO21
+GND                  ->  J4.22, J5.21, J5.22
+
+GPIO10-13 are the native FSPI IO_MUX pins, so SPI2_HOST runs without
+going through the GPIO matrix. No strapping pins are used.
+
+
+J1 ELECTRODE TERMINAL  (board seen from the top, X increasing right)
+--------------------------------------------------------------------
+ X mm     2.18  4.72  7.26  9.80  12.34  14.88  17.42  19.96  22.50
+ Y 81.36   1N    2N    3N    4N    BI     5N     6N     7N     8N
+ (pin)     17    15    13    11     9      7      5      3      1
+ Y 83.90   1P    2P    3P    4P    GN     5P     6P     7P     8P
+ (pin)     18    16    14    12    10      8      6      4      2
+
+One column = one differential channel. Put the two leads of a pair into
+the top and bottom hole of the SAME column, then twist them from ~2-3 mm
+out. BI = active bias electrode. GN = GNDA, scope ground only, not an
+electrode. Two 6 x 3 mm slots below the terminal are cable tie anchors.
+
+
+BEFORE UPLOADING GERBERS
+------------------------
+- board outline includes two intentional routed slots on Edge.Cuts
+- surface finish: ENIG
+- 2 layers, 27 x 96 mm
+- every filename in the zip must be ASCII (run cleanup.ps1 first)
