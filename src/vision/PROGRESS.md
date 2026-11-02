@@ -1,14 +1,29 @@
 # VASH 비전 작업 기록
 
-최종 갱신: 2026-10-16 KST
+최종 갱신: 2026-11-02 KST
 
 현재 기본 설정: **추가학습하지 않은 공식 YOLO26m**, Jetson native `yolo26m_coco_original_fp16.engine`. 원본 COCO80종 가중치를 유지하고 책상·가구·사람 등 배경37종을 제외한 물체43종을 표시한다. 중앙 타깃은 그립 지원 물체 중에서 선택한다. 병·휴대폰·포크는 현재 시연 후보이며 표시 제한이 아니다. 원본 80종 가중치/출력층을 유지하고 프로젝트 지원 8종의 이름/ID만 연결한다. [선정·검증·배포](reports/ORIGINAL_DEMO_DEPLOYMENT_20261016.md).
-현재 카메라 상태: **사용자의 종료 지시로 정지했다.** 서비스 inactive/dead, MainPID=0, 카메라 장치 점유 없음, 로그인 자동 시작 disabled. 캔·펜 시험 override를 백업 후 제거했고 다음 수동 실행은 공식 원본 YOLO26m만 사용한다. 프레임·영상 자동 저장 없음. 최신 확인: `runs/can_pen_specialist_20261016/camera_stopped_original_selected.json`.
+현재 카메라 상태: **2026-11-02 객체 선택 수정 반영 후 실행 중이다.** `vagt-camera.service` active/running, 공식 원본 YOLO26m FP16, ELP 1280×720. 재시작 후 ready 및 프레임 증가를 확인했다. 프레임·영상 자동 저장 없음.
 실사용 판정: 원본 m은 사용자 관찰 시험 진행 중이며 정확도 합격은 미판정이다. 이전 v8과 캔·동전 복구 모델은 ELP 오탐으로 불합격이었다. 해당 가중치·실험 기록·복구 백업을 보존한다. 공개 AP 개선을 실사용 합격으로 간주하지 않는다. [학습 이력과 원인 분리 기록](reports/FALSE_POSITIVE_AUDIT_20261015.md).
 8종 공개 평가 이력(실사용 불합격): [FOCUS8_MAX_RESULT_20261015.md](reports/FOCUS8_MAX_RESULT_20261015.md), [프로필 실행·복구](docs/FOCUS8_PROFILES.md).
 이전 v5 배포 이력: [FOCUS8_JETSON_DEPLOYMENT_20261015.md](reports/FOCUS8_JETSON_DEPLOYMENT_20261015.md).
 이전 배포 성능(이력): [PER_CLASS_PERFORMANCE_20261014.md](reports/PER_CLASS_PERFORMANCE_20261014.md).
 GPU 추가 학습: [기존 8종 보강 결과](reports/FOCUS8_FINETUNE_RESULT_20261015.md), [후속 집중 실험](reports/FOCUS8_TARGETED_RESULT_20261015.md).
+
+## 2026-11-02 Center Bias 선택 조건 복원
+
+- 기존 계획 `docs/history/VAGT_ORCA_AI_PLAN.md` 9·10절에 따라 십자선이 bbox 내부에
+  있어야 한다는 조건을 제거했다. 그립 지원 후보 중 bbox 중심과 화면 중심의 유클리드
+  거리가 가장 짧은 객체를 선택한다. 거리 상한은 두지 않는다.
+- 최근 5 frame 중 4 vote로 확정하고, 기존 target보다 최소 20% 더 가까운 후보만 전환을
+  허용한다. 기존 미검출 유예 8 frame 및 stale target 출력 보류는 유지했다.
+- 선택·안정화·pipeline·그립 관련 pytest 41개와 변경 Python 파일의 ruff 검사를 통과했다.
+  젯슨 실제 Python 환경에서도 선택·안정화 테스트 및 pipeline 경계값 검증 15개를 통과했다.
+- 젯슨 `/mnt/data/vagt-orca-ai/src/vagt_orca/vision/target_selector.py`에 적용했다.
+  기존 파일 백업: `/mnt/data/vagt-orca-ai/artifacts/center-bias-before-20261102-dy04tkhh/target_selector.py`.
+  적용 파일 SHA-256: `236c5e53bae04fca369cb42c3460edf11d0e1498ee4a60a3e644460bb47da922`.
+- 카메라 서비스를 재시작하고 ready 및 프레임 증가, read_failures=0을 확인했다.
+  확인 순간 detections=0이었으므로 실제 물체를 놓은 사용자 조작감 평가는 별도다.
 
 ## 2026-10-16 캔·펜 시험 종료, 공식 원본만 사용
 

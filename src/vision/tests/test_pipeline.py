@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from vagt_orca.grip.planner import GripPlanner
 from vagt_orca.types import Detection
@@ -20,6 +21,38 @@ class VanishingDetector:
         if self.calls <= 4:
             return [Detection(0, "bottle", 0.91, (200, 100, 440, 400), track_id=7)]
         return []
+
+
+@pytest.mark.parametrize("challenger_distance, switches", [(90, False), (80, True), (50, True)])
+def test_off_center_selection_preserves_debounce_and_switch_margin(
+    challenger_distance: float, switches: bool,
+) -> None:
+    locked = Detection(0, "bottle", 0.9, (410, 230, 430, 250), track_id=1)
+    challenger = Detection(
+        2, "cup", 0.95,
+        (310 - challenger_distance, 230, 330 - challenger_distance, 250), track_id=2,
+    )
+
+    class Scene:
+        def __init__(self):
+            self.detections = [locked]
+
+        def predict(self, frame):
+            return self.detections
+
+    scene = Scene()
+    pipeline = VisionGripPipeline(scene, TargetStabilizer(), GripPlanner())
+    frame = np.zeros((480, 640, 3), dtype=np.uint8)
+    initial = [pipeline.process(frame) for _ in range(4)]
+    assert all(result.candidate == locked for result in initial)
+    assert all(result.target is None for result in initial[:3])
+    assert initial[-1].target == locked
+
+    scene.detections = [locked, challenger]
+    results = [pipeline.process(frame) for _ in range(4)]
+    assert all(result.candidate == challenger for result in results)
+    assert all(result.target == locked for result in results[:3])
+    assert results[-1].target == (challenger if switches else locked)
 
 
 def test_end_to_end_result_shape_after_debounce() -> None:

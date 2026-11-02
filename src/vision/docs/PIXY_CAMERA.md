@@ -98,19 +98,20 @@ VAGT_PIXY_BAYER=BayerGB2BGR .venv/bin/python scripts/pixy_benchmark.py --frames 
 
 ## 중앙 시선 기반 의도 선택
 
-실기 데모에서 remote가 잠깐 미검출되자 중앙에서 벗어난 bottle이 유일한 detection이라는
-이유로 candidate/target이 되는 문제가 확인됐다. 사용자의 시선을 대체하는 중앙 십자선 의도는
-다음 정책으로 처리한다.
+2026-11-02에 기존 Center Bias 계획에 맞춰 십자선의 bbox 내부 포함 조건을 제거했다.
+현재 타겟 선정과 안정화 정책은 다음과 같다.
 
-- 화면 중앙점이 detection bbox 내부에 있을 때만 candidate 자격을 갖는다.
-- 여러 bbox가 중앙점을 포함하면 bbox 중심이 화면 중심에 가장 가까운 detection을 고른다.
+- bbox 중심과 화면 중심 사이의 유클리드 거리가 가장 작은 detection을 candidate로 고른다.
+  십자선이 bbox 바깥에 있어도 후보가 될 수 있다.
+- 최근 5 frame 중 같은 후보가 4번 선택되면 target으로 확정한다.
+- 기존 target이 보이는 동안 새 후보가 중심에 최소 20% 더 가까워야 전환을 허용한다.
 - locked target이 사라지면 8 frame 동안 다른 target 출력을 보류하고 재검출을 기다린다.
 - 유예 중에는 stale bbox를 현재 target으로 planner에 전달하지 않는다.
-- 중앙 challenger가 지속되면 유예 종료 후 5 frame 중 4 vote debounce로 target을 전환한다.
+- challenger가 지속되면 유예 종료 후 5 frame 중 4 vote debounce로 target을 전환한다.
 
-설정은 `configs/runtime.yaml`의 `target.missing_grace_frames`에 있다. 이 변경은 순간 미검출이
-다른 물체에 대한 사용자 의도로 해석되는 것을 막지만 detector 자체의 phone 약검출을 해결하지는
-않는다. phone은 Pixy 도메인 영상을 추가 수집해 fine-tuning해야 한다.
+설정은 `configs/runtime.yaml`의 `target`에 있다. 순간 미검출 때는 유예 시간 동안 전환을
+보류하지만, 미검출이 지속되면 중앙에서 떨어진 물체도 새 target이 될 수 있다.
+detector 자체의 phone 약검출은 별개이며 Pixy 도메인 영상의 추가 수집과 fine-tuning이 필요하다.
 
 브라우저 실시간 확인 도구는 중앙 십자선, candidate, target, center distance를 함께 표시한다.
 영상 노출을 피하기 위해 Jetson localhost에 바인딩하고 SSH port forwarding으로 접속한다.
