@@ -112,7 +112,7 @@ EMG 센서에서 얻은 신호로 휴식, 주먹, 세손가락, 집기와 같은
 
 | 로봇 손 조립 | 손가락 부품 조립 |
 | --- | --- |
-| ![로봇 손 조립 과정](fig/orca-hand-assembly.gif) | ![로봇 손가락 부품 조립 과정](fig/orca-finger-assembly.gif) |
+| <img src="fig/orca-hand-assembly.gif" alt="로봇 손 조립 과정" width="360"> | <img src="fig/orca-finger-assembly.gif" alt="로봇 손가락 부품 조립 과정" width="360"> |
 
 | 손 부품 3D 프린팅 | 손 부품 3D 프린팅 |
 | --- | --- |
