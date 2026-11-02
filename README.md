@@ -110,13 +110,13 @@ EMG 센서에서 얻은 신호로 휴식, 주먹, 세손가락, 집기와 같은
 | --- | --- |
 | ![EMG 센서 밴드를 착용한 시연](fig/emg-armband-hand-demo.gif) | ![ORCA Hand 구동 테스트](fig/orca-hand-motion-test.gif) |
 
-| 로봇 손 조립 | 손 부품 3D 프린팅 |
+| 로봇 손 조립 | 손가락 부품 조립 |
 | --- | --- |
-| ![로봇 손 조립 과정](fig/orca-hand-assembly.gif) | ![손 부품 3D 프린팅 과정](fig/hand-parts-3d-printing-01.gif) |
+| ![로봇 손 조립 과정](fig/orca-hand-assembly.gif) | ![로봇 손가락 부품 조립 과정](fig/orca-finger-assembly.gif) |
 
-![손 부품 3D 프린팅 두 번째 과정](fig/hand-parts-3d-printing-02.gif)
-
-*로봇 손 조립과 부품 제작 과정.*
+| 손 부품 3D 프린팅 | 손 부품 3D 프린팅 |
+| --- | --- |
+| ![손 부품 3D 프린팅 과정](fig/hand-parts-3d-printing-01.gif) | ![손 부품 3D 프린팅 과정](fig/hand-parts-3d-printing-02.gif) |
 
 ## 평가 결과
 
