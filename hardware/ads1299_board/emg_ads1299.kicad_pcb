@@ -2913,7 +2913,7 @@
 			(uuid "4b1ad95d-292c-4b1b-b665-f6eb6f118c2e")
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/MY_3D/SO-8_S_LIT.step"
+		(model "${KIPRJMOD}/lib/3d/SO-8_S_LIT.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -9015,7 +9015,7 @@
 			(uuid "b50c3d38-059e-4ea2-82c7-3852c78127be")
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/MY_3D/PAG0064A.stp"
+		(model "${KIPRJMOD}/lib/3d/PAG0064A.stp"
 			(offset
 				(xyz 0 0 0)
 			)

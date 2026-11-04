@@ -10,13 +10,14 @@ import numpy as np
 import pyvista as pv
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+CAD = os.path.join(HERE, "..", "cad"); IMAGES = os.path.join(HERE, "..", "images")
 
 # CadQuery(OCP) 와 VTK 렌더러를 한 프로세스에서 같이 쓰면 화면이 깨지므로
 # 블록 메쉬·치수는 별도 프로세스에서 받는다.
 _TMP_STL = os.path.join(tempfile.gettempdir(), "emg_block_tmp.stl")
 _PARAMS = ["HEAD_D", "HEAD_H", "PROTRUDE", "BOOT_D", "BOOT_L", "STRAP_W", "STRAP_T", "WIRE_D", "RET_X",
            "yP", "yN", "half_y", "z_roof", "slot_t", "height", "size_x"]
-_code = (f"import sys,json; sys.path.insert(0,{HERE!r}); import emg_electrode_block as B; "
+_code = (f"import sys,json; sys.path.insert(0,{CAD!r}); import emg_electrode_block as B; "
          f"B.body.val().exportStl({_TMP_STL!r}, 0.03, 0.15); "
          f"print(json.dumps({{k: float(getattr(B, k)) for k in {_PARAMS!r}}}))")
 _out = subprocess.run([sys.executable, "-c", _code], capture_output=True, text=True, check=True).stdout
@@ -122,7 +123,7 @@ def save(pl, fn, cam, view_angle=30):
     pl.camera_position = cam
     pl.camera.view_angle = view_angle
     pl.render()
-    pl.screenshot(os.path.join(HERE, fn))
+    pl.screenshot(os.path.join(IMAGES, fn))
     pl.close()
     print("saved", fn)
 
