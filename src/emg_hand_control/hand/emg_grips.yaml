@@ -109,9 +109,7 @@ relax:           # 대기 자세 (v9, 10-30): 사람 손이 쉴 때처럼 살짝
 #   주먹: 검지 mcp 0.81 → 0.90 (끝까지 쥐기)
 #   v12 (10-30 저녁): 모든 자세를 손으로 다시 만들기로 함 → 덮어쓰기 끔 (손으로 만든 값을 그대로 사용). 이전 값:
 #   pinch: {middle_mcp: 0.15, middle_pip: 0.10, _coupled: [ring_mcp, ring_pip, pinky_mcp, pinky_pip]}, fist: {index_mcp: 0.90}
-override:
-  fist:            # 11-07: 손으로 만든 주먹의 엄지 끝마디(DIP)가 대기와 같은 0.32 (24°) 라 쥘 때 엄지가 마디를 안 굽히고 좌우로만 움직임
-    thumb_dip: 0.55  #   → 끝마디도 굽힘 (52°). 손가락에 닿으면 전류로 멈춤. 손으로 다시 만들면 이 줄을 지우세요
+override: {}       # 11-07: 주먹 엄지 DIP 0.55 덮어쓰기를 지움 — 앱에서 손으로 다시 만든 주먹 값이 무시되던 원인
 
 # 주먹 풀 때 엄지가 제자리에서 먼저 펴는 마디 (ROM 비율, 작을수록 폄). 그다음 네 손가락이 펴지고 엄지가 대기 자리로 (--fist-unwind)
 fist_release_thumb:
@@ -224,7 +222,7 @@ paths:
 #   중지는 약지·소지를 적지 않음 → 중지에서 예측 (coupling tuck, --ring-lag/--pinky-lag 로 늦게 따라옴)
 #   v14 (10-31): 엄지 척(thumb_ext)·검지 가리키기(index_ext)는 나머지 손가락을 접은 전체 모양 그대로 사용 (손으로 만든 16 관절 전부)
 # 손 펴기 엄지만 손으로 다시 만들기 (10-31): teach_pose.py open_thumb → 엄지 4 관절만 open 에 덮어씀 (네 손가락은 지금 open 그대로)
-taught_keep_copy: [open]
+taught_keep_copy: []   # 11-07: [open] 을 비움 — 앱에서 손 펴기를 저장해도 엄지가 예전 open_thumb 으로 덮여 '저장이 안 되는' 것처럼 보였음
 open_thumb:
   _base: open
 

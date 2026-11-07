@@ -133,11 +133,31 @@ def run(hand, stopped, read, registers):
             OUT.write_text("# teach_pose.py / teach_live.py 로 손으로 만든 자세 (관절 ROM 비율 0~1). emg_bridge_guarded.py 가 emg_grips.yaml 보다 우선 사용\n"
                            + yaml.safe_dump(taught, sort_keys=False), encoding="utf-8")
             print(f"\n저장: {name} (토크 켠 상태) → {OUT.name}", flush=True)
+            check_saved(hand, name, taught[name])
             hand.set_max_current(float(ARGS.hold))
             hand.set_joint_positions(poses["relax"], num_steps=50, step_size=0.02)
             return 0
         stopped.wait(0.05)
     return 130
+
+
+def check_saved(hand, name, saved):
+    """저장한 값이 실제로 그대로 쓰이는지 확인 (emg_grips.yaml 의 override·_copy·taught_only 가 덮으면 알려 줌)"""
+    try:
+        poses, _ = build_poses(hand, str(HERE / "emg_grips.yaml"))
+    except Exception as e:
+        print(f"확인 못 함: {e}", flush=True); return
+    roms = hand.config.joint_roms_dict
+    diff = []
+    for j, v in saved.items():
+        if j in poses.get(name, {}):
+            used = (poses[name][j] - roms[j][0]) / (roms[j][1] - roms[j][0])
+            if abs(used - v) > 0.02:
+                diff.append(f"{j} 저장 {v:.2f} → 사용 {used:.2f}")
+    if diff:
+        print("주의: emg_grips.yaml 설정 때문에 일부 관절이 저장한 값과 다르게 쓰입니다: " + ", ".join(diff), flush=True)
+    else:
+        print("확인: 저장한 값 그대로 쓰입니다", flush=True)
 
 
 def save_path(name, rec, n=21):
