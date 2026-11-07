@@ -122,11 +122,13 @@ def load_csv(path):
         want = {}
         for i, c in enumerate(CLASSES):
             for alt in (c.split("=", 1)[1] if "=" in c else c).split("|"):
-                want[class_key(alt)] = i + 1
+                want[("#" + alt[1:].replace("_", " ").replace(" ", "")) if alt.startswith("#") else class_key(alt)] = i + 1
         m = {0: 0}
         for i, c in enumerate(file_classes(meta)):
             # '휴식 (팔 움직이기)' 처럼 휴식으로 시작하는 동작 = 휴식(0) 으로 학습 → 팔을 움직여도 손이 오작동하지 않게
-            m[i + 1] = 0 if class_key(c).startswith("휴식") else want.get(class_key(c), -1)
+            k_ = class_key(c); kr = "#" + c.replace("_", " ").replace(" ", "")
+            if kr in want: m[i + 1] = want[kr]                          # 11-02: '#원래이름' 별칭 = [대괄호] 까지 같은 녹화 동작 (예: 팔움직임 클래스)
+            else: m[i + 1] = 0 if k_.startswith("휴식") else want.get(k_, -1)
         lab = np.array([m.get(int(v), -1) for v in lab])
     return d[:, 2:2 + NCH], lab, d[:, 1].astype(int), meta
 

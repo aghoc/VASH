@@ -27,6 +27,82 @@ from neutral_guarded import main as run_guarded
 HERE = Path(__file__).resolve().parent
 
 
+# ============================ 비전 제안 (11-02) ============================
+# VASH Jetson → ESP32 UART 규격 v1 (src/vision/docs/UART_PROTOCOL.md) 의 16 바이트 패킷을 그대로 받음 (UDP 또는 시리얼).
+# 비전은 '제안'만: 근전도가 손 펴기를 하면 그 물체에 맞는 준비 자세로 벌리고, 근전도 '주먹'이면 비전이 고른 쥐기로 쥠.
+# 근전도가 집기·세손가락을 직접 고르면 근전도가 우선. 마지막 유효 패킷 후 250 ms 지나면 근전도만으로 (규격과 같음)
+VISION_GRIP = {1: "wrap", 2: "tripod", 3: "pinch"}          # 1 POWER, 2 TRIPOD, 3 PINCH (4 LATERAL_PINCH = 해당 자세 없음 → 무시)
+
+
+def crc16_ccitt_false(data):
+    crc = 0xFFFF
+    for b in data:
+        crc ^= b << 8
+        for _ in range(8):
+            crc = ((crc << 1) ^ 0x1021) & 0xFFFF if crc & 0x8000 else (crc << 1) & 0xFFFF
+    return crc
+
+
+def parse_vision_packet(b):
+    """16 바이트 → dict 또는 None (magic·버전·CRC 검사)"""
+    import struct
+    if len(b) != 16 or b[0] != 0xA5 or b[1] != 0x5A or b[2] != 1:
+        return None
+    if struct.unpack_from("<H", b, 14)[0] != crc16_ccitt_false(b[:14]):
+        return None
+    flags, cls, grip, conf, _, opening, seq = struct.unpack_from("<BBBBBHI", b, 3)
+    return {"valid": bool(flags & 1), "cls": cls, "grip": grip, "conf": conf, "opening": opening / 1000.0, "seq": seq}
+
+
+class VisionRx:
+    """비전 패킷 수신 (UDP host:port 또는 시리얼 COMx). latest() = 250 ms 안의 유효 제안 또는 None"""
+
+    def __init__(self, spec, timeout=0.25, min_conf=50):
+        self.timeout, self.min_conf = timeout, min_conf
+        self.last = None; self.t = -1e9; self.seq = None; self.buf = b""; self.n_ok = self.n_bad = 0
+        if ":" in spec and not spec.upper().startswith("COM"):
+            h, pt = spec.rsplit(":", 1)
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM); self.sock.bind((h, int(pt))); self.sock.setblocking(False); self.ser = None
+        else:
+            import serial
+            self.ser = serial.Serial(spec, 115200, timeout=0); self.sock = None
+
+    def _take(self, pkt):
+        v = parse_vision_packet(pkt)
+        if v is None:
+            self.n_bad += 1; return
+        if self.seq is not None and ((v["seq"] - self.seq) % 2 ** 32 == 0 or (v["seq"] - self.seq) % 2 ** 32 > 2 ** 31):
+            return                                                   # 중복·역행 sequence 폐기 (규격)
+        self.seq = v["seq"]; self.n_ok += 1
+        if v["valid"]:
+            self.last, self.t = v, time.monotonic()
+        else:
+            self.last = None                                         # no-target → 즉시 근전도만
+
+    def poll(self):
+        try:
+            if self.sock is not None:
+                while True:
+                    d, _ = self.sock.recvfrom(64)
+                    if len(d) == 16: self._take(d)
+            else:
+                self.buf += self.ser.read(self.ser.in_waiting or 0)
+                while len(self.buf) >= 16:
+                    i = self.buf.find(b"\xa5\x5a")
+                    if i < 0: self.buf = self.buf[-1:]; break
+                    if len(self.buf) - i < 16: self.buf = self.buf[i:]; break
+                    self._take(self.buf[i:i + 16]); self.buf = self.buf[i + 16:]
+        except (BlockingIOError, OSError):
+            pass
+
+    def latest(self):
+        self.poll()
+        v = self.last
+        if v is None or time.monotonic() - self.t > self.timeout or v["conf"] < self.min_conf or v["grip"] not in VISION_GRIP:
+            return None
+        return v
+
+
 def build_poses(hand, path):
     """비율(0~1) 자세 → 관절 각도(°). 약지·소지 mcp·pip 는 중지에서 예측."""
     P = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
@@ -83,6 +159,16 @@ def build_poses(hand, path):
     poses["_paths"] = {k: {g: sorted((float(a), float(b)) for a, b in pts) for g, pts in (v or {}).items()}
                        for k, v in (P.get("paths") or {}).items()}
     poses["_via"] = {k: sorted((float(c), str(n)) for c, n in v) for k, v in (P.get("via") or {}).items()}   # 중간 자세: 대기 → 중간(c) → 자세
+    # 맞대기 직전 자세 (11-02): approach: {pinch: [c, f]} → 'pinch_pre' = 조준 관절(벌림·엄지 돌림)은 최종값, 굽힘 관절은 대기→최종의 f 만큼
+    #   대기 → (c 에서) 손끝이 1 cm 쯤 떨어져 마주 보는 자세 → 굽힘 관절만 닫아 정면으로 맞닿음. 매번 같은 방향에서 접근 → 줄 마찰·백래시 영향이 같아짐
+    aim = {"thumb_cmc", "thumb_abd", "index_abd", "middle_abd", "ring_abd", "pinky_abd"}
+    for k, (c, f) in ((k_, tuple(v_)) for k_, v_ in (P.get("approach") or {}).items()):
+        if k not in poses or k in poses["_via"]:
+            continue
+        pre = {j: (poses[k][j] if (j in aim or j.startswith(("ring", "pinky"))) else poses["relax"][j] + float(f) * (poses[k][j] - poses["relax"][j]))
+               for j in poses[k]}
+        poses[k + "_pre"] = pre
+        poses["_via"][k] = [(float(c), k + "_pre")]
     poses["_mode_map"] = dict(P.get("mode_map") or {})        # 모드별 동작 → 자세 (예: 쥐기 모드의 '주먹' = 원통 쥐기)
     poses["_arcs"] = {k: {j: tuple(float(x) for x in a) for j, a in (v or {}).items()} for k, v in (P.get("arcs") or {}).items()}
     missing = [j for j in joints if j not in poses["open"]]
@@ -160,6 +246,7 @@ class Smoother:
         self.v = {j: 0.0 for j in q0}
         self.hist = []                       # (t, 목표) 최근 0.3 s
         self.fkey, self.fbase, self.fp0 = None, None, 0.0
+        self.t_tuck = -1e9                   # 엄지를 덮는 쥐기(주먹·감싸 쥐기·집기·세손가락)였던 마지막 시각
         self.last_grip = None                # 마지막 쥐기 자세 (풀 때 속도를 자세별로: --wrap-rel-*)
 
     def _delayed(self, j, t, tgt):
@@ -177,6 +264,8 @@ class Smoother:
     def _delayed_open(self, j, t, g):
         """펼 때 네 손가락은 OPEN_DELAY s 늦게 펴짐 (엄지가 먼저 떠서 비킨 뒤) — 펼 때 엄지·손가락 간섭 방지 (10-31)"""
         f = j.split("_")[0]; d = OPEN_DELAY.get(f, 0.0) if j.endswith(("_mcp", "_pip")) else 0.0
+        if d > 0 and ARGS.open_delay_tuck and t - self.t_tuck > 1.0:   # 엄지가 손가락 위를 덮는 쥐기에서 막 풀 때만 늦춤 (10-31 지연 개선: 대기에서 펴기·가위 등은 바로)
+            return g
         if d > 0 and self.last_grip == "wrap":      # 감싸 쥐기 풀 때: 네 손가락 늦춤 따로 (검지 기준, 한 손가락마다 +0.02 s)
             d = ARGS.wrap_rel_delay + {"index": 0.0, "middle": 0.0, "ring": 0.02, "pinky": 0.04}.get(f, 0.0)
         if d <= 0 or not self.hist:
@@ -198,6 +287,8 @@ class Smoother:
         w0 = ARGS.w_open if key in ("open", "relax") else ARGS.w_flex
         if key not in ("open", "relax", "preshape"):
             self.last_grip = key
+        if key in ("fist", "wrap", "pinch", "tripod", "thumb_flex", "cylinder"):
+            self.t_tuck = t
         wrap_rel = key in ("open", "relax") and self.last_grip == "wrap"
         follow = key in self.poses["_follow"]
         if key == "preshape":                     # 예비 자세: 일정 속도로 천천히 다가감 (ARGS.t_pre s 에 도착)
@@ -205,13 +296,13 @@ class Smoother:
         for j in self.x:
             w = w0 * LAG.get(j, 1.0)                                  # 약지 한 단계, 소지 두 단계 느리게 (중지를 따라옴)
             g = self._delayed(j, t, tgt)
-            if abs(g - self.poses["open"][j]) < abs(self.x[j] - self.poses["open"][j]):      # 펴는 중
-                if j in THUMB:
-                    w *= ARGS.wrap_rel_thumb if wrap_rel else ARGS.thumb_open_boost      # 엄지는 먼저 떠서 비킴
-                else:
-                    if wrap_rel:
-                        w *= ARGS.wrap_rel_fingers
-                    g = self._delayed_open(j, t, g)                   # 네 손가락은 조금 늦게
+            opening = abs(g - self.poses["open"][j]) < abs(self.x[j] - self.poses["open"][j])  # 펴는 중
+            if j in THUMB and (opening or key in ("open", "relax")):  # 11-02: 대기로 돌아갈 때 open 에서 멀어지는 엄지 관절(벌림)도 같이 빠르게
+                w *= ARGS.wrap_rel_thumb if wrap_rel else ARGS.thumb_open_boost      # 엄지는 먼저 떠서 비킴
+            elif opening:
+                if wrap_rel:
+                    w *= ARGS.wrap_rel_fingers
+                g = self._delayed_open(j, t, g)                       # 네 손가락은 조금 늦게
             k1 = 1.0 - math.exp(-w * dt)
             if key == "preshape":
                 step = abs(tgt[j] - o_[j]) / ARGS.t_pre * dt
@@ -291,7 +382,7 @@ class ContactHold:
         self.last = {}
         # 미끄러짐 반사 (10-31): 고정된 관절이 고정점 쪽으로 더 들어가고(물체가 빠지거나 밀려남) 전류가 허공 수준으로 떨어지면
         #   → 고정 풀고 다시 닫기 (새로 닿으면 다시 고정) + slip_boost s 동안 '꽉' 전류. 사람의 '잡은 물건이 빠지면 반사적으로 더 쥠'
-        self.base = {}; self.low = {j: 0 for j in poses["open"]}; self.firm = False; self.t_slip = -1e9; self.n_slip = 0
+        self.base = {}; self.low = {j: 0 for j in poses["open"]}; self.firm = False; self.t_slip = -1e9; self.n_slip = 0; self.precision = False
 
     def boosted(self):
         return time.monotonic() - self.t_slip < ARGS.slip_boost
@@ -312,7 +403,7 @@ class ContactHold:
         out = dict(cmd)
         for j, q in cmd.items():
             p = jp.get(j)
-            if p is None:
+            if p is None or (self.precision and j in AIM_JOINTS):   # 집기·세손가락: 조준 관절은 닿음 고정·누르기 안 함 (손끝을 옆으로 밀어 틀어지던 것)
                 continue
             d = self.dir[j]
             if j in self.lock:
@@ -338,7 +429,7 @@ class ContactHold:
                     if sm is not None: sm.x[j] = sm.r[j] = self.lock[j]; sm.v[j] = 0.0
             else:
                 self.cnt[j] = 0
-        self.last = {"locked": sorted(self.lock), "cur": cur}
+        self.last = {"locked": sorted(self.lock), "cur": cur, "pos": jp}
         return out
 
 
@@ -419,7 +510,7 @@ class Composer:
     def __init__(self, poses, emg_map):
         self.poses, self.emg_map = poses, emg_map; self.emg_map0 = dict(emg_map)
         self.names = None; self.key = None; self.c = 0.0; self.t_on = 0.0; self.tg = 0.0; self.firm = False; self.dwell = 0.0
-        self.now = 0.0; self.t_open = -1e9; self.fist_as = None      # 손 펴기 직후 주먹 = 감싸 쥐기 (10-31)
+        self.now = 0.0; self.t_open = -1e9; self.fist_as = None; self.vision = None      # 손 펴기 직후 주먹 = 감싸 쥐기 (10-31)
         self.thumb_keys = {k for k, q in poses.items() if not k.startswith("_") and k not in ("open", "relax", "preshape")
                            and any(abs(q[j] - poses["relax"][j]) > 8 for j in THUMB)}     # 엄지가 실제로 움직이는 동작들
 
@@ -475,6 +566,8 @@ class Composer:
         wts = {}
         if ARGS.blend and msg.get("post") and self.names and len(self.names) == len(msg["post"]):
             for nm, p in zip(self.names, msg["post"]):
+                if nm.startswith("팔움직임"):                       # 11-02: 팔움직임 확률은 섞지 않음 (대기 쪽으로 끌어 엄지 문이 안 열려 엄지가 덜 접히던 것)
+                    continue
                 k = map_key(nm, self.emg_map)
                 d = ARGS.dz_thumb if k in ("thumb_flex", "scissors") else ARGS.dz      # 문턱 아래 확률은 버림 (엄지·가위는 더 높게 → 애매할 때 함부로 안 섞임. 10-31: 손 펴기 중 가위 확률이 섞여 V 처럼 보임)
                 p = max(0.0, (p - d) / (1.0 - d))
@@ -485,6 +578,25 @@ class Composer:
             wts = {k if msg.get("committed") else ("preshape" if k != "open" else rest_key): 1.0}
         # 주먹 판단 (10-31): 손 펴기를 하고 open_window s 안에 주먹 → 감싸 쥐기(wrap, 물체를 잡으려고 손을 벌렸다 쥠 = 실제 손과 같음)
         #   그냥 주먹(대기에서 바로) → 바위(fist). 한 번 정하면 이번 쥐기 동안 유지 (중간에 안 바뀜)
+        vk = VISION_GRIP.get(self.vision["grip"]) if self.vision else None
+        vk = vk if vk in self.poses else None
+        if vk and ARGS.vision_lock:
+            # 물체를 보고 있을 때 (11-02): 근전도는 '언제'만 — 쥐는 동작(주먹·집기·세손가락)은 모두 비전이 고른 쥐기로,
+            #   쥐기와 상관없는 동작(가위·가리키기·엄지 척 등)은 무시. 손 펴기 → 주먹으로 바로 갈 때 중간에 다른 동작으로 잠깐 판단돼
+            #   손이 이상하게 움직이던 것을 막음. 무시해서 남는 게 없으면 직전 자세 유지
+            for g_ in ("fist", "pinch", "tripod"):
+                if g_ in wts: wts[vk] = wts.get(vk, 0.0) + wts.pop(g_)
+            for g_ in [k_ for k_ in wts if k_ not in ("open", vk, "relax", "preshape")]:
+                wts.pop(g_)
+            if not wts and self.key in self.poses:
+                wts = {self.key: 1.0}
+            if vk in wts: self.fist_as = vk
+        elif vk and "fist" in wts and self.fist_as is None:        # (vision_lock 끔) '주먹' = 비전이 고른 쥐기, 근전도 집기·세손가락은 그대로
+            self.fist_as = vk
+        if self.fist_as in ("pinch", "tripod", "wrap") and "fist" in wts and self.fist_as != "wrap":
+            wts[self.fist_as] = wts.get(self.fist_as, 0.0) + wts.pop("fist")
+        if vk and "open" in wts and msg.get("committed") and (vk + "_pre") in self.poses:   # 손 펴기 = 그 물체에 맞는 준비 자세로 벌림
+            wts[vk + "_pre"] = wts.get(vk + "_pre", 0.0) + wts.pop("open")
         if "fist" in wts and ARGS.open_window > 0 and "gesture" not in str(msg.get("mode") or ""):   # 동작 모드(바위)에서는 안 바꿈
             if self.fist_as is None:
                 self.fist_as = "wrap" if self.now - self.t_open <= ARGS.open_window else "fist"
@@ -495,7 +607,7 @@ class Composer:
         if not wts:
             return o, rest_key, 0.0
         key = max(wts, key=wts.get)
-        if key == "open" and msg.get("committed"):
+        if (key == "open" or key.endswith("_pre")) and msg.get("committed"):
             self.t_open = self.now
         # 감싸 쥐기에서 다른 동작(대개 손 펴기 — 놓을 때 펴는 근육)으로 넘어갈 때도 쥘 때 경로를 거꾸로 풂 (10-31 실측: 놓을 때 휴식이 아니라
         #   손 펴기로 판단되면 바로 펴기 자세로 가서 엄지가 검지 쪽으로 좁혀 들어오며 물체가 낌)
@@ -503,13 +615,21 @@ class Composer:
             return self._unwind(dt, stop_at_via=(key == "open")), rest_key, 0.0
         # 스스로 쥐기 (10-31): 쥐기 모드 자세(wrap·pinch·tripod)는 확정되면 근전도 세기와 상관없이 auto_close s 동안 끝까지 닫음
         #   → 물체에 닿은 손가락은 ContactHold 가 그 자리에서 멈추고 누름. 힘 = 전류 상한 (살살 i_light / 꽉 i_max). 근육 힘을 빼면(휴식) 놓음 (나)
-        auto = key in AUTO_KEYS and ARGS.auto_close > 0 and msg.get("committed")
+        auto = key in AUTO_KEYS and ARGS.auto_close > 0 and (msg.get("committed") or ARGS.auto_early)   # auto_early: 확정 전에도 가장 그럴듯한 쥐기로 닫기 시작 (지연 개선 시험)
         if auto:
-            self.c = min(1.0, (self.c if key == self.key else 0.0) + dt / ARGS.auto_close)
+            if key == self.key:
+                c0 = self.c
+            elif self.key == key + "_pre" and self.poses["_via"].get(key):
+                c0 = min(c for c, n in self.poses["_via"][key]) * min(1.0, self.c)   # 준비 자세(비전 손 펴기)에서 이어서 닫음 — 대기로 되돌아가지 않게
+            else:
+                c0 = 0.0
+            self.c = min(1.0, c0 + dt / ARGS.auto_close)
         else:                                       # 동작 모드: 자세 의도 유지 (같은 동작이면 최고값을 천천히 놓음)
             self.c = max(self.c - ARGS.leak * dt, lv) if key == self.key else lv
         self.key = key
         self.firm = bool(msg.get("firm")) and key in FIRM_KEYS
+        if ARGS.commit_floor > 0 and msg.get("committed") and not auto and key not in ("relax", "preshape"):
+            self.c = max(self.c, ARGS.commit_floor)  # 확정되면 바로 이만큼은 감 (세기가 아직 오르는 중이라 손이 늦게 따라오던 것, 10-31 지연 개선)
         if key == "open":                          # 손 펴기도 세기 비례 (v11: 이전 '최소 60 %' 는 쥐었다 놓을 때의 펴는 근육 반동에도 손을 활짝 펴서 대기가 흔들림)
             c = max(self.c, 0.6) if ARGS.open_dz < 0 else max(0.0, (self.c - ARGS.open_dz) / (1.0 - ARGS.open_dz))
         else:
@@ -531,7 +651,8 @@ class Composer:
                 dk = ((pose_at(self.poses, k, j, c) - self.poses["relax"][j]) if k in self.poses["_via"]
                       else (path_progress(self.poses, k, j, c) * (self.poses[k][j] - o[j]) + arc_offset(self.poses, k, j, c)))
                 gate = self.tg if (j in THUMB and k in self.thumb_keys) else 1.0
-                q += w * (dk + sq * (self.poses[k][j] - o[j])) * gate
+                sqk = 0.0 if (k in PRECISION_KEYS and j in AIM_JOINTS) else sq      # 집기·세손가락: 조준 관절(벌림·엄지 돌림)은 자세 그대로, 더 밀지 않음
+                q += w * (dk + sqk * (self.poses[k][j] - o[j])) * gate
             tgt[j] = min(max(q, roms[j][0]), roms[j][1])
         return tgt, key, ((1.0 if auto else lv) if key not in ("open", "relax", "preshape") else 0.0)
 
@@ -541,7 +662,7 @@ class Stiffness:
     오래 쥐면(hold_relief s 이상) 열 관리로 증가분을 80 % 로. 바뀔 때만 (≥ 15 mA, 0.1 s 간격) 써서 버스 부담 줄임"""
 
     def __init__(self, hand):
-        self.hand = hand; self.last = None; self.t_last = 0.0; self.t_grip = None; self.key = None
+        self.hand = hand; self.last = None; self.t_last = 0.0; self.t_grip = None; self.key = None; self.last_aim = False
         self.i_max = ARGS.i_max or float(hand.config.max_current)
 
     def update(self, key, lv_force, now, firm=False):
@@ -557,12 +678,39 @@ class Stiffness:
             i = ARGS.i_min + span * lv_force
         self.key = key
         i = min(i, self.i_max)
-        if self.last is None or (abs(i - self.last) >= 15 and now - self.t_last >= 0.1):
-            self.hand.set_max_current(i); self.last = i; self.t_last = now
+        aim = key in PRECISION_KEYS and ARGS.aim_current > 0
+        if self.last is None or aim != self.last_aim or (abs(i - self.last) >= 15 and now - self.t_last >= 0.1):
+            if aim:                                    # 집기·세손가락: 조준 관절은 단단하게(aim_current), 굽힘 관절은 살살/꽉 — 손끝이 서로 밀려 옆으로 돌아가지 않게
+                m2j = self.hand.config.motor_to_joint_dict
+                self.hand.set_max_current([max(i, ARGS.aim_current) if m2j.get(mid) in AIM_JOINTS else i for mid in self.hand.config.motor_ids])
+            else:
+                self.hand.set_max_current(i)
+            self.last = i; self.t_last = now; self.last_aim = aim
         return self.last
 
 
 def run(hand, stopped, read, registers):
+    off = list(ARGS.off_joints or []) + (["thumb_cmc", "thumb_abd", "thumb_mcp", "thumb_dip"] if ARGS.thumb_off else [])
+    if off:                                                       # 11-02: 일부 관절만 끄기 (줄 풀림 등) — 토크 끄고 전류 상한 0 으로 유지
+        j2m = {j: abs(m) for j, m in hand.config.joint_to_motor_map.items()} if hasattr(hand.config, "joint_to_motor_map") else \
+              {j: mid for mid, j in hand.config.motor_to_joint_dict.items()}
+        off_ids = sorted({j2m[j] for j in off if j in j2m})
+        _orig = hand.set_max_current
+        mids = list(hand.config.motor_ids)
+
+        def _cap(cur):
+            vals = list(cur) if isinstance(cur, (list, tuple)) else [float(cur)] * len(mids)
+            return _orig([0.0 if mid in off_ids else v for mid, v in zip(mids, vals)])
+        hand.set_max_current = _cap
+        _cap(float(hand.config.max_current))
+        _wr = hand._set_motor_pos                                 # 꺼진 모터는 목표 위치를 아예 안 보냄 (한계 검사도 건너뜀)
+
+        def _skip(desired, rel_to_current=False):
+            items = desired.items() if isinstance(desired, dict) else zip(mids, desired)
+            return _wr({mid: v for mid, v in items if mid not in off_ids}, rel_to_current=rel_to_current)
+        hand._set_motor_pos = _skip
+        failed = hand.disable_torque(off_ids)
+        print(f"꺼진 관절: {', '.join(off)} (모터 {off_ids}) — 토크 끔" + (f", 실패 {failed}" if failed else ""), flush=True)
     poses, emg_map = build_poses(hand, ARGS.grips)
     for name, q in poses.items():
         if name.startswith("_"): continue
@@ -642,7 +790,10 @@ def run(hand, stopped, read, registers):
                 return 130
             health(); print("→", name, flush=True)
             prev = sm.last_grip if sm is not None else None
+            old, t_old = sm, t if sm is not None else 0.0
             sm = Smoother(cur, poses); t = 0.0; sm.last_grip = prev
+            if old is not None:                                # 11-02: 목표 기록·쥔 시각을 이어받음 (안 하면 --poses 에서만 펼 때 손가락 늦춤이 빠져 실제 제어와 달라짐)
+                sm.hist = [(tt - t_old, q) for tt, q in old.hist]; sm.t_tuck = old.t_tuck - t_old
             if name == "relax" and prev == "wrap" and ARGS.wrap_unwind > 0:     # 감싸 쥐기 풀기 = 쥘 때 경로를 거꾸로 (실제 제어와 같은 계산)
                 comp_ = Composer(poses, {}); comp_.key, comp_.c = "wrap", 1.0
                 while comp_.key and not stopped.is_set():
@@ -657,7 +808,7 @@ def run(hand, stopped, read, registers):
                     tick = time.monotonic(); hand.set_joint_positions(contact.apply(dict(sm.step(poses[name], name, t, dt)), sm, poses[name])); health()
                     t += dt; stopped.wait(max(0.0, dt - (time.monotonic() - tick)))
             else:                                              # 쥐기·동작 자세: 쥐는 정도 0 → 1 을 ARGS.close_s 초 동안 (실제 제어와 같은 순서)
-                T = ARGS.close_s
+                T = ARGS.close_s; contact.precision = name in PRECISION_KEYS
                 while t < T + 1.0 and not stopped.is_set():
                     c = min(1.0, t / T)
                     q = {j: min(max(pose_at(poses, name, j, c), roms[j][0]), roms[j][1]) for j in poses["relax"]}
@@ -671,6 +822,15 @@ def run(hand, stopped, read, registers):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     host, port = ARGS.udp.split(":"); sock.bind((host, int(port))); sock.setblocking(False)
+    vision = VisionRx(ARGS.vision, min_conf=ARGS.vision_conf) if ARGS.vision else None
+    hlog = None
+    if ARGS.log:
+        log_path = Path(ARGS.log)
+        if log_path.exists():                                      # 11-03: 이전 기록을 덮어쓰지 않고 시각을 붙여 새 파일로
+            log_path = log_path.with_name(f"{log_path.stem}_{time.strftime('%H%M%S')}{log_path.suffix}"); print(f"기록 파일: {log_path}", flush=True)
+        hlog = open(log_path, "w", encoding="utf-8", buffering=1)
+        hlog.write("wall,key,c," + ",".join(f"{j}_cmd,{j}_pos" for j in LOG_JOINTS) + "\n")
+    if vision: print(f"비전 제안 수신 {ARGS.vision} (신뢰도 {ARGS.vision_conf}% 이상, 250 ms 지나면 근전도만)", flush=True)
     demo = [("rest", None), ("active", "주먹"), ("rest", None), ("active", "집기 (중지 펴기)"), ("rest", None), ("active", "세손가락 (중지 굽힘)")]
     dt = 1.0 / ARGS.rate; msg, t_msg = None, 0.0; t0 = time.monotonic(); n = 0
     sm = Smoother(cur, poses); worst = 0.0
@@ -698,11 +858,15 @@ def run(hand, stopped, read, registers):
             except BlockingIOError:
                 pass
         if not ARGS.raw:
+            comp.vision = vision.latest() if vision else None
             tgt, key, lvf = comp(msg if tick - t_msg < 0.5 else None, dt)
             cur = dict(sm.step(tgt, key, tick - t0, dt))
-            contact.firm = comp.firm
+            contact.firm = comp.firm; contact.precision = key in PRECISION_KEYS
             cur = contact.apply(cur, sm, tgt)
             health(); hand.set_joint_positions(cur); n += 1
+            if hlog is not None:                                   # 실제 지연 측정용: 시각·자세 이름·명령·실제 관절 위치
+                pos = contact.last.get("pos", {}) if contact.last else {}
+                hlog.write(f"{time.time():.4f},{key},{comp.c:.3f}," + ",".join(f"{cur[j]:.1f},{float(pos.get(j) or float('nan')):.1f}" for j in LOG_JOINTS) + "\n")
             i_now = stiff.update(key, lvf, tick, firm=comp.firm or contact.boosted()) if stiff else None
             worst = max(worst, (time.monotonic() - tick) * 1000)
             if n % max(1, int(ARGS.rate / 5)) == 0:
@@ -747,16 +911,25 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--udp", default="127.0.0.1:9000")
     ap.add_argument("--rate", type=float, default=50.0)
-    ap.add_argument("--vflex", type=float, default=250.0, help="굽힘 속도 상한 °/s (안전용)")
+    ap.add_argument("--vflex", type=float, default=350.0, help="굽힘 속도 상한 °/s (안전용)")
     ap.add_argument("--vopen", type=float, default=450.0, help="펴기 속도 상한 °/s")
-    ap.add_argument("--w-flex", type=float, default=13.0, help="굽힘 부드러움 ω (클수록 빠름, 95%% 도착 ≈ 6.3/ω s)")
+    ap.add_argument("--w-flex", type=float, default=24.0, help="굽힘 부드러움 ω (클수록 빠름, 95%% 도착 ≈ 6.3/ω s)")
     ap.add_argument("--w-open", type=float, default=18.0, help="펴기 ω (놓기는 빠르게)")
     ap.add_argument("--i-contact", type=float, default=160.0, help="닿음 판단 전류 (mA). 허공에서 굽힐 때 약 100 mA (10-31 측정)")
     ap.add_argument("--err-deg", type=float, default=6.0, help="닿음 판단: 실제 위치가 명령보다 이 각도 이상 뒤처짐")
     ap.add_argument("--contact-n", type=int, default=3, help="닿음 판단: 연속 횟수")
     ap.add_argument("--squeeze-deg", type=float, default=6.0, help="닿은 뒤 그 위치보다 이만큼 더 안쪽을 목표 (누르는 힘)")
     ap.add_argument("--no-contact", action="store_true", help="닿음 고정 끄기")
-    ap.add_argument("--auto-close", type=float, default=0.9, help="쥐기 모드 자세(wrap·pinch·tripod)를 확정 뒤 이 시간(s)에 끝까지 닫음 (스스로 쥐기). 0 = 이전 방식 (세기 비례)")
+    ap.add_argument("--auto-close", type=float, default=0.45, help="쥐기 모드 자세(wrap·pinch·tripod)를 확정 뒤 이 시간(s)에 끝까지 닫음 (스스로 쥐기). 0 = 이전 방식 (세기 비례)")
+    ap.add_argument("--thumb-off", action="store_true", help="엄지 4 관절 토크 끄고 나머지만 움직임 (엄지 줄 풀렸을 때)")
+    ap.add_argument("--off-joints", nargs="+", default=None, help="토크 끌 관절 이름들 (예: thumb_cmc thumb_mcp)")
+    ap.add_argument("--log", default=None, help="손 기록 CSV (실제 지연 측정: pc_tools/latency_live.py)")
+    ap.add_argument("--vision", default=None, help="비전 제안 받기: UDP host:port (예 0.0.0.0:9100) 또는 시리얼 (예 COM8). VASH UART 규격 v1 16 바이트 패킷")
+    ap.add_argument("--vision-conf", type=int, default=50, help="이 신뢰도(%%) 이상일 때만 비전 제안 사용")
+    ap.add_argument("--aim-current", type=float, default=300.0, help="집기·세손가락에서 조준 관절(엄지 돌림·벌림, 검지·중지 벌림) 전류 상한 mA. 0 = 다른 관절과 같게")
+    ap.add_argument("--commit-floor", type=float, default=0.0, help="확정되면 쥐는 정도를 최소 이 값으로 (세기 비례 동작이 늦게 따라오는 것 방지)")
+    ap.add_argument("--no-open-delay-tuck", dest="open_delay_tuck", action="store_false", help="(기본) 손가락 펴기 늦춤은 엄지 덮는 쥐기를 풀 때만 — 끄면 이전처럼 항상")
+    ap.add_argument("--auto-early", action="store_true", help="확정 전(잠정)에도 스스로 쥐기 닫기 시작")
     ap.add_argument("--i-light", type=float, default=200.0, help="스스로 쥐기 '살살' 전류 상한 (mA). '꽉' = --i-max (팀 설정 300)")
     ap.add_argument("--firm-keys", default="wrap,tripod", help="근전도 '꽉'을 받는 자세 (집기는 10-31 검증 5/8 로 불안정 → 항상 살살)")
     ap.add_argument("--firm-sq", type=float, default=1.5, help="'꽉'일 때 닿은 뒤 누르는 깊이 배율 (× --squeeze-deg)")
@@ -764,24 +937,25 @@ def main():
     ap.add_argument("--slip-frac", type=float, default=0.75, help="미끄러짐: 고정점 쪽으로 누르는 깊이의 이 비율 이상 들어감")
     ap.add_argument("--slip-n", type=int, default=5, help="미끄러짐: 연속 횟수 (50 Hz, 5 = 0.1 s). 0 = 반사 끄기")
     ap.add_argument("--slip-boost", type=float, default=1.5, help="미끄러짐 뒤 이 시간(s) 동안 '꽉' 전류")
-    ap.add_argument("--thumb-open-boost", type=float, default=1.0, help="펼 때 엄지 속도 배율 (10-31: 2.5 는 너무 빨라 1.0 으로. 손가락은 OPEN_DELAY 만큼 늦게 펴지므로 엄지가 여전히 먼저 비킴)")
+    ap.add_argument("--thumb-open-boost", type=float, default=1.4, help="펼 때 엄지 속도 배율 (10-31: 2.5 는 너무 빨라 1.0 → 11-02: 주먹 펼 때 검지 간섭으로 1.4. 손가락은 OPEN_DELAY 만큼 늦게 펴짐)")
     ap.add_argument("--wrap-rel-fingers", type=float, default=0.5, help="감싸 쥐기 풀 때 네 손가락 속도 배율 (<1 느리게, >1 빠르게)")
-    ap.add_argument("--wrap-rel-thumb", type=float, default=0.7, help="감싸 쥐기 풀 때 엄지 속도 배율")
+    ap.add_argument("--wrap-rel-thumb", type=float, default=1.0, help="감싸 쥐기 풀 때 엄지 속도 배율 (11-02: 검지 간섭으로 0.7 → 1.0)")
     ap.add_argument("--wrap-rel-delay", type=float, default=0.2, help="감싸 쥐기 풀 때 네 손가락이 엄지보다 늦게 출발하는 시간 (s)")
     ap.add_argument("--wrap-unwind", type=float, default=0.9, help="감싸 쥐기 풀기 = 쥘 때 경로를 거꾸로 (엄지 끝 → 엄지 뿌리가 C 자로 벌어지며 손가락 폄 → 준비 자세 → 대기). 끝→대기 전체 시간 s, 0 = 바로 대기로")
     ap.add_argument("--wrap-rel-hold", type=float, default=0.5, help="풀 때 엄지 벌린 준비 자세(wrap_pre)에서 머무는 시간 s (물체가 빠질 틈)")
-    ap.add_argument("--open-window", type=float, default=1.5, help="손 펴기 뒤 이 시간(s) 안에 주먹 → 감싸 쥐기(wrap), 아니면 바위(fist). 0 = 주먹은 emg_grips.yaml 대로")
+    ap.add_argument("--open-window", type=float, default=0.0, help="(비전 없을 때 임시) 손 펴기 뒤 이 시간(s) 안에 주먹 → 감싸 쥐기. 11-02 부터 기본 0 = 감싸 쥐기는 비전이 물체를 볼 때만, 평소 주먹은 주먹")
+    ap.add_argument("--no-vision-lock", dest="vision_lock", action="store_false", help="(기본 켬) 비전이 물체를 보면 쥐기 종류는 비전, 쥐기와 상관없는 동작은 무시")
     ap.add_argument("--close-s", type=float, default=2.5, help="--poses 에서 쥐기 자세를 닫는 시간 (s)")
     ap.add_argument("--path", default=None, help="기준점 경로 보기: 이 자세(fist/pinch/tripod/scissors)를 쥐는 정도 0→1→0 단계별로 (--hold 와 함께)")
     ap.add_argument("--no-blend", dest="blend", action="store_false", help="동작 확률 섞기 끄기 (확정 동작 1개만)")
     ap.add_argument("--thumb-gate", type=float, default=0.6, help="엄지 쓰는 동작 확률 합이 이 값을 넘어야 엄지가 움직임")
-    ap.add_argument("--thumb-rise", type=float, default=0.25, help="엄지 문 열리는 시간상수 (s, 클수록 신중)")
+    ap.add_argument("--thumb-rise", type=float, default=0.12, help="엄지 문 열리는 시간상수 (s, 클수록 신중)")
     ap.add_argument("--thumb-fall", type=float, default=0.06, help="엄지 문 닫히는 시간상수 (s, 놓을 때 엄지 빨리 복귀)")
     ap.add_argument("--open-dz", type=float, default=0.25, help="손 펴기: 이 세기 아래는 대기 자세 유지 (놓을 때 반동 무시)")
     ap.add_argument("--dz", type=float, default=0.15, help="확률 섞기 문턱 (이 아래 확률은 무시)")
     ap.add_argument("--dz-thumb", type=float, default=0.45, help="엄지만 접기 동작의 확률 문턱 (높을수록 엄지가 확실할 때만 접힘)")
-    ap.add_argument("--on-delay", type=float, default=0.10, help="켜진 뒤 이 시간(s)은 대기 유지 (짧은 오작동 무시)")
-    ap.add_argument("--on-ramp", type=float, default=0.15, help="그 뒤 이 시간(s) 동안 서서히 움직이기 시작")
+    ap.add_argument("--on-delay", type=float, default=0.05, help="켜진 뒤 이 시간(s)은 대기 유지 (짧은 오작동 무시)")
+    ap.add_argument("--on-ramp", type=float, default=0.10, help="그 뒤 이 시간(s) 동안 서서히 움직이기 시작")
     ap.add_argument("--squeeze", type=float, default=0.12, help="쥘 때 목표를 자세보다 이만큼(× 세기) 더 안쪽으로 → 물체에 닿으면 누르는 힘")
     ap.add_argument("--leak", type=float, default=0.05, help="같은 동작 중 굽힘 최고값을 놓는 속도 (/s). 작을수록 자세 유지")
     ap.add_argument("--i-min", type=float, default=150.0, help="쥘 때 최소 강성 (mA)")
@@ -792,8 +966,8 @@ def main():
     ap.add_argument("--ring-lag", type=float, default=0.7, help="약지 속도 배율 (중지 대비, 1 = 같게)")
     ap.add_argument("--pinky-lag", type=float, default=0.5, help="소지 속도 배율")
     ap.add_argument("--rest-pose", choices=["relax", "open"], default="relax", help="휴식 때 자세: relax = 살짝 오므린 대기, open = 쭉 폄 (이전 방식)")
-    ap.add_argument("--lv-lo", type=float, default=0.40, help="이 세기 이하 = 쥐지 않음 (S02 가장 약한 동작 ≈ 0.30)")
-    ap.add_argument("--lv-hi", type=float, default=0.65, help="이 세기 이상 = 끝까지 쥠 (S02 RAMP 중간~세게 ≈ 0.6~0.75)")
+    ap.add_argument("--lv-lo", type=float, default=0.30, help="이 세기 이하 = 쥐지 않음 (S02 가장 약한 동작 ≈ 0.30)")
+    ap.add_argument("--lv-hi", type=float, default=0.55, help="이 세기 이상 = 끝까지 쥠 (S02 RAMP 중간~세게 ≈ 0.6~0.75)")
     ap.add_argument("--lv-gamma", type=float, default=1.0, help="세기 곡선 (0.7 = 약한 힘에 민감, 1.5 = 세게 쥐어야 닫힘)")
     ap.add_argument("--pre-frac", type=float, default=0.5, help="예비 자세가 다 되는 세기 (쥐는 정도 비율)")
     ap.add_argument("--demo-ramp", action="store_true", help="--demo 에서 세기를 0→1→0 으로 천천히 바꿈 (비례 확인용)")
@@ -808,7 +982,11 @@ def main():
     ap.add_argument("--base", default="open", choices=["open", "relax", "preshape", "fist", "pinch", "tripod", "thumb_flex", "index_flex", "middle_flex", "thumb_ext", "index_ext", "middle_ext", "scissors", "cylinder", "wrap", "wrap_pre"], help="--sweep 의 기준 자세")
     ap.add_argument("--sweep-step", type=int, default=2, help="훑기 간격 (×0.1, 기본 0.2)")
     ap.add_argument("--only", choices=["open", "relax", "preshape", "fist", "pinch", "tripod", "thumb_flex", "index_flex", "middle_flex", "thumb_ext", "index_ext", "middle_ext", "scissors", "cylinder", "wrap", "wrap_pre"], default=None, help="--poses 와 함께: 그 자세 하나만 (open → 자세 → open)")
+    ap.add_argument("--classic", action="store_true", help="10-31 지연 개선 전 값으로 (on-delay 0.10, on-ramp 0.15, auto-close 0.9, w-flex 13, vflex 250, thumb-rise 0.25, lv-lo 0.40, lv-hi 0.65, 펴기 늦춤 항상)")
     ARGS = ap.parse_args()
+    if ARGS.classic:
+        for k_, v_ in dict(on_delay=0.10, on_ramp=0.15, auto_close=0.9, w_flex=13.0, vflex=250.0, thumb_rise=0.25, lv_lo=0.40, lv_hi=0.65, open_delay_tuck=False).items():
+            setattr(ARGS, k_, v_)
     FIRM_KEYS.clear(); FIRM_KEYS.update(k.strip() for k in ARGS.firm_keys.split(",") if k.strip())
     for f_, m_ in (("ring", ARGS.ring_lag), ("pinky", ARGS.pinky_lag)):
         for jt in ("mcp", "pip"):
@@ -819,5 +997,8 @@ def main():
 ARGS = None
 AUTO_KEYS = {"wrap", "pinch", "tripod", "cylinder"}     # 쥐기 모드 자세 = 스스로 쥐기 (동작 모드 fist=바위·가위·가리키기·엄지 척은 세기 비례 그대로)
 FIRM_KEYS = {"wrap", "tripod"}
+LOG_JOINTS = ("thumb_mcp", "thumb_cmc", "index_mcp", "index_pip", "middle_mcp", "ring_mcp")
+PRECISION_KEYS = {"pinch", "tripod"}        # 손끝을 맞대는 쥐기
+AIM_JOINTS = {"thumb_cmc", "thumb_abd", "index_abd", "middle_abd"}   # 손끝 위치를 '조준'하는 관절 (누르지 않고 단단히 고정)
 if __name__ == "__main__":
     raise SystemExit(main())

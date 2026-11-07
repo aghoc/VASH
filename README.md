@@ -33,7 +33,7 @@
 
 ![VASH 시스템 구성도](fig/emg-vision-system-architecture.png)
 
-> **프로젝트 상태:** 연구 및 개발 단계입니다. Jetson 비전 모듈의 소스와 설치·실행 절차를 [src/vision/](src/vision/)에 공개했습니다. EMG·의수 제어를 포함한 전체 통합 시스템과 하드웨어 자료는 정리 중입니다. 아래 평가는 각 연구 조건에 한정됩니다.
+> **프로젝트 상태:** 연구 및 개발 단계입니다. Jetson 비전 모듈은 [src/vision/](src/vision/), EMG 판단·의수 제어와 실행 앱은 [src/emg_hand_control/](src/emg_hand_control/), 보드·펌웨어·전극 밴드는 [hardware/](hardware/)에 있습니다. 비전과 EMG 의 실시간 통합은 진행 중입니다. 아래 평가는 각 연구 조건에 한정됩니다.
 
 ## 배경과 목표
 
@@ -144,14 +144,14 @@ EMG 센서에서 얻은 신호로 휴식, 주먹, 세손가락, 집기와 같은
 VASH/
 ├── README.md
 ├── fig/                  # 시스템, EMG 신호 및 평가 결과 이미지
-├── docs/                 # 프로젝트 문서용 폴더
-├── hardware/             # 하드웨어 자료용 폴더
+├── docs/                 # 실행·녹화 가이드, 분석 결과
+├── hardware/             # ADS1299 보드, ESP32-S3 펌웨어, 전극 밴드
 └── src/
-    ├── emg_hand_control/ # EMG 기반 손 제어 코드용 폴더
+    ├── emg_hand_control/ # EMG 판단, ORCA Hand 제어, 실행 앱, Jetson 설치
     └── vision/           # Jetson YOLO26m 검출·타깃 안정화·그립 제안 모듈
 ```
 
-비전 모듈은 `cd src/vision` 후 해당 [README](src/vision/README.md)를 따릅니다. EMG 제어 및 하드웨어 자료는 정리 중입니다.
+비전 모듈은 [src/vision/README.md](src/vision/README.md), EMG·의수 제어는 [src/emg_hand_control/README.md](src/emg_hand_control/README.md)를 따릅니다.
 
 ## 향후 과제
 
