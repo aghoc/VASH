@@ -30,7 +30,7 @@ def main():
         parser.error('--duration must be positive and finite')
     stopping = threading.Event()
     # Let an in-flight SDK transaction finish before releasing torque.
-    for sig in (signal.SIGINT, signal.SIGTERM):
+    for sig in (signal.SIGINT, signal.SIGTERM, getattr(signal, 'SIGBREAK', signal.SIGTERM)):  # SIGBREAK = 통합 앱의 정지 버튼
         signal.signal(sig, lambda *_: stopping.set())
 
     config = OrcaHandConfig.from_config_path(str(Path(__file__).with_name('config.yaml')))

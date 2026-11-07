@@ -1,0 +1,13 @@
+# VASH: USB 장치에 고정 이름을 붙임 (꽂는 순서와 상관없이 /dev/vash-emg, /dev/vash-hand)
+# 설치: jetson/setup_jetson.sh  (직접: sudo cp 99-vash.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules && sudo udevadm trigger)
+# 확인: ls -l /dev/vash-*   ·   장치 ID 보기: udevadm info -a -n /dev/ttyACM0 | grep -m2 -E 'idVendor|idProduct'
+
+# 근전도 보드 (ESP32-S3). 보드의 USB 칩에 맞는 줄 하나만 걸림: 303a = ESP32-S3 내장 USB, 10c4 = CP210x, 1a86 = CH34x
+SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", SYMLINK+="vash-emg", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="vash-emg", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", SYMLINK+="vash-emg", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# 의수 (ROBOTIS U2D2, FTDI FT232H)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", SYMLINK+="vash-hand", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+# FTDI 지연 16 ms → 1 ms (Dynamixel 읽기·쓰기 주기)
+ACTION=="add", SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTR{latency_timer}="1"

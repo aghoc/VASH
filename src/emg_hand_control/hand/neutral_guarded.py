@@ -16,7 +16,7 @@ from orca_core.maintenance.motor_reads import read_motor_pos_checked
 
 def main(action=None):
     stopped = threading.Event()
-    for sig in (signal.SIGINT, signal.SIGTERM):
+    for sig in (signal.SIGINT, signal.SIGTERM, getattr(signal, 'SIGBREAK', signal.SIGTERM)):  # SIGBREAK = 통합 앱의 정지 버튼
         signal.signal(sig, lambda *_: stopped.set())
     hand = load_hand(
         config_path=str(Path(__file__).with_name('config.yaml')),

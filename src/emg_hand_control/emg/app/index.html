@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VASH</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1b1f24;--sub:#5f6873;--line:#dde1e6;--soft:#eef1f4;--accent:#1f6feb;--accent-ink:#fff;
+  --ok:#1a7f37;--ok-bg:#e6f4ea;--warn:#8a5a00;--warn-bg:#fdf2d8;--bad:#c62828;--bad-bg:#fbe9e9;--log:#14171b;--log-ink:#cfd6dd}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1216;--card:#171b21;--ink:#e6e9ed;--sub:#959ea8;--line:#2a3038;--soft:#1f242b;--accent:#4c8dff;--accent-ink:#0b1220;
+  --ok:#4fbf74;--ok-bg:#132a1c;--warn:#e0b04a;--warn-bg:#2d2410;--bad:#ef7070;--bad-bg:#341a1a;--log:#0b0d10;--log-ink:#bfc7d0}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.06em}
+.brand span{font-size:13px;color:var(--sub)}
+.chip{font-size:12.5px;padding:3px 10px;border-radius:6px;background:var(--bad-bg);color:var(--bad)}
+.chip::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+.chip.on{background:var(--ok-bg);color:var(--ok)}
+main{display:grid;grid-template-columns:minmax(330px,430px) minmax(0,1fr);gap:16px;padding:16px 20px;max-width:1440px;margin:auto}
+@media(max-width:860px){main{grid-template-columns:minmax(0,1fr);padding:12px 16px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+h2{font-size:14.5px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+h2 b{display:inline-flex;width:22px;height:22px;border-radius:5px;background:var(--ink);color:var(--card);align-items:center;justify-content:center;font-size:12px}
+button{font:inherit;min-height:36px;padding:6px 14px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button:hover:not(:disabled){border-color:var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.danger{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:600}
+@media (prefers-color-scheme:dark){button.danger{color:#2b0d0b}}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}.grow{flex:1;min-width:0}
+input[type=text],select{font:inherit;min-height:36px;padding:5px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);width:100%}
+.note{color:var(--sub);font-size:13px;margin:4px 0}.done{color:var(--ok);font-size:13px}
+summary{cursor:pointer}
+code{font:12px Consolas,"D2Coding",monospace;background:var(--soft);padding:1px 5px;border-radius:4px}
+.msg{padding:8px 12px;border-radius:6px;margin:6px 0;font-size:14px}.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.warn{background:var(--warn-bg);color:var(--warn)}.msg.bad{background:var(--bad-bg);color:var(--bad)}
+.bar{width:100%;height:8px;background:var(--soft);border-radius:4px;overflow:hidden;margin:10px 0 4px}.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .1s linear}
+/* 현재 동작: 가로로 한 줄 */
+.live .head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.kicker{font-size:12px;color:var(--sub);font-weight:600}
+.gesture{font-size:clamp(26px,3.2vw,38px);font-weight:700;line-height:1.2;white-space:nowrap}
+.gesture.tent{color:var(--sub)}.gesture.rest{color:var(--sub);font-weight:500}
+.pill{font-size:12px;padding:2px 9px;border-radius:5px;background:var(--soft);color:var(--sub);font-weight:600}.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.live .meta{margin-left:auto;text-align:right}
+.probs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:6px 18px;margin-top:12px}
+.prob{display:grid;grid-template-columns:7.5em minmax(0,1fr) 2.8em;align-items:center;gap:8px;font-size:13px}
+.prob .t{height:8px;border-radius:4px;background:var(--soft);overflow:hidden}.prob .t i{display:block;height:100%;width:0;background:color-mix(in srgb,var(--sub) 55%,transparent);transition:width .15s linear}
+.prob.top .t i{background:var(--accent)}.prob.top b{color:var(--accent)}
+.prob.lock b::after{content:" ✓";color:var(--ok)}
+.prob b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.prob span{text-align:right;color:var(--sub);font-variant-numeric:tabular-nums}
+/* 모델 카드 */
+.mcard{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:8px 0;background:var(--soft)}
+.mcard .top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.mcard .top b{font-size:15px}.mcard .ver{font-size:12px;color:var(--sub)}
+.tag{font-size:11.5px;padding:1px 7px;border-radius:4px;background:var(--card);border:1px solid var(--line);font-weight:600}
+.mcard dl{display:grid;grid-template-columns:6.5em minmax(0,1fr);gap:3px 10px;margin:8px 0 0;font-size:12.5px}.mcard dt{color:var(--sub)}.mcard dd{margin:0;overflow-wrap:anywhere}
+.gtags{display:flex;flex-wrap:wrap;gap:4px}.gtags span{font-size:11.5px;padding:0 6px;border-radius:4px;background:var(--card);border:1px solid var(--line)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}@media(max-width:620px){.two{grid-template-columns:minmax(0,1fr)}}
+pre{margin:6px 0 0;background:var(--log);color:var(--log-ink);padding:10px;border-radius:6px;height:220px;overflow:auto;font:12px/1.45 Consolas,"D2Coding",monospace;white-space:pre-wrap;word-break:break-all}
+.state{font-size:13px;color:var(--sub)}.state b{color:var(--ink)}
+.blocks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}@media(min-width:1100px){.blocks{grid-template-columns:repeat(8,minmax(0,1fr))}}
+.blk{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:6px;padding:7px 8px;min-width:0}
+.blk b{display:block;font-size:13px}.blk .s{font-size:14px;font-weight:700}.blk .why{font-size:11px;color:var(--sub);min-height:44px;overflow-wrap:anywhere;line-height:1.3}
+.blk .num{font-size:11px;color:var(--sub);white-space:nowrap}.blk .m{height:6px;background:var(--soft);border-radius:3px;overflow:hidden;margin:4px 0}.blk .m i{display:block;height:100%;background:var(--accent);width:0}
+.blk.ok{border-left-color:var(--ok)}.blk.ok .s{color:var(--ok)}.blk.warn{border-left-color:#c98a00}.blk.warn .s{color:var(--warn)}.blk.bad{border-left-color:var(--bad);background:var(--bad-bg)}.blk.bad .s{color:var(--bad)}.blk.wait .s{color:var(--sub)}
+.steps{display:flex;gap:4px;margin:6px 0}.steps i{flex:1;height:6px;border-radius:3px;background:var(--soft)}.steps i.on{background:var(--accent)}
+dialog{width:min(1180px,calc(100vw - 32px));max-height:calc(100vh - 32px);padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+#askDlg{width:min(560px,calc(100vw - 32px));position:fixed;top:auto;bottom:24px;margin:0 auto}#askDlg::backdrop{background:rgba(0,0,0,.25)}
+.guide-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.guide-head h2{margin:0}
+.guide-steps{margin:8px 0;padding-left:20px;font-size:14px}
+dialog img{display:block;width:100%;height:auto;background:#fff;border-radius:6px}
+button[aria-selected=true]{border-color:var(--accent);color:var(--accent);font-weight:700}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--bad);color:#fff;padding:10px 16px;border-radius:6px;display:none;max-width:90vw;z-index:9}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* 근전도 켠 뒤 휴식 기준 잡기 (화면 가운데, 클릭은 막지 않음) */
+.settle{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:8;pointer-events:none;background:rgba(0,0,0,.35)}
+.settle .box{width:min(460px,calc(100vw - 32px));background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.settle .k{font-size:12px;color:var(--sub);font-weight:700;letter-spacing:.08em}
+.settle .big{font-size:24px;font-weight:700;margin:6px 0 2px}
+.settle .sec{font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.settle.ok .big,.settle.ok .sec{color:var(--ok)}.settle.ok .bar i{background:var(--ok)}
+.settle.move .big{color:var(--warn)}
+/* RUN 요약 */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:8px 0}
+.tgrid button{text-align:left;min-height:52px}.tgrid button small{display:block;color:var(--sub);font-size:11.5px}
+#teachDlg{width:min(760px,calc(100vw - 32px));overflow-x:hidden}
+.rsum{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:8px 0;background:var(--soft)}
+.rsum table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.rsum th,.rsum td{padding:3px 6px;text-align:right;border-bottom:1px solid var(--line)}.rsum th:first-child,.rsum td:first-child{text-align:left;color:var(--sub);font-weight:500}
+.rsum thead th{color:var(--sub);font-weight:600}
+.rsum .better{color:var(--ok)}.rsum .worse{color:var(--bad)}
+.rate button[aria-pressed=true]{border-color:var(--accent);color:var(--accent);font-weight:700}
+#runMemo{font:inherit;min-height:36px;padding:5px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);width:100%}
+.markn{font-variant-numeric:tabular-nums;font-weight:700;color:var(--bad)}
+
+/* ===== 메카 테마 v2 (11-07) =====
+   참고한 규칙 (팬 재해석 프로젝트 nerv-ui, NERV Hugo theme, evangelion-design 의 '시각 문법'을 읽고 따로 구현. 로고·고유 명칭·일본어 장식은 쓰지 않음):
+   ① 검은 바탕, 색 = 기능: 주황 = 머리글·라벨·테두리, 초록 = 정상 수치, 시안 = 신호·파형, 빨강 = 비상만
+   ② 둥근 모서리·부드러운 그라데이션 없음 → 각진 패널, 계단식 막대, 얇은 격자
+   ③ 굵은 명조체를 가로로 눌러(scaleX ≈ 0.8) 제목·현재 동작에, 데이터·상태 라벨은 고정폭 대문자
+   ④ CRT 질감 (주사선·가장자리 어둡게·움직이는 주사선), 움직임은 상태가 바뀔 때만, 동작 줄이기 설정이면 끔
+   ⑤ 경고 줄무늬는 비상·휴식 창에만 (평소 화면은 얇은 주황 띠) */
+html[data-theme=mecha]{--bg:#030201;--card:#0a0603;--ink:#ffe7bc;--sub:#c89452;--line:#5f2709;--soft:#160a03;--accent:#ff9830;--accent-ink:#000;
+  --ok:#50ff50;--ok-bg:#062006;--warn:#ffcc50;--warn-bg:#241804;--bad:#ff3030;--bad-bg:#2c0404;--log:#010200;--log-ink:#50ff50;
+  --cyan:#20f0ff;--hot:#ff7a00;--mono:"Cascadia Mono",Consolas,"D2Coding",monospace;--serif:"Noto Serif KR","Batang",serif;color-scheme:dark}
+html[data-theme=mecha] body{font-family:"Bahnschrift","Malgun Gothic",system-ui,sans-serif;
+  background-color:var(--bg);
+  background-image:linear-gradient(rgba(255,152,48,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,152,48,.045) 1px,transparent 1px);background-size:32px 32px}
+/* CRT: 주사선 + 가장자리 어둡게 (화면 전체, 클릭 통과) */
+html[data-theme=mecha] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
+html[data-theme=mecha] body::after{content:"";position:fixed;left:0;right:0;top:-12%;height:12%;pointer-events:none;z-index:21;
+  background:linear-gradient(180deg,transparent,rgba(255,152,48,.05),transparent);animation:mscan 7s linear infinite}
+@keyframes mscan{to{top:100%}}
+/* 머리줄 = 명령 막대 */
+html[data-theme=mecha] header{background:#000;border-bottom:1px solid var(--accent);box-shadow:0 3px 0 0 #000,0 4px 0 0 var(--hot)}
+html[data-theme=mecha] .brand h1{font-family:var(--serif);font-weight:900;font-size:26px;color:var(--accent);letter-spacing:.18em;transform:scaleX(.8);transform-origin:left center;margin-right:-14px}
+html[data-theme=mecha] .brand span{font-size:12px;letter-spacing:.08em;color:var(--sub)}
+html[data-theme=mecha] .brand span::after{content:"EMG PROSTHESIS CONTROL // SYS.07";font:10.5px var(--mono);letter-spacing:.2em;color:var(--accent);margin-left:12px}
+html[data-theme=mecha] .chip{border-radius:0;font-size:12px;background:#000;border:1px solid currentColor}
+html[data-theme=mecha] .chip::before{border-radius:0;width:6px;height:10px}
+/* 패널: 각진 틀, 왼쪽 주황 레일, 모서리 꺾쇠, 영문 코드 */
+html[data-theme=mecha] main{counter-reset:mod;padding-top:20px}
+html[data-theme=mecha] .card{position:relative;border-radius:0;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--hot);counter-increment:mod;
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+html[data-theme=mecha] .card::before{content:"MOD-" counter(mod,decimal-leading-zero);position:absolute;top:4px;right:22px;font:10px var(--mono);letter-spacing:.22em;color:var(--dim,#8b4715)}
+html[data-theme=mecha] .card::after{content:"";position:absolute;right:0;bottom:0;width:14px;height:14px;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent)}
+html[data-theme=mecha] h2{color:var(--accent);font-size:15px;letter-spacing:.1em;border-bottom:1px solid var(--line);padding-bottom:6px;flex-wrap:wrap}
+html[data-theme=mecha] h2[data-en]::after{content:attr(data-en);font:10px var(--mono);letter-spacing:.2em;color:var(--sub);margin-left:auto;padding-right:44px}
+html[data-theme=mecha] h2 b{background:var(--hot);color:#000;border-radius:0;font-family:var(--mono)}
+/* 버튼·입력: 각진, 주황 테두리, 누르는 동작은 주황 채움 */
+html[data-theme=mecha] button{border-radius:0;background:#000;border-color:var(--line);color:var(--ink);letter-spacing:.04em}
+html[data-theme=mecha] button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+html[data-theme=mecha] button.primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+html[data-theme=mecha] button.primary:hover:not(:disabled){color:#000;background:#ffcc50}
+html[data-theme=mecha] button.danger{background:#5a0000;border:1px solid var(--bad);color:#fff;font-weight:700;box-shadow:inset 0 0 0 2px #000,inset 0 0 0 3px var(--bad)}
+html[data-theme=mecha] input[type=text],html[data-theme=mecha] select,html[data-theme=mecha] #runMemo{border-radius:0;background:#000;border-color:var(--line);color:var(--ink)}
+html[data-theme=mecha] .note,html[data-theme=mecha] .state{color:var(--sub)}
+html[data-theme=mecha] code{border-radius:0;background:#000;border:1px solid var(--line);color:var(--accent)}
+/* 현재 동작: 눌린 굵은 명조체 */
+html[data-theme=mecha] .kicker{font-size:0}
+html[data-theme=mecha] .kicker::before{content:"ACTIVE PATTERN";font:11px var(--mono);letter-spacing:.25em;color:var(--accent);border:1px solid var(--accent);padding:2px 6px}
+html[data-theme=mecha] .gesture{font-family:var(--serif);font-weight:900;font-size:clamp(34px,4.2vw,52px);color:var(--accent);transform:scaleX(.82);transform-origin:left center;letter-spacing:.04em}
+html[data-theme=mecha] .gesture.rest,html[data-theme=mecha] .gesture.tent{color:var(--sub)}
+html[data-theme=mecha] .pill{border-radius:0;font-family:var(--mono);letter-spacing:.12em;background:#000;border:1px solid var(--sub)}
+html[data-theme=mecha] .pill.ok{color:#000;background:var(--ok);border-color:var(--ok)}
+html[data-theme=mecha] #liveInfo{font-family:var(--mono);color:var(--ok)}
+/* 막대: 계단식 칸 (부드러운 채움 대신) */
+html[data-theme=mecha] .bar,html[data-theme=mecha] .prob .t,html[data-theme=mecha] .blk .m,html[data-theme=mecha] .steps i{border-radius:0;background:#000;outline:1px solid var(--line)}
+html[data-theme=mecha] .bar i,html[data-theme=mecha] .prob .t i,html[data-theme=mecha] .blk .m i{border-radius:0;
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 7px);mask:repeating-linear-gradient(90deg,#000 0 5px,transparent 5px 7px)}
+html[data-theme=mecha] .bar i{background:var(--accent)}
+html[data-theme=mecha] .prob b{font-weight:600}html[data-theme=mecha] .prob span{font-family:var(--mono);color:var(--ok)}
+html[data-theme=mecha] .prob .t i{background:#7a3a0c}html[data-theme=mecha] .prob.top .t i{background:var(--ok)}html[data-theme=mecha] .prob.top b{color:var(--ok)}
+html[data-theme=mecha] .steps i.on{background:var(--accent)}
+/* 채널 블록: 시안 = 신호, 고정폭 라벨 */
+html[data-theme=mecha] .blk{border-radius:0;background:#000;border:1px solid var(--line);border-left-width:3px}
+html[data-theme=mecha] .blk b,html[data-theme=mecha] .blk .num{font-family:var(--mono);letter-spacing:.1em}
+html[data-theme=mecha] .blk b{color:var(--accent)}
+html[data-theme=mecha] .blk .m i{background:var(--cyan)}
+html[data-theme=mecha] .blk.ok .s{color:var(--ok)}html[data-theme=mecha] .blk.bad{background:#200000;animation:mblink 1s steps(2) infinite}
+@keyframes mblink{50%{background:#4a0000;border-color:#ff3030}}
+/* 기록 창: 초록 단말기 */
+html[data-theme=mecha] pre{border-radius:0;background:#000;border:1px solid #143a14;border-left:3px solid var(--ok);color:var(--ok)}
+html[data-theme=mecha] .msg{border-radius:0;border-left:3px solid currentColor;font-family:inherit}
+html[data-theme=mecha] .mcard,html[data-theme=mecha] .rsum{border-radius:0;background:#000;border-color:var(--line)}
+html[data-theme=mecha] .tag,html[data-theme=mecha] .gtags span{border-radius:0;background:#000;font-family:var(--mono);border-color:var(--line)}
+html[data-theme=mecha] .rsum td{font-family:var(--mono);color:var(--ok)}html[data-theme=mecha] .rsum thead th{color:var(--accent);font-family:var(--mono);letter-spacing:.1em}
+html[data-theme=mecha] .rsum .worse{color:var(--bad)}html[data-theme=mecha] .rsum .better{color:#000;background:var(--ok)}
+html[data-theme=mecha] dialog{border-radius:0;border:1px solid var(--accent);background:#050302;box-shadow:0 0 0 4px #000,0 0 0 5px var(--hot)}
+/* 휴식 기준 창 = 비상 방송형: 경고 줄무늬, 큰 계기 숫자 */
+html[data-theme=mecha] .settle{background:rgba(0,0,0,.6)}
+html[data-theme=mecha] .settle .box{border-radius:0;background:#000;border:2px solid var(--accent);padding:26px 24px 22px;position:relative}
+html[data-theme=mecha] .settle .box::before,html[data-theme=mecha] .settle .box::after{content:"";position:absolute;left:0;right:0;height:10px;
+  background:repeating-linear-gradient(-45deg,var(--accent) 0 10px,#000 10px 20px)}
+html[data-theme=mecha] .settle .box::before{top:0}html[data-theme=mecha] .settle .box::after{bottom:0}
+html[data-theme=mecha] .settle .k{font-family:var(--mono);letter-spacing:.35em;color:var(--accent);margin-top:4px}
+html[data-theme=mecha] .settle .big{font-family:var(--serif);font-weight:900;font-size:28px;transform:scaleX(.85)}
+html[data-theme=mecha] .settle .sec{font-family:var(--mono);font-size:64px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+html[data-theme=mecha] .settle .bar{height:12px}
+html[data-theme=mecha] .settle.ok .box{border-color:var(--ok)}
+html[data-theme=mecha] .settle.ok .box::before,html[data-theme=mecha] .settle.ok .box::after{background:repeating-linear-gradient(-45deg,var(--ok) 0 10px,#000 10px 20px)}
+html[data-theme=mecha] .settle.ok .sec,html[data-theme=mecha] .settle.ok .k{color:var(--ok)}
+html[data-theme=mecha] .settle.move .box{border-color:var(--bad)}
+html[data-theme=mecha] .settle.move .box::before,html[data-theme=mecha] .settle.move .box::after{background:repeating-linear-gradient(-45deg,var(--bad) 0 10px,#000 10px 20px)}
+html[data-theme=mecha] .settle.move .sec,html[data-theme=mecha] .settle.move .big{color:var(--bad)}
+/* 비상 상태 (의수 경고·근전도 오류): 초록·시안·주황이 빨강으로 바뀌고 화면 테두리 점멸 */
+html[data-theme=mecha][data-alert]{--accent:#ff3030;--hot:#ff3030;--ok:#ff6060;--cyan:#ff3030;--line:#5a0a0a}
+html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset:-3px;animation:malert 1s steps(2) infinite}
+@keyframes malert{50%{outline-color:transparent}}
+@media (prefers-reduced-motion:reduce){html[data-theme=mecha] body::after,html[data-theme=mecha] .blk.bad,html[data-theme=mecha][data-alert] main{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><h1>VASH</h1><span>근전도 의수 제어</span></div>
+  <span class="chip" id="chipEmg">근전도 COM6</span>
+  <span class="chip" id="chipHand">의수 COM7</span>
+  <button class="danger" id="stopAll">전체 정지</button>
+  <button id="themeBtn" title="화면 테마 바꾸기">테마</button>
+  <button id="quitApp" title="의수·근전도를 안전하게 끄고 앱을 종료">앱 끄기</button>
+</header>
+<main>
+<div>
+  <section class="card">
+    <h2 data-en="BAND / FIT"><b>1</b>밴드 착용</h2>
+    <div class="row"><label class="grow">착용 이름<input type="text" id="session" spellcheck="false"></label></div>
+    <div class="row"><button id="band">밴드 찼음 (새 착용)</button><button id="guideOpen">배치도 보기</button><span class="state" id="bandTime"></span></div>
+  </section>
+  <section class="card">
+    <h2 data-en="CALIBRATION"><b>2</b>캘리브레이션</h2>
+    <div class="row"><button class="primary" id="quickStart">캘리브레이션</button><button id="quickStop" hidden>중단</button></div>
+    <div class="bar" id="quickBar" hidden><i id="quickFill"></i></div>
+    <div class="state" id="quickStage" aria-live="polite"></div>
+    <div id="quickMsg"></div>
+    <details id="fullCal"><summary class="note">정밀 보정 (동작 녹화, 약 3분)</summary>
+    <div class="row"><button id="calStart">정밀 보정 시작</button><button id="calCancel" hidden>중단</button></div>
+    <div class="steps" id="calSteps" hidden><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="state" id="calStage"></div>
+    <div id="calMsg"></div>
+    <div id="report"></div>
+    <div class="row"><button id="svmBuild">SVM 모델 다시 만들기</button><span class="state" id="svmState"></span></div>
+    </details>
+    <details><summary class="note">시험 녹화 (모델을 비교할 때)</summary><div id="tests"></div></details>
+  </section>
+  <section class="card">
+    <h2 data-en="OPERATION"><b>3</b>실행</h2>
+    <div class="row"><label class="grow">모델<select id="model"></select></label>
+      <label id="tempBox" hidden title="높을수록 끼어듦 줄고 확정 늦음">SVM 온도<select id="svmTemp"><option value="1">1 (끄기)</option><option value="1.5" selected>1.5 (기본)</option><option value="2">2</option><option value="3">3</option></select></label></div>
+    <div id="modelCard"></div>
+    <div class="row"><button class="primary" id="handStart">의수 켜기</button><button id="handStop">의수 끄기</button>
+      <label class="note"><input type="checkbox" id="doCal"> 의수 장력·범위 맞춤 포함</label></div>
+    <div class="row"><button id="teachOpen">동작 수정하기</button></div>
+    <div class="row" id="enterRow" hidden><button class="primary" id="enter">조이기 끝 (다음 단계로)</button></div>
+    <div class="state" id="handPhase"></div>
+    <div class="row"><button class="primary" id="emgStart">근전도 켜기</button><button id="emgStop">근전도 끄기</button></div>
+    <div class="state" id="emgState"></div>
+    <div class="row" id="markRow" hidden><button id="markBtn">틀림 표시 <code>Space</code></button><span class="state">이번 RUN <span class="markn" id="markN">0</span> 번</span></div>
+    <div id="runSum"></div>
+    <div id="alerts"></div>
+    <div class="row" id="forceRow" hidden><button id="force">강제 종료</button><span class="note">안전 종료가 안 될 때만 사용합니다. 강제 종료 뒤에는 모터 전원을 끄세요.</span></div>
+  </section>
+</div>
+<div>
+  <section class="card live" aria-live="off">
+    <div class="head">
+      <span class="kicker">현재 동작</span>
+      <span class="gesture rest" id="gesture">대기</span>
+      <span class="pill" id="livePill" hidden></span>
+      <span class="state meta" id="liveInfo">근전도가 꺼져 있습니다</span>
+    </div>
+    <div class="bar" title="세기"><i id="level"></i></div>
+    <div class="probs" id="probs" aria-label="동작별 확신"></div>
+  </section>
+  <section class="card">
+    <h2 data-en="SIGNAL / 8CH">채널 신호</h2>
+    <div class="row"><button id="sigStart">신호 보기</button><button id="sigStop" hidden>끄기</button><span class="state" id="sigInfo"></span></div>
+    <div class="blocks" id="blocks"></div>
+  </section>
+  <div class="two">
+    <section class="card"><h2 data-en="HAND LOG">의수 기록</h2><div class="state" id="handStatus"></div><pre id="handLog"></pre></section>
+    <section class="card"><h2 data-en="EMG LOG">근전도 기록</h2><div class="state" id="emgStatus"></div><pre id="emgLog"></pre></section>
+  </div>
+  <section class="card"><h2 data-en="REC LOG">녹화·보정 기록</h2><pre id="recLog" style="height:150px"></pre></section>
+</div>
+</main>
+<dialog id="guide" aria-labelledby="guideTitle">
+  <div class="guide-head"><h2 id="guideTitle">전극 배치도</h2><button id="guideClose">닫기</button></div>
+  <ol class="guide-steps">
+    <li>왼팔을 90° 굽히고 엄지가 얼굴을 향하게 합니다.</li>
+    <li>주두에서 척골 경상돌기까지의 길이 L을 재고, 팔꿈치에서 0.4 × L 지점에 둘레 선을 긋습니다.</li>
+    <li>그 선에서 척골 능선을 찾습니다. CH1은 뼈의 왼편(손등 쪽), CH8은 오른편(손바닥 쪽)입니다.</li>
+    <li>CH1을 먼저 맞추고 CH2 → CH8 순서로 놓은 뒤, CH8과 CH1 사이에서 조입니다.</li>
+  </ol>
+  <div class="row" role="tablist"><button id="guideA" role="tab">전체 배치</button><button id="guideB" role="tab">단면 간격</button></div>
+  <p class="note" id="guideNote"></p>
+  <img id="guideImg" alt="">
+</dialog>
+<dialog id="askDlg" aria-labelledby="askTitle">
+  <h2 id="askTitle"></h2>
+  <div id="askItems"></div>
+  <p class="note" id="askNote"></p>
+  <div class="row"><button class="primary" id="askRetry"></button><button id="askGo">그대로 진행</button><button id="askStop">중단</button></div>
+</dialog>
+<div class="settle" id="settle" hidden aria-live="polite"><div class="box">
+  <div class="k">REST BASELINE</div>
+  <div class="big" id="settleTxt"></div>
+  <div class="sec" id="settleSec"></div>
+  <div class="bar"><i id="settleFill"></i></div>
+  <div class="note" id="settleSub"></div>
+</div></div>
+<dialog id="teachDlg" aria-labelledby="teachTitle">
+  <div class="guide-head"><h2 id="teachTitle" data-en="POSE EDIT">동작 수정</h2><button id="teachClose">닫기</button></div>
+  <div id="teachPick">
+    <p class="note" id="teachInfo"></p>
+    <div class="tgrid" id="teachList"></div>
+  </div>
+  <div id="teachRun" hidden>
+    <div class="row"><b id="teachName"></b><span class="state" id="teachPhase"></span></div>
+    <pre id="teachJoints" style="height:auto;min-height:40px"></pre>
+    <p class="note">모터는 약하게(60 mA) 버팁니다. 손가락을 손으로 밀어 자세를 만든 뒤 저장하세요. 관절 끝까지 세게 밀지 마세요.</p>
+    <div class="row"><button class="primary" id="teachSave">저장</button><button id="teachRedo">다시 해보기 (대기 → 이 자세)</button><button id="teachQuit">저장 안 하고 끝</button><button class="danger" id="teachStop">정지 (토크 끔)</button></div>
+    <pre id="teachLog" style="height:120px"></pre>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="alert"></div>
+<script>
+const $ = id => document.getElementById(id);
+let st = null, sessionEditing = false;
+function toast(t){const e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",5000)}
+async function post(url,body){
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body||{})});
+  if(!r.ok){const d=await r.json().catch(()=>({}));toast(d.detail||"요청 실패")}
+  poll();return r.ok;
+}
+function esc(t){const d=document.createElement("div");d.textContent=t==null?"":String(t);return d.innerHTML}
+function setLog(id,lines){const e=$(id),t=(lines||[]).join("\n");if(e.textContent!==t){const end=e.scrollTop+e.clientHeight>=e.scrollHeight-8;e.textContent=t;if(end)e.scrollTop=e.scrollHeight}}
+function mmss(s){return `${Math.floor(s/60)}분 ${String(Math.floor(s%60)).padStart(2,"0")}초`}
+function recRow(kind,info,s){
+  const j=s.jobs.record,busy=j&&j.running,mine=busy&&s.record_kind===kind,n=s.files[kind].length;
+  const left=mine?` · 남은 시간 약 ${Math.max(0,Math.round(info.seconds-j.elapsed))}초`:"";
+  return `<div class="row"><button data-rec="${kind}" ${busy||(s.jobs.emg&&s.jobs.emg.running)?"disabled":""}>${mine?"녹화 중…":info.title+(n?" 다시":"")} </button>`+
+    (mine?`<button data-recstop="1">중단</button>`:"")+`<span class="${n?"done":"note"}">${n?`${n}개 녹화됨`:`약 ${info.seconds}초`}${left}</span></div>`;
+}
+const SL={ok:"좋음",warn:"주의",bad:"나쁨",wait:"…"};
+function blocks(s){
+  const box=$("blocks");if(!box.children.length)for(let i=1;i<=8;i++){const d=document.createElement("div");d.className="blk wait";d.innerHTML=`<b>CH${i}</b><div class="s">-</div><div class="m"><i></i></div><div class="why"></div><div class="num"></div>`;box.append(d)}
+  const g=s.signal;[...box.children].forEach((d,i)=>{const c=g&&g.ch[i];d.className="blk "+(c?c.state:"wait");d.querySelector(".s").textContent=c?SL[c.state]:"-";d.querySelector(".m i").style.width=c?Math.min(100,c.rms)+"%":"0";d.querySelector(".why").textContent=c?c.why:"";d.querySelector(".num").textContent=c?`${c.rest} / ${c.hum.toFixed(0)}`:""});
+  const on=s.signal_on;$("sigStart").hidden=on;$("sigStop").hidden=!on;$("sigStart").disabled=!s.ports[s.emg_com]||s.flow.active||(s.jobs.emg&&s.jobs.emg.running)||(s.jobs.record&&s.jobs.record.running);
+  const bad=g?g.ch.filter(c=>c.state==="bad").length:0,warn=g?g.ch.filter(c=>c.state==="warn").length:0;
+  $("sigInfo").textContent=s.signal_error?("오류: "+s.signal_error):on?(g?(bad?`나쁨 ${bad}개: 해당 전극을 확인하세요`:warn?`주의 ${warn}개`:"모두 좋음")+` · ${g.t.toFixed(0)}초`:"연결 중…"):(s.jobs.emg&&s.jobs.emg.running)||s.flow.active?"근전도·녹화 중에는 볼 수 없습니다":"";
+}
+function quick(s){
+  const q=s.quick,on=s.signal_on&&q,mid=on&&["wait","record","compute"].includes(q.stage),busy=(s.jobs.emg&&s.jobs.emg.running)||(s.jobs.record&&s.jobs.record.running)||s.flow.active;
+  $("quickStart").disabled=!!mid||busy||!s.ports[s.emg_com];$("quickStart").textContent=mid?"진행 중":"캘리브레이션";$("quickStop").hidden=!mid;
+  $("quickBar").hidden=!mid;let t="",w=0;
+  if(mid){const g=s.signal,bad=g?g.ch.filter(c=>c.state==="bad").map(c=>"CH"+c.n):[];
+    if(q.stage==="record"){w=100*(1-q.left/q.rec_s);t=`측정 중: 힘을 뺀 채로 ${Math.ceil(q.left)}초 더 기다리세요`}
+    else if(q.stage==="compute"){w=100;t="계산 중"}
+    else if(!g)t="보드 연결 중";
+    else if(g.ch.some(c=>c.state==="wait"))t="신호 안정 중";
+    else if(bad.length)t=`${bad.join(", ")} 전극을 옮기거나 눌러 보세요`;
+    else if(q.quiet>0)t=`모두 괜찮습니다. 힘을 빼고 기다리세요 (${(3-q.quiet).toFixed(0)}초 뒤 측정)`;
+    else t="힘을 빼 주세요. 팔을 움직이면 신호가 커져 측정을 시작하지 않습니다";
+  }
+  $("quickFill").style.width=w+"%";$("quickStage").textContent=t;
+  const mk=q?`${q.stage}|${q.model}|${q.note}|${s.signal_on}`:"";if($("quickMsg")._h!==mk){$("quickMsg")._h=mk;const b=$("quickMsg");b.innerHTML="";const add=(c,x)=>{const d=document.createElement("div");d.className="msg "+c;d.textContent=x;b.append(d)};
+    if(q&&q.stage==="done")add("ok",`완료: ${q.model}. 아래 모델에 선택해 두었습니다. 의수와 근전도를 켜면 됩니다.`);
+    else if(q&&q.stage==="fail")add("bad","대기 보정 실패: "+q.note);
+    else if(q&&!s.signal_on)add("warn","측정이 끝까지 진행되지 않았습니다. 다시 눌러 주세요.");
+    else if(q&&q.note)add("warn",q.note)}
+}
+function svm(s){
+  const j=s.jobs.svm,r=j&&j.running,hasCal=s.files.CAL.length>0;$("svmBuild").disabled=!!r||!hasCal||s.flow.active;
+  $("svmState").textContent=r?`만드는 중 (${Math.round(j.elapsed)}초)`:j?(j.code===0?`완료: ${s.svm_out}`:`실패 (코드 ${j.code}). 아래 기록을 확인하세요`):(hasCal?"":"먼저 정밀 보정을 합니다");
+}
+// 모델 카드: 고른 모델의 판단 방식·보정 녹화·검증 기록
+const cards={};
+async function modelCard(name){
+  const box=$("modelCard");if(!name){box.innerHTML="";return}
+  if(!cards[name]){try{const r=await fetch("/api/model/"+encodeURIComponent(name));if(!r.ok)return;cards[name]=await r.json()}catch(e){return}}
+  if($("model").value!==name)return;
+  const c=cards[name];
+  box.innerHTML=`<div class="mcard"><div class="top"><b>${esc(c.title)}</b><span class="tag">${esc(c.engine)}</span><span class="ver">버전 ${esc(c.version)}</span></div>
+    <dl><dt>만든 시각</dt><dd>${esc(c.made||"-")}</dd><dt>보정 녹화</dt><dd>${esc((c.files||[]).join(", ")||"-")}${c.windows?` · 창 ${c.windows}개 ×${c.weight}`:""}</dd>
+    <dt>기본 모델</dt><dd>${esc(c.base||"-")}</dd><dt>동작</dt><dd class="gtags">${(c.gestures||[]).map(g=>`<span>${esc(g)}</span>`).join("")}</dd>
+    <dt>검증 기록</dt><dd>${esc(c.eval||"이 모델은 아직 채점 기록이 없습니다")}</dd></dl></div>`;
+}
+function probs(s,L){
+  const box=$("probs"),G=s.gestures||[];
+  if(box.children.length!==G.length){box.innerHTML="";for(const g of G){const d=document.createElement("div");d.className="prob";d.innerHTML=`<b></b><div class="t"><i></i></div><span>-</span>`;d.querySelector("b").textContent=g;box.append(d)}}
+  const p=L&&L.post&&L.post.length===G.length?L.post:null,top=p?p.indexOf(Math.max(...p)):-1;
+  [...box.children].forEach((d,i)=>{const v=p?p[i]:0;d.querySelector("i").style.width=(v*100).toFixed(1)+"%";d.querySelector("span").textContent=p?Math.round(v*100)+"%":"-";
+    d.className="prob"+(i===top?" top":"")+(L&&L.committed&&G[i]===L.grip?" lock":"")});
+}
+// 캘리브레이션 확인 팝업: 접촉·품질 경고가 있으면 다시 할지 그대로 진행할지 물어봄
+function askDialog(f){
+  const d=$("askDlg"),a=f.active&&f.waiting&&f.ask;
+  if(!a){if(d.open)d.close();d._k="";return}
+  const k=JSON.stringify(a);
+  if(d._k!==k){d._k=k;$("askTitle").textContent=a.title;$("askNote").textContent=a.note||"";
+    $("askRetry").textContent=a.kind==="contact"?"전극 고친 뒤 다시 확인":"전극 고친 뒤 다시 녹화";
+    $("askItems").innerHTML=a.items.map(it=>`<div class="msg ${it.level==="bad"?"bad":"warn"}">${esc(it.text)}</div>`).join("")}
+  if(!d.open)d.showModal();
+}
+function render(s){
+  st=s;blocks(s);quick(s);svm(s);settle(s);runView(s);teachPaint(s);
+  $("chipEmg").className="chip"+(s.ports[s.emg_com]?" on":"");$("chipEmg").textContent=`근전도 ${s.emg_com} ${s.ports[s.emg_com]?"연결":"없음"}`;
+  $("chipHand").className="chip"+(s.ports[s.hand_com]?" on":"");$("chipHand").textContent=`의수 ${s.hand_com} ${s.ports[s.hand_com]?"연결":"없음"}`;
+  if(!sessionEditing)$("session").value=s.session;
+  $("bandTime").textContent=s.band_elapsed==null?"":`착용 후 ${mmss(s.band_elapsed)}`;
+  const f=s.flow,rj=s.jobs.record;$("calStart").disabled=f.active||(rj&&rj.running)||(s.jobs.emg&&s.jobs.emg.running)||!s.ports[s.emg_com];$("calStart").textContent=f.active?"진행 중":"정밀 보정 시작";if(f.active||f.message)$("fullCal").open=true;
+  $("calCancel").hidden=!f.active||f.waiting;$("calSteps").hidden=!f.active;[...$("calSteps").children].forEach((e,i)=>e.className=i<f.step?"on":"");
+  const leftT=f.active&&rj&&rj.running&&s.record[s.record_kind]?` · 남은 시간 약 ${Math.max(0,Math.round(s.record[s.record_kind].seconds-rj.elapsed))}초`:"";$("calStage").textContent=f.stage+leftT;askDialog(f);
+  const mk=f.message+"|"+f.ok;if($("calMsg")._h!==mk){$("calMsg")._h=mk;$("calMsg").innerHTML="";if(f.message){const d=document.createElement("div");d.className="msg "+(f.ok===false?"bad":f.ok?"ok":"warn");d.textContent=f.message;$("calMsg").append(d)}}
+  const tst=$("tests"),h2=recRow("TEST",s.record.TEST,s)+recRow("CHAIN",s.record.CHAIN,s);if(tst._h!==h2){tst.innerHTML=h2;tst._h=h2}
+  const cj=s.jobs.calib;
+  const r=s.report;let rh="";
+  if(r){rh+=r.match!=null?`<p class="state">밴드 위치 일치도 <b>${r.match.toFixed(2)}</b>${r.snr?` · 채널 신호 대 잡음 dB: ${r.snr}`:""}</p>`:"";
+    for(const it of r.items){rh+=`<div class="msg ${it.level}">${esc(it.text)}</div>`}
+}
+  if($("report")._h!==rh){$("report").innerHTML=rh;$("report")._h=rh}
+  const sel=$("model"),cur=sel.value,opts=s.models.map(m=>m+"="+(s.model_labels||{})[m]).join("|");
+  if(sel._o!==opts){sel.innerHTML="";for(const m of s.models){const o=document.createElement("option");o.value=m;o.textContent=`${(s.model_labels||{})[m]||m}  ·  ${m}`;sel.append(o)}sel._o=opts;if(s.models.includes(cur)&&!r)sel.value=cur}
+  if(s.quick&&s.quick.model&&sel._q!==s.quick.model&&s.models.includes(s.quick.model)){sel.value=s.quick.model;sel._q=s.quick.model}
+  const sj=s.jobs.svm;if(s.svm_out&&sj&&sj.code===0&&sel._s!==s.svm_out&&s.models.includes(s.svm_out)){sel.value=s.svm_out;sel._s=s.svm_out}
+  if(sel._c!==sel.value){sel._c=sel.value;modelCard(sel.value)}
+  const isSvm=sel.value.includes("_svm");$("tempBox").hidden=!isSvm;
+  const hj=s.jobs.hand,hr=hj&&hj.running,ej=s.jobs.emg,er=ej&&ej.running;
+  $("handStart").disabled=hr||!s.ports[s.hand_com]||!!(s.jobs.teach&&s.jobs.teach.running);$("handStop").disabled=!hr||hj.stopping;$("doCal").disabled=hr;
+  $("enterRow").hidden=!s.hand.waiting_enter;
+  $("handPhase").innerHTML=hr?(hj.stopping?"의수 끄는 중 (손을 펴고 토크를 끕니다)":`단계: <b></b>`):(hj?`의수 꺼짐 (코드 ${hj.code})`:"의수 꺼짐");
+  if(hr&&!hj.stopping)$("handPhase").querySelector("b").textContent=s.hand.phase||"시작 중";
+  $("emgStart").disabled=er||!s.ports[s.emg_com]||!s.models.length||(s.jobs.record&&s.jobs.record.running)||f.active;$("emgStop").disabled=!er||ej.stopping;
+  $("svmTemp").disabled=er;
+  $("emgState").textContent=er?(ej.stopping?"근전도 끄는 중":`실행 중 · 기록 RUN${s.run_no} · RAW${s.run_no}`+(s.svm_temp!=null?` · SVM 온도 ${s.svm_temp}`:"")+(s.hand.ready?"":" · 의수가 준비되지 않았습니다")):(ej?`근전도 꺼짐 (코드 ${ej.code})`:"근전도 꺼짐");
+  const al=$("alerts");let ah="";
+  if(s.hand.alert){ah=`<div class="msg bad" role="alert">${esc(s.hand.alert)}</div>`}
+  if(ej&&!ej.running&&!ej.stopping&&ej.code){ah+=`<div class="msg bad">근전도가 오류로 멈췄습니다 (코드 ${ej.code}). 기록을 확인하세요.</div>`}
+  if(al._h!==ah){al.innerHTML=ah;al._h=ah}
+  if(ah)document.documentElement.dataset.alert="1";else delete document.documentElement.dataset.alert;
+  $("forceRow").hidden=!((hr&&hj.stopping)||(er&&ej.stopping));
+  $("stopAll").disabled=!(hr||er||s.signal_on||s.flow.active||(s.jobs.record&&s.jobs.record.running));
+  const L=s.live,g=$("gesture"),fresh=er&&L&&L.age<1.5;
+  if(fresh){
+    if(L.state==="active"&&L.grip){g.textContent=L.grip;g.className="gesture"+(L.committed?"":" tent")}else{g.textContent="휴식";g.className="gesture rest"}
+    const act=L.state==="active"&&L.grip;$("livePill").hidden=!act;$("livePill").textContent=L.committed?"확정":"판단 중";$("livePill").className="pill"+(L.committed?" ok":"");
+    $("level").style.width=Math.min(100,L.level*100)+"%";$("liveInfo").textContent=`세기 ${L.level.toFixed(2)} · z ${L.z.toFixed(2)} · ${L.t.toFixed(0)}초`;
+  }else{g.textContent=er?"신호 기다리는 중":"대기";g.className="gesture rest";$("livePill").hidden=true;$("level").style.width="0";$("liveInfo").textContent=er?"근전도 시작 중":"근전도가 꺼져 있습니다"}
+  probs(s,fresh?L:null);
+  $("handStatus").textContent=s.hand.status.replace(/\s+/g," ").slice(0,110);$("emgStatus").textContent=ej?ej.status.replace(/\s+/g," ").slice(0,110):"";
+  setLog("handLog",hj&&hj.lines);setLog("emgLog",ej&&ej.lines);
+  const rl=[...((s.jobs.record&&s.jobs.record.lines)||[]),...(cj?["--- 품질 확인·모델 ---",...cj.lines]:[]),...(s.jobs.svm?["--- SVM 모델 ---",...s.jobs.svm.lines]:[])];setLog("recLog",rl);
+}
+async function poll(){try{const r=await fetch("/api/state");render(await r.json())}catch(e){$("liveInfo").textContent="앱 서버와 연결이 끊겼습니다"}}
+
+// 근전도를 켠 뒤 휴식 기준 잡기: 첫 신호가 휴식 기준이 되고 약 1 초 시간상수로 맞춰짐 → 휴식이 SETTLE_S 초 끊기지 않으면 완료
+const SETTLE_S=5;let sett={};
+function settle(s){
+  const ej=s.jobs.emg,er=ej&&ej.running&&!ej.stopping,L=s.live,el=$("settle");
+  if(!er){el.hidden=true;sett={};return}
+  if(sett.run!==s.run_no){sett={run:s.run_no,t0:null,done:false};
+    if(L&&L.t>SETTLE_S+5){sett.done=true;sett.doneAt=0}}   // 새로고침: 이미 오래 켜져 있으면 기준이 잡힌 상태
+  if(sett.done){if(Date.now()-sett.doneAt>2500)el.hidden=true;return}
+  el.hidden=false;let big,sub="",sec="",w=0;el.classList.remove("ok","move");
+  if(!L||L.age>1.5){big="신호 기다리는 중";sub="힘을 빼고 기다려 주세요"}
+  else if(L.state!=="rest"){sett.t0=null;big="힘을 빼 주세요";sub="움직임이 있어 처음부터 다시 셉니다";sec=SETTLE_S.toFixed(1);el.classList.add("move")}
+  else{if(sett.t0==null)sett.t0=L.t;const d=L.t-sett.t0;w=Math.min(100,100*d/SETTLE_S);
+    if(d>=SETTLE_S){sett.done=true;sett.doneAt=Date.now();el.classList.add("ok");big="완료";sec="READY";sub="이제 작동해도 됩니다";w=100}
+    else{big="힘을 빼고 그대로 있어 주세요";sec=Math.max(0,SETTLE_S-d).toFixed(1);sub="휴식 기준을 잡는 중"}}
+  $("settleTxt").textContent=big;$("settleSec").textContent=sec;$("settleSub").textContent=sub;$("settleFill").style.width=w+"%";
+}
+// 틀림 표시 + 끈 뒤 RUN 요약·평가
+let markN={};
+function runView(s){
+  const ej=s.jobs.emg,er=ej&&ej.running&&!ej.stopping;
+  $("markRow").hidden=!er;$("markN").textContent=markN[s.run_no]||0;
+  const v=s.last_run,el=$("runSum");
+  const key=v?JSON.stringify([v.n,v.sum,v.prev_sum,v.note]):"";if(el._k===key)return;el._k=key;
+  if(!v||!v.sum){el.innerHTML="";return}
+  const a=v.sum,b=v.prev_sum||{},hasB=v.prev_sum&&!v.prev_sum.error;
+  if(a.error){el.innerHTML=`<div class="msg warn">RUN${v.n} 요약 실패: ${esc(a.error)}</div>`;return}
+  // [이름, 키, 작을수록 좋음?]
+  const rowsDef=[["사용 시간 s","dur_s",null],["켜짐","activations",null],["확정","committed",null],["바뀜 (끼어듦 추정)","switches",true],["짧은 확정 (<0.3 s)","short",true],["확정 시간 중앙 ms","commit_ms",true],["틀림 표시","marks",true]];
+  const cell=(k,lower)=>{const x=a[k],y=b[k];if(!hasB||lower==null||x==null||y==null||!a.dur_s||!b.dur_s)return"";
+    const rx=k==="commit_ms"?x:x/a.dur_s,ry=k==="commit_ms"?y:y/b.dur_s;if(Math.abs(rx-ry)<1e-9)return"";return (rx<ry)===lower?"better":"worse"};
+  let t=`<table><thead><tr><th>RUN${v.n} 요약</th><th>이번</th>${hasB?`<th>RUN${v.prev}</th>`:""}</tr></thead><tbody>`;
+  for(const[n,k,lower]of rowsDef)t+=`<tr><td>${n}</td><td class="${cell(k,lower)}">${a[k]??"-"}</td>${hasB?`<td>${b[k]??"-"}</td>`:""}</tr>`;
+  t+="</tbody></table>";
+  const per=Object.entries(a.per||{}).map(([g,d])=>`<span>${esc(g)} ${d.n}${d.short?` (짧음 ${d.short})`:""}</span>`).join("");
+  const mk=a.mark_grips&&a.mark_grips.length?`<p class="note">틀림 표시 때 동작: ${esc(a.mark_grips.join(", "))}</p>`:"";
+  const info=`<p class="note">${esc(v.model||"")}${v.svm_temp!=null?` · SVM 온도 ${v.svm_temp}`:""}${hasB?" · 초록 = 앞 RUN 보다 나음 (시간당 횟수 기준)":""}</p>`;
+  const nt=v.note;
+  const rate=nt?`<div class="msg ok">평가 저장됨: <b>${esc(nt.rating)}</b>${nt.memo?` · ${esc(nt.memo)}`:""}</div>`:
+    `<div class="row rate" id="rateRow"><span class="state">평가</span><button data-r="좋음">좋음</button><button data-r="비슷">비슷</button><button data-r="나쁨">나쁨</button></div>
+     <div class="row"><input id="runMemo" type="text" maxlength="500" placeholder="메모 (선택)"><button class="primary" id="noteSave">저장</button></div>`;
+  el.innerHTML=`<div class="rsum">${t}<div class="gtags" style="margin-top:8px">${per}</div>${mk}${info}${rate}</div>`;
+  if(!nt){let r=null;el.querySelectorAll("#rateRow button").forEach(bt=>bt.onclick=()=>{r=bt.dataset.r;el.querySelectorAll("#rateRow button").forEach(x=>x.setAttribute("aria-pressed",x===bt))});
+    $("noteSave").onclick=async()=>{if(!r){toast("좋음 / 비슷 / 나쁨 을 고르세요");return}await post("/api/run_note",{rating:r,memo:$("runMemo").value})}}
+}
+async function doMark(){
+  if(!st||!st.jobs.emg||!st.jobs.emg.running)return;
+  const r=await fetch("/api/mark",{method:"POST"});if(!r.ok)return;const d=await r.json();markN[st.run_no]=d.count;$("markN").textContent=d.count;
+  const b=$("markBtn");b.classList.add("primary");setTimeout(()=>b.classList.remove("primary"),250);
+}
+$("markBtn").onclick=doMark;
+document.addEventListener("keydown",e=>{if(e.code!=="Space"||e.repeat)return;const tg=e.target.tagName;if(["INPUT","TEXTAREA","SELECT"].includes(tg)||document.querySelector("dialog[open]"))return;
+  if(st&&st.jobs.emg&&st.jobs.emg.running){e.preventDefault();doMark()}});
+// 테마: 기본 / 메카 (브라우저에 기억)
+function setTheme(t){if(t==="mecha")document.documentElement.dataset.theme="mecha";else delete document.documentElement.dataset.theme;$("themeBtn").textContent=t==="mecha"?"테마: 메카":"테마: 기본"}
+try{setTheme(localStorage.getItem("vash_theme")||"")}catch(e){setTheme("")}
+$("themeBtn").onclick=()=>{const t=document.documentElement.dataset.theme==="mecha"?"":"mecha";setTheme(t);try{localStorage.setItem("vash_theme",t)}catch(e){}};
+
+// 동작 자세 수정: 의수를 끈 상태에서 자세 하나씩 teach_live.py 로 고침
+let teachData=null;
+async function teachLoad(){try{teachData=await (await fetch("/api/teach/poses")).json()}catch(e){teachData={items:[],error:"자세 목록을 못 읽었습니다"}}teachPaint(st)}
+function teachPaint(s){
+  if(!s||!$("teachDlg").open)return;
+  const tj=s.jobs.teach,tr=tj&&tj.running,hr=s.jobs.hand&&s.jobs.hand.running,portOk=s.ports[s.hand_com];
+  $("teachPick").hidden=!!tr;$("teachRun").hidden=!tr&&!(tj&&tj.code!=null&&s.teach_pose&&$("teachRun")._last);
+  if(teachData){const k=JSON.stringify([teachData,hr,portOk,tr]);
+    if($("teachList")._k!==k){$("teachList")._k=k;
+      $("teachInfo").textContent=teachData.error?teachData.error:hr?"의수를 끈 뒤 고칠 수 있습니다 (같은 포트를 씁니다).":!portOk?"의수가 연결되어 있지 않습니다.":"고칠 동작을 누르면 손이 그 자세로 이동한 뒤 모터가 약해집니다."+(teachData.saved?` · 마지막 저장 ${teachData.saved}`:"");
+      $("teachList").innerHTML=teachData.items.map(it=>`<button data-p="${esc(it.pose)}" ${hr||!portOk||tr?"disabled":""}>${esc(it.label)}<small>${esc(it.pose)}${it.taught?" · 손으로 만든 자세":" · 기본 자세"}</small></button>`).join("");
+      $("teachList").querySelectorAll("button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/start",{pose:b.dataset.p})})}}
+  if(tj){const L=tj.lines||[],saved=L.some(l=>l.startsWith("저장:")),last=[...L].reverse().find(l=>l.trim())||"";
+    $("teachName").textContent=(teachData&&teachData.items.find(i=>i.pose===s.teach_pose)||{label:s.teach_pose||""}).label;
+    $("teachPhase").textContent=tr?(tj.stopping?"정지 중 (토크 끔)":" · "+last.slice(0,80)):(saved?" · 저장했습니다":" · 끝났습니다 (코드 "+tj.code+")");
+    $("teachJoints").textContent=tj.status||"";setLog("teachLog",L);
+    ["teachSave","teachRedo","teachQuit"].forEach(id=>$(id).disabled=!tr||tj.stopping);$("teachStop").disabled=!tr||tj.stopping;
+    if(!tr&&$("teachRun")._done!==tj.code+"|"+L.length){$("teachRun")._done=tj.code+"|"+L.length;teachLoad()}}
+}
+$("teachOpen").onclick=()=>{$("teachRun")._last=false;$("teachDlg").showModal();teachLoad()};
+$("teachClose").onclick=()=>{if(st&&st.jobs.teach&&st.jobs.teach.running){toast("먼저 저장하거나 '저장 안 하고 끝' 을 누르세요");return}$("teachDlg").close()};
+$("teachDlg").addEventListener("cancel",e=>{if(st&&st.jobs.teach&&st.jobs.teach.running)e.preventDefault()});
+$("teachSave").onclick=()=>post("/api/teach/key",{key:"save"});
+$("teachRedo").onclick=()=>post("/api/teach/key",{key:"redo"});
+$("teachQuit").onclick=()=>post("/api/teach/key",{key:"quit"});
+$("teachStop").onclick=()=>post("/api/stop/teach");
+$("stopAll").onclick=()=>post("/api/stop_all");
+$("quitApp").onclick=async()=>{if(!confirm("의수·근전도를 안전하게 끄고 앱을 종료할까요?"))return;
+  await fetch("/api/quit",{method:"POST"}).catch(()=>{});clearInterval(pollT);
+  document.body.innerHTML='<p style="padding:40px;font-size:18px">앱을 껐습니다. 이 창을 닫아도 됩니다.</p>'};
+$("band").onclick=()=>post("/api/new_session").then(()=>{sessionEditing=false});
+$("session").onfocus=()=>sessionEditing=true;
+$("session").onblur=async()=>{const v=$("session").value.trim();if(st&&v&&v!==st.session)await post("/api/session",{name:v});sessionEditing=false};
+for(const box of ["tests"])$(box).onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.rec)post("/api/record/"+b.dataset.rec);else if(b.dataset.recstop)post("/api/stop/record")};
+const GUIDE={A:["electrode_guide.png","측정 기준 v1 전체 배치","근육 위치는 문헌 기반 개념도입니다. 실제로는 손가락을 움직이며 신호로 확인합니다."],
+  B:["section_gaps.png","단면과 계산 간격","둘레 250 mm 원형 팔로 계산한 값이고 시험으로 검증하지 않았습니다. 지금 쓰는 간격이 있으면 그 값을 유지합니다."]};
+function showGuide(k){const g=GUIDE[k];$("guideImg").src="/guide/"+g[0];$("guideImg").alt=g[1];$("guideNote").textContent=g[2];$("guideA").setAttribute("aria-selected",k==="A");$("guideB").setAttribute("aria-selected",k==="B")}
+$("guideOpen").onclick=()=>{showGuide("A");$("guide").showModal()};
+$("guideClose").onclick=()=>$("guide").close();
+$("guide").onclick=e=>{if(e.target===$("guide"))$("guide").close()};
+$("guideA").onclick=()=>showGuide("A");
+$("guideB").onclick=()=>showGuide("B");
+$("model").onchange=()=>{$("model")._c=$("model").value;modelCard($("model").value)};
+$("svmBuild").onclick=()=>post("/api/svm/build");
+$("quickStart").onclick=()=>post("/api/quick/start");
+$("quickStop").onclick=()=>post("/api/stop/monitor");
+$("calStart").onclick=()=>post("/api/calibration/start");
+$("calCancel").onclick=()=>post("/api/calibration/cancel");
+$("askGo").onclick=()=>post("/api/calibration/continue");
+$("askRetry").onclick=()=>post("/api/calibration/retry");
+$("askStop").onclick=()=>post("/api/calibration/cancel");
+$("askDlg").addEventListener("cancel",e=>e.preventDefault());
+$("sigStart").onclick=()=>post("/api/signal/start");
+$("sigStop").onclick=()=>post("/api/stop/monitor");
+$("handStart").onclick=()=>post("/api/hand/start",{calibrate:$("doCal").checked});
+$("handStop").onclick=()=>post("/api/stop/hand");
+$("enter").onclick=()=>post("/api/hand/enter");
+$("emgStart").onclick=()=>post("/api/emg/start",{model:$("model").value,temp:$("model").value.includes("_svm")?+$("svmTemp").value:null});
+try{const t=localStorage.getItem("vash_svm_temp");if(t&&[...$("svmTemp").options].some(o=>o.value===t))$("svmTemp").value=t}catch(e){}
+$("svmTemp").onchange=()=>{try{localStorage.setItem("vash_svm_temp",$("svmTemp").value)}catch(e){}};
+$("emgStop").onclick=()=>post("/api/stop/emg");
+$("force").onclick=()=>{const hr=st.jobs.hand&&st.jobs.hand.running&&st.jobs.hand.stopping;if(confirm("강제 종료합니다. 뒤이어 모터 전원을 꺼 주세요."))post("/api/force/"+(hr?"hand":"emg"))};
+poll();const pollT=setInterval(poll,250);
+</script>
+</body>
+</html>

@@ -71,7 +71,7 @@ def main():
     if not math.isfinite(args.max_travel_deg) or args.max_travel_deg <= 0:
         parser.error('--max-travel-deg must be positive and finite')
     stopped = threading.Event()
-    for sig in (signal.SIGINT, signal.SIGTERM):
+    for sig in (signal.SIGINT, signal.SIGTERM, getattr(signal, 'SIGBREAK', signal.SIGTERM)):  # SIGBREAK = 통합 앱의 정지 버튼
         signal.signal(sig, lambda *_: stopped.set())
     logging.getLogger('orca_core.hardware_hand').setLevel(logging.ERROR)
     config_path = str(Path(__file__).with_name('config.yaml'))

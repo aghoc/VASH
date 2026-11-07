@@ -1,0 +1,17 @@
+# 2026-11-02 22:56 줄 교체 뒤 캘리브레이션의 관절별 모터 이동량 (도). start_hand.py --update-baseline 으로 교체
+index_abd: 62.49
+index_mcp: 138.25
+index_pip: 118.04
+middle_abd: 62.14
+middle_mcp: 152.23
+middle_pip: 120.32
+pinky_abd: 59.85
+pinky_mcp: 120.32
+pinky_pip: 107.23
+ring_abd: 49.83
+ring_mcp: 149.33
+ring_pip: 118.21
+thumb_abd: 55.11
+thumb_cmc: 57.92
+thumb_dip: 111.18
+thumb_mcp: 137.55

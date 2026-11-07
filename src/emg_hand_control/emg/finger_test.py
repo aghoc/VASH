@@ -20,7 +20,7 @@ ads_monitor.py 와 같은 폴더에 두고 사용 (펌웨어 v1.5 이상).
 3) 자가 점검 — 하드웨어 없이 가상 데이터로 분석 기능 검증
     python finger_test.py demo
 """
-import argparse, sys, time, threading, os, random
+import argparse, signal, sys, time, threading, os, random
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -44,11 +44,40 @@ def parse_groups(txt):
     return out
 
 
+def transition_chunks(n, chain, rng):
+    """동작 1..n 사이 전환 n(n−1) 가지를 정확히 한 번씩 지나는 순서 (오일러 회로) → 동작 chain 개씩 자른 목록.
+    다음 묶음은 직전 묶음의 마지막 동작으로 시작 → 쉬는 곳에서도 전환이 빠지지 않음"""
+    if chain < 2:
+        raise SystemExit("--all-transitions 는 --chain 2 이상이 필요합니다")
+    out = {v: rng.sample([w for w in range(1, n + 1) if w != v], n - 1) for v in range(1, n + 1)}
+    stack, tour = [rng.randint(1, n)], []
+    while stack:
+        if out[stack[-1]]:
+            stack.append(out[stack[-1]].pop())
+        else:
+            tour.append(stack.pop())
+    tour.reverse()
+    return [tour[i:i + chain] for i in range(0, len(tour) - 1, chain - 1)]
+
+
+def unused_path(path):
+    """이미 있는 파일은 덮어쓰지 않고 _2, _3 을 붙임 (11-03: 같은 이름으로 다시 녹화해 첫 녹화가 사라짐)"""
+    if not os.path.exists(path):
+        return path
+    stem, ext = os.path.splitext(path); k = 2
+    while os.path.exists(f"{stem}_{k}{ext}"):
+        k += 1
+    return f"{stem}_{k}{ext}"
+
+
 # =========================== 기록 ===========================
 def cmd_record(a):
     import matplotlib.pyplot as plt
     plt.rcParams["font.family"] = ["Malgun Gothic", "Noto Sans CJK JP", "AppleGothic", "NanumGothic", "DejaVu Sans"]
 
+    wanted = a.out; a.out = unused_path(a.out)
+    if a.out != wanted:
+        print(f"{C['WARN']}{wanted} 이 이미 있어서 {a.out} 로 저장합니다{C['END']}")
     mask = parse_channels(a.ch)
     verb = "펴기" if a.side == "extend" else "구부리기"      # band(둘레 밴드, 측정 기준 v1) = 구부리기
     names = [g.strip() for g in a.gestures.split(",")] if a.gestures else [f"{f} {verb}" for f in FINGERS]
@@ -85,6 +114,11 @@ def cmd_record(a):
     rng = random.Random(a.seed)
     plan = [(0, -1, 5.0)]
     for r in range(a.reps):
+        if a.all_transitions:                 # 11-03: 모든 전환을 한 번씩 (쉬었다가 직전 동작부터 다시 이어서 전환이 끊기지 않음)
+            for chunk in transition_chunks(len(names), a.chain, rng):
+                plan += [(f, r, a.hold) for f in chunk]
+                plan.append((0, r, max(1.0, a.rest + rng.uniform(-a.rest_jitter, a.rest_jitter))))
+            continue
         order = list(range(1, len(names) + 1)); rng.shuffle(order)
         for k, f in enumerate(order):
             plan.append((f, r, a.hold))
@@ -256,7 +290,11 @@ def cmd_record(a):
                 + (f" gestures={'|'.join(n.replace(' ', '_') for n in names)}" if a.gestures else "")
                 + (" force=mix_even_weak" if a.force_mix else "")
                 + (f" subject={a.subject}" if a.subject else "")
+                + f" recorded={time.strftime('%Y%m%dT%H%M%S')}"
+                + (f" session={a.session}" if a.session else "") + (f" arm={a.arm}" if a.arm else "")
+                + (f" task={a.task}" if a.task else "") + (f" note={a.note.replace(' ', '_')}" if a.note else "")
                 + f" chain={a.chain} rest_jitter={a.rest_jitter} relax={int(a.relax)} next_cue={a.next_cue}"
+                + (" transitions=all" if a.all_transitions else "")
                 + (f" ramp=tri peak={a.ramp_peak}" if a.ramp and not LV else "")
                 + (f" ramp={'bend' if BEND else 'step'} peak={1.0 if BEND else max(LV)} levels={'|'.join(str(v) for v in LV)}" if LV else "") + "\n")
         f.write("label,rep," + ",".join(f"ch{i+1}_uV" for i in range(NCH)) + (",target" if a.ramp or LV else "") + "\n")
@@ -502,6 +540,8 @@ def cmd_demo(a):
 
 
 def main():
+    if hasattr(signal, "SIGBREAK"):                              # 통합 앱 정지 버튼 = Ctrl+C 와 같게 (여기까지 녹화 저장)
+        signal.signal(signal.SIGBREAK, signal.default_int_handler)
     ap = argparse.ArgumentParser(description="엄지·검지·중지 전극 위치 검증")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("record")
@@ -513,7 +553,12 @@ def main():
     p.add_argument("--gestures", default=None, help='손가락 대신 동작 목록. 예: "주먹,손 펴기,집기"  (라벨 1,2,3… 순서)')
     p.add_argument("--force-mix", action="store_true", help="반복마다 약하게/세게 번갈아 지시")
     p.add_argument("--subject", default=None, help="피험자 코드 (예: S02) — 머리말에 기록")
+    p.add_argument("--session", default=None, help="착용(세션) 번호 — 밴드를 찰 때마다 새 번호 (예: 20261103a). 데이터 표준 v1")
+    p.add_argument("--arm", default=None, choices=["left", "right"], help="밴드를 찬 팔")
+    p.add_argument("--task", default=None, help="과제 코드 (예: GR, GE, ARM, CAL) — 데이터 표준 v1 의 과제 목록")
+    p.add_argument("--note", default=None, help="메모 (충전기 꽂힘, 전극 다시 붙임 등)")
     p.add_argument("--chain", type=int, default=1, help="동작 N 개를 쉬지 않고 연속 (전환 학습)")
+    p.add_argument("--all-transitions", action="store_true", help="동작 사이 모든 전환을 반복마다 한 번씩 (--chain 만큼 이어 하고 쉼)")
     p.add_argument("--rest-jitter", type=float, default=0.0, help="휴식 길이 ± 무작위 (s)")
     p.add_argument("--relax", action="store_true", help="휴식 화면에 '완전히 힘 빼기' 표시")
     p.add_argument("--next-cue", type=float, default=-1, help="다음 동작 안내를 끝나기 N 초 전에만 표시 (−1 = 항상)")

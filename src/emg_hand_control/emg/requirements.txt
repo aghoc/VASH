@@ -1,0 +1,12 @@
+# Python 3.14 (Jetson: jetson/setup_jetson.sh 가 uv 로 설치)
+# 학습된 모델(.pkl)은 numpy·scikit-learn 버전에 묶여 있으므로 만든 PC 와 같은 버전을 씁니다.
+numpy==2.5.4
+scipy==1.18.1
+scikit-learn==1.9.1
+pandas==3.1.0
+matplotlib==3.11.2
+pillow==13.0.0
+pyserial==3.5
+PyYAML==6.0.3
+fastapi==0.162.0
+uvicorn==0.34.3

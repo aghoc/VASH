@@ -82,8 +82,25 @@ def relabeled_dataset(path):
     return np.asarray(X), np.array(Y), np.array(R)
 
 
+def transient_windows(path, t0=0.05, t1=0.35, step=0.025):
+    """근육이 막 켜지는 순간(실제 시작 a 기준 창 끝 a+t0 ~ a+t1)의 창을 그 동작으로 라벨 (10-31 지연 개선).
+    기본 학습은 라벨이 창 전체에서 같은 '유지' 구간만 써서 켜지는 순간(휴식+수축이 섞인 창)을 한 번도 못 봄
+    → 켜진 직후 엉뚱한 동작으로 잠깐 확정되거나 확정이 늦음. 시작 시각은 trial_times (25 ms 세기, 시도별 50 % 교차)"""
+    y, lab, rep, _ = filt(path)
+    z5 = zfast(y, int(0.025 * E.FS), np.sqrt(np.percentile(y[2 * E.FS:] ** 2, 20, 0)) + 1e-3)
+    X, Y, R = [], [], []
+    for a, b, c in trial_times(z5, lab):
+        if c <= 0: continue
+        for k in range(a + int(t0 * E.FS), min(b, a + int(t1 * E.FS)) + 1, int(step * E.FS)):
+            if k - E.WIN < 2 * E.FS: continue
+            w = y[k - E.WIN:k]
+            if np.sqrt(np.mean(w ** 2, 0)).max() > E.ART_UV: continue
+            X.append(w[:, ACT]); Y.append(int(c)); R.append(int(rep[k - 1]))
+    return np.asarray(X), np.array(Y), np.array(R)
+
+
 class Model:
-    def __init__(self, paths, aug=True, relabel=False):
+    def __init__(self, paths, aug=True, relabel=False, transient=False):
         paths = [paths] if isinstance(paths, str) else list(paths)
         if relabel:
             parts = [relabeled_dataset(p_) for p_ in paths]
@@ -91,6 +108,14 @@ class Model:
             R = np.concatenate([q[2] + 1000 * i for i, q in enumerate(parts)])
         else:
             X, Y, R = E.build_dataset(paths, ACT); X = np.asarray(X)
+        if transient:
+            tw = transient if isinstance(transient, tuple) else (0.05, 0.35)
+            parts = [transient_windows(p_, *tw) for p_ in paths]
+            parts = [q for q in parts if len(q[0])]
+            if parts:
+                Xt = np.concatenate([q[0] for q in parts]); Yt = np.concatenate([q[1] for q in parts]); Rt = np.concatenate([q[2] for q in parts])
+                X = np.concatenate([np.asarray(X), Xt]); Y = np.concatenate([np.asarray(Y), Yt]); R = np.concatenate([np.asarray(R), Rt])
+                print(f"켜지는 순간 창 추가: {len(Yt)} 개 (유지 창 {len(Y) - len(Yt)} 개)")
         path = paths[0]
         Xa, Ya, Ra = E.augment_force(X, Y, R, E.AUG_SCALES if aug else ())
         self.m = M.MathModel(Xa, Ya, Ra, ACT, True); self.k = self.m.k
