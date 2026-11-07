@@ -158,6 +158,13 @@ def build_poses(hand, path):
     poses["_follow"] = dict(P.get("thumb_follow", {}) or {})
     poses["_paths"] = {k: {g: sorted((float(a), float(b)) for a, b in pts) for g, pts in (v or {}).items()}
                        for k, v in (P.get("paths") or {}).items()}
+    tpp = Path(path).with_name("taught_paths.yaml")             # 손으로 녹화한 엄지 경로 (teach_live.py --path, 11-07)
+    poses["_tpath"] = {}
+    if tpp.exists():
+        for nm, d in ((yaml.safe_load(tpp.read_text(encoding="utf-8")) or {}).items()):
+            if isinstance(d, dict) and d.get("points"):
+                poses["_tpath"][nm] = [{j: roms[j][0] + r * (roms[j][1] - roms[j][0]) for j, r in zip(d["joints"], p)} for p in d["points"]]
+                print(f"손으로 녹화한 경로 사용: {nm} ({len(d['points'])} 점)", flush=True)
     poses["_fist_clear"] = {j: float(v) for j, v in (P.get("fist_release_thumb") or {}).items()}   # 주먹 풀 때 엄지가 먼저 펴는 마디 (ROM 비율)
     poses["_via"] = {k: sorted((float(c), str(n)) for c, n in v) for k, v in (P.get("via") or {}).items()}   # 중간 자세: 대기 → 중간(c) → 자세
     # 맞대기 직전 자세 (11-02): approach: {pinch: [c, f]} → 'pinch_pre' = 조준 관절(벌림·엄지 돌림)은 최종값, 굽힘 관절은 대기→최종의 f 만큼
@@ -469,6 +476,22 @@ def arc_offset(poses, key, j, c):
     return amp * math.sin(math.pi * (c - c0) / (c1 - c0)) * (poses["open"][j] - poses["relax"][j])
 
 
+TPATH_C0 = 0.55      # 주먹에서 엄지가 녹화 경로를 타기 시작하는 c (그 전엔 대기 → 경로 첫 점, 손가락이 먼저 말림)
+
+
+def tpath_at(poses, j, c, name="fist_thumb"):
+    """녹화한 엄지 경로에서 쥐는 정도 c 의 관절 각도. 없으면 None"""
+    pts = poses.get("_tpath", {}).get(name)
+    if not pts or j not in pts[0]:
+        return None
+    if c <= TPATH_C0:
+        u = max(0.0, c / TPATH_C0)
+        return poses["relax"][j] + (pts[0][j] - poses["relax"][j]) * u
+    x = (min(1.0, c) - TPATH_C0) / (1.0 - TPATH_C0) * (len(pts) - 1)
+    i = min(int(x), len(pts) - 2); f = x - i
+    return pts[i][j] + (pts[i + 1][j] - pts[i][j]) * f
+
+
 def pose_at(poses, key, j, c):
     """쥐는 정도 c 에서 이 자세의 관절 j 목표 (대기 → 자세, 기준점 경로 + 호)
     via 가 있으면 대기(0) → 중간 자세(c1) → … → 자세(1) 를 차례로 이음 (예: 감싸 쥐기 = 대기 → 엄지 벌린 준비 자세 → 끝까지 쥐기)"""
@@ -533,7 +556,12 @@ class Composer:
             u = (s_ - a) / (b - a); return u * u * (3.0 - 2.0 * u)
         tgt = {}
         for j in A:
-            if j in THUMB:
+            if j in THUMB and self.poses.get("_tpath", {}).get("fist_thumb"):
+                # 녹화 경로가 있으면: 쥘 때 지나온 엄지 궤적을 거꾸로 (지금 c → 경로 첫 점 = 편 자리) → 손가락 → 엄지 대기 자리
+                cb = self.rel_c0 + (TPATH_C0 - self.rel_c0) * ramp(0.0, 0.4) if self.rel_c0 > TPATH_C0 else self.rel_c0
+                p0 = tpath_at(self.poses, j, TPATH_C0)
+                q = (tpath_at(self.poses, j, cb) if cb > TPATH_C0 else A[j] + (p0 - A[j]) * ramp(0.0, 0.4)) + (final[j] - p0) * ramp(0.6, 1.0)
+            elif j in THUMB:
                 c_ = min(A[j], clear[j]) if j in clear else A[j]          # 펴는 쪽으로만 (이미 더 펴져 있으면 그대로)
                 q = A[j] + (c_ - A[j]) * ramp(0.0, 0.35) + (final[j] - c_) * ramp(0.6, 1.0)
             else:
@@ -546,7 +574,7 @@ class Composer:
     def _release_start(self):
         """주먹을 충분히 쥔 상태(c ≥ 0.5)에서 놓기 시작할 때만 경로를 씀"""
         if ARGS.fist_unwind > 0 and self.key == "fist" and self.fist_tgt is not None and self.fist_c >= 0.5:
-            self.rel_from, self.rel_s = dict(self.fist_tgt), 0.0
+            self.rel_from, self.rel_s, self.rel_c0 = dict(self.fist_tgt), 0.0, min(1.0, self.fist_c)
         self.fist_tgt = None
 
     def _unwind(self, dt, stop_at_via=False):
@@ -693,6 +721,10 @@ class Composer:
             # 엄지 문은 엄지를 접는 자세에만 (10-31 수정: 이전엔 손 펴기에도 곱해져 엄지가 대기 자리에 머물러 손 펴기 엄지가 안 바뀌었음)
             q = o[j]
             for k, w in wts.items():
+                tp = tpath_at(self.poses, j, c) if (k == "fist" and j in THUMB) else None
+                if tp is not None:                 # 손으로 녹화한 엄지 경로 (11-07): 기준점·호 대신 그 궤적 그대로
+                    q += w * (tp - o[j]) * (self.tg if k in self.thumb_keys else 1.0)
+                    continue
                 dk = ((pose_at(self.poses, k, j, c) - self.poses["relax"][j]) if k in self.poses["_via"]
                       else (path_progress(self.poses, k, j, c) * (self.poses[k][j] - o[j]) + arc_offset(self.poses, k, j, c)))
                 gate = self.tg if (j in THUMB and k in self.thumb_keys) else 1.0

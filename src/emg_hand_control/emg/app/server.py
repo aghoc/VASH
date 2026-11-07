@@ -65,7 +65,7 @@ def command(kind, **kw):
         extra = (["--calibrate", "--calibrate-only"] if kw.get("calibrate") else []) + (["--update-baseline"] if kw.get("update_baseline") else [])
         return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra], ORCA
     if kind == "teach":                              # 자세 가르치기 (teach_live.py: 60 mA 로 낮춰 손으로 밀어 만듦)
-        return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"], "--soft", str(kw["soft"])], ORCA
+        return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"], "--soft", str(kw["soft"]), *(["--path"] if kw.get("path") else [])], ORCA
     if kind == "emg":
         return [str(PC_PY), "grip_rt.py", "run", "--model", kw["model"], "--port", EMG_COM, "--udp", "127.0.0.1:9000", "--log", kw["log"], "--save-raw", kw["raw"],
                 *(["--svm-temp", str(kw["temp"])] if kw.get("temp") is not None else [])], PC
@@ -152,7 +152,7 @@ class Job:
 class State:
     def __init__(self):
         self.jobs = {}; self.svm_out = None; self.session = next_session(); self.t_band = None; self.report = None
-        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
+        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
         self.flow = dict(active=False, stage="", step=0, waiting=False, ask=None, message="", ok=None); self.answer = None; self.cancel = threading.Event(); self.proceed = threading.Event()
 
 
@@ -405,7 +405,7 @@ def state():
     mon = S.jobs.get("monitor")
     return dict(ports=get_ports(), jobs=jobs, flow=S.flow, signal=mon.meta if mon and mon.running else None, signal_on=running("monitor"), quick=mon.quick if mon else None, svm_out=S.svm_out, gestures=GESTURES.split(","), model_labels={m: model_label(m) for m in models()},
                 signal_error=(list(mon.lines)[-1] if mon and not mon.running and mon.code not in (0, None) and mon.lines else None), session=S.session, band_elapsed=round(time.time() - S.t_band) if S.t_band else None, report=S.report, record_kind=S.record_kind,
-                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, hand_mode=S.hand_mode,
+                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, teach_path=S.teach_path, hand_mode=S.hand_mode,
                 next_run=unused_run(), emg_com=EMG_COM, hand_com=HAND_COM)
 
 
@@ -646,8 +646,15 @@ def pose_list():
     except Exception as e:
         return dict(error=str(e), items=[])
     items = [(g, emap[g]) for g in GESTURES.split(",") if g in emap] + TEACH_EXTRA
+    pp = HAND_DIR / "taught_paths.yaml"
+    try:
+        paths = (yaml.safe_load(pp.read_text(encoding="utf-8")) or {}) if pp.exists() else {}
+    except Exception:
+        paths = {}
+    fp = paths.get("fist_thumb") or {}
     return dict(items=[dict(label=g, pose=p, taught=p in taught) for g, p in items],
-                saved=time.strftime("%m-%d %H:%M", time.localtime(tp.stat().st_mtime)) if tp.exists() else None)
+                saved=time.strftime("%m-%d %H:%M", time.localtime(tp.stat().st_mtime)) if tp.exists() else None,
+                paths=[dict(label="주먹 엄지 (쥐었다 펴기)", name="fist_thumb", saved=fp.get("saved"), points=len(fp.get("points") or []))])
 
 
 @app.get("/api/teach/poses")
@@ -657,26 +664,45 @@ def teach_poses():
 
 @app.post("/api/teach/start")
 async def teach_start(req: Request):
-    body = await req.json(); pose = body.get("pose", "")
+    body = await req.json(); pose = body.get("pose", ""); is_path = bool(body.get("path"))
     soft = float(body.get("soft", 40))
     if not 15 <= soft <= 80:
         raise HTTPException(400, "모터 힘은 15 ~ 80 mA")
-    if pose not in {it["pose"] for it in pose_list()["items"]}:
+    pl = pose_list()
+    if pose not in ({p["name"] for p in pl.get("paths", [])} if is_path else {it["pose"] for it in pl["items"]}):
         raise HTTPException(400, "고칠 동작을 고르세요")
     if running("hand") or running("teach"):
         raise HTTPException(409, "의수를 먼저 끄세요 (같은 포트를 씁니다)")
-    start("teach", "teach", pose=pose, soft=soft)
-    S.teach_pose = pose
+    start("teach", "teach", pose=pose, soft=soft, path=is_path)
+    S.teach_pose, S.teach_path = pose, is_path
     return {"ok": True}
 
 
 @app.post("/api/teach/key")
 async def teach_key(req: Request):
     """저장 = Enter, 다시 해보기 = r, 취소 = q (teach_live.py 키와 같음)"""
-    k = {"save": "", "redo": "r", "quit": "q"}.get((await req.json()).get("key"))
+    k = {"save": "", "redo": "r", "quit": "q", "rec": "s"}.get((await req.json()).get("key"))
     if k is None or not running("teach"):
         raise HTTPException(409, "자세 수정이 실행 중이 아닙니다")
     S.jobs["teach"].enter(k)
+    return {"ok": True}
+
+
+@app.post("/api/teach/path/delete")
+async def teach_path_delete(req: Request):
+    """녹화한 경로 지우기 → 원래 자세 계산으로 돌아감 (이전 파일은 backup/ 에)"""
+    import shutil, yaml
+    name = (await req.json()).get("name", "")
+    pp = HAND_DIR / "taught_paths.yaml"
+    data = (yaml.safe_load(pp.read_text(encoding="utf-8")) or {}) if pp.exists() else {}
+    if name not in data:
+        raise HTTPException(404, "녹화한 경로가 없습니다")
+    if running("hand") or running("teach"):
+        raise HTTPException(409, "의수를 끈 뒤 지우세요")
+    (HAND_DIR / "backup").mkdir(exist_ok=True)
+    shutil.copy(pp, HAND_DIR / "backup" / f"taught_paths_{time.strftime('%Y%m%d_%H%M%S')}.yaml")
+    data.pop(name)
+    pp.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8")
     return {"ok": True}
 
 
