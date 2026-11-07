@@ -511,8 +511,40 @@ class Composer:
         self.poses, self.emg_map = poses, emg_map; self.emg_map0 = dict(emg_map)
         self.names = None; self.key = None; self.c = 0.0; self.t_on = 0.0; self.tg = 0.0; self.firm = False; self.dwell = 0.0
         self.now = 0.0; self.t_open = -1e9; self.fist_as = None; self.vision = None      # 손 펴기 직후 주먹 = 감싸 쥐기 (10-31)
+        self.fist_tgt = None; self.fist_c = 0.0; self.rel_from = None; self.rel_s = 0.0  # 주먹 풀기 경로 (11-07)
         self.thumb_keys = {k for k, q in poses.items() if not k.startswith("_") and k not in ("open", "relax", "preshape")
                            and any(abs(q[j] - poses["relax"][j]) > 8 for j in THUMB)}     # 엄지가 실제로 움직이는 동작들
+
+    def _fist_release(self, dt, final):
+        """주먹 풀기 (11-07 실측: 주먹을 펼 때 엄지·검지가 부딪힘). 대기 자세의 엄지 MCP 가 0.52 로 굽어 있어서
+        펴는 동안 엄지 끝이 검지 위에 남고, 검지가 그 밑으로 펴지며 걸림 → 세 구간으로 나눔 (진행 s: 0 → 1, fist_unwind s 동안)
+          0.0–0.4  엄지가 먼저: 끝 두 마디(MCP·DIP)를 펴고(0–0.3) 뿌리(CMC·벌림)를 바깥으로(0.1–0.4) → 손 펴기 때의 엄지 자리
+          0.25–0.75 네 손가락이 펴짐 (엄지가 70 % 쯤 비켰을 때 시작, 겹쳐서 진행)
+          0.65–1.0  엄지가 마지막 자리(대기 또는 손 펴기)로
+        final = 이번 틱의 원래 목표 (대기 / 손 펴기)"""
+        self.rel_s = min(1.0, self.rel_s + dt / ARGS.fist_unwind)
+        s_ = self.rel_s; A = self.rel_from; clear = self.poses["open"]
+        def ramp(a, b):
+            if s_ <= a: return 0.0
+            if s_ >= b: return 1.0
+            u = (s_ - a) / (b - a); return u * u * (3.0 - 2.0 * u)
+        tgt = {}
+        for j in A:
+            if j in THUMB:
+                p1 = ramp(0.0, 0.3) if j in ("thumb_mcp", "thumb_dip") else ramp(0.1, 0.4)
+                q = A[j] + (clear[j] - A[j]) * p1 + (final[j] - clear[j]) * ramp(0.65, 1.0)
+            else:
+                q = A[j] + (final[j] - A[j]) * ramp(0.25, 0.75)
+            tgt[j] = q
+        if s_ >= 1.0:
+            self.rel_from = None
+        return tgt
+
+    def _release_start(self):
+        """주먹을 충분히 쥔 상태(c ≥ 0.5)에서 놓기 시작할 때만 경로를 씀"""
+        if ARGS.fist_unwind > 0 and self.key == "fist" and self.fist_tgt is not None and self.fist_c >= 0.5:
+            self.rel_from, self.rel_s = dict(self.fist_tgt), 0.0
+        self.fist_tgt = None
 
     def _unwind(self, dt, stop_at_via=False):
         """감싸 쥐기 풀기 (10-31): 쥘 때 경로를 거꾸로 — 엄지 끝마디 먼저 펴고 → 엄지 뿌리가 C 자로 돌아나가며 네 손가락 폄
@@ -551,8 +583,11 @@ class Composer:
             if self.key == "wrap" and ARGS.wrap_unwind > 0 and self.c > 0:
                 self.tg += (0.0 - self.tg) * (1 - math.exp(-dt / ARGS.thumb_fall))
                 return self._unwind(dt), rest_key, 0.0
+            self._release_start()
             self.key, self.c = None, 0.0
             self.tg += (0.0 - self.tg) * (1 - math.exp(-dt / ARGS.thumb_fall))
+            if self.rel_from is not None:
+                return self._fist_release(dt, o), rest_key, 0.0
             return o, rest_key, 0.0
         # 대기 안정: 켜진 직후 on_delay s 는 무시, 그 뒤 on_ramp s 동안 서서히 참여 → 짧은 오작동(깜빡임)에 손이 움찔하지 않음
         self.t_on += dt
@@ -560,6 +595,8 @@ class Composer:
         if eng <= 0:
             if self.key == "wrap" and ARGS.wrap_unwind > 0 and self.c > 0:     # 풀던 중 다시 켜짐: 확정될 때까지는 계속 풂 (대기로 튀지 않게)
                 return self._unwind(dt), rest_key, 0.0
+            if self.rel_from is not None:
+                return self._fist_release(dt, o), rest_key, 0.0
             return o, rest_key, 0.0
         lv = norm_level(msg.get("level", 0.0))
         # 가중치: 섞기 모드면 post, 아니면 확정 동작 1개 (미확정 = preshape)
@@ -613,6 +650,11 @@ class Composer:
         #   손 펴기로 판단되면 바로 펴기 자세로 가서 엄지가 검지 쪽으로 좁혀 들어오며 물체가 낌)
         if self.key == "wrap" and key != "wrap" and self.c > 0 and ARGS.wrap_unwind > 0:
             return self._unwind(dt, stop_at_via=(key == "open")), rest_key, 0.0
+        if key in ("open", "relax", "preshape"):
+            if self.key == "fist":
+                self._release_start()
+        else:
+            self.rel_from = None
         # 스스로 쥐기 (10-31): 쥐기 모드 자세(wrap·pinch·tripod)는 확정되면 근전도 세기와 상관없이 auto_close s 동안 끝까지 닫음
         #   → 물체에 닿은 손가락은 ContactHold 가 그 자리에서 멈추고 누름. 힘 = 전류 상한 (살살 i_light / 꽉 i_max). 근육 힘을 빼면(휴식) 놓음 (나)
         auto = key in AUTO_KEYS and ARGS.auto_close > 0 and (msg.get("committed") or ARGS.auto_early)   # auto_early: 확정 전에도 가장 그럴듯한 쥐기로 닫기 시작 (지연 개선 시험)
@@ -654,6 +696,10 @@ class Composer:
                 sqk = 0.0 if (k in PRECISION_KEYS and j in AIM_JOINTS) else sq      # 집기·세손가락: 조준 관절(벌림·엄지 돌림)은 자세 그대로, 더 밀지 않음
                 q += w * (dk + sqk * (self.poses[k][j] - o[j])) * gate
             tgt[j] = min(max(q, roms[j][0]), roms[j][1])
+        if key == "fist":
+            self.fist_tgt, self.fist_c = dict(tgt), c
+        elif self.rel_from is not None:
+            tgt = self._fist_release(dt, tgt)
         return tgt, key, ((1.0 if auto else lv) if key not in ("open", "relax", "preshape") else 0.0)
 
 
@@ -941,6 +987,7 @@ def main():
     ap.add_argument("--wrap-rel-fingers", type=float, default=0.5, help="감싸 쥐기 풀 때 네 손가락 속도 배율 (<1 느리게, >1 빠르게)")
     ap.add_argument("--wrap-rel-thumb", type=float, default=1.0, help="감싸 쥐기 풀 때 엄지 속도 배율 (11-02: 검지 간섭으로 0.7 → 1.0)")
     ap.add_argument("--wrap-rel-delay", type=float, default=0.2, help="감싸 쥐기 풀 때 네 손가락이 엄지보다 늦게 출발하는 시간 (s)")
+    ap.add_argument("--fist-unwind", type=float, default=0.6, help="주먹 풀기 경로 전체 시간 s (11-07: 엄지 마디 펴고 비킴 → 네 손가락 폄 → 엄지 대기 자리). 0 = 이전처럼 한 번에")
     ap.add_argument("--wrap-unwind", type=float, default=0.9, help="감싸 쥐기 풀기 = 쥘 때 경로를 거꾸로 (엄지 끝 → 엄지 뿌리가 C 자로 벌어지며 손가락 폄 → 준비 자세 → 대기). 끝→대기 전체 시간 s, 0 = 바로 대기로")
     ap.add_argument("--wrap-rel-hold", type=float, default=0.5, help="풀 때 엄지 벌린 준비 자세(wrap_pre)에서 머무는 시간 s (물체가 빠질 틈)")
     ap.add_argument("--open-window", type=float, default=0.0, help="(비전 없을 때 임시) 손 펴기 뒤 이 시간(s) 안에 주먹 → 감싸 쥐기. 11-02 부터 기본 0 = 감싸 쥐기는 비전이 물체를 볼 때만, 평소 주먹은 주먹")
