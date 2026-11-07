@@ -300,7 +300,9 @@ def placement_report(names, ref):
 
 
 # ---- 착용 보정 ----
-def calibrate(base, spec):
+def calibrate(base, spec, fresh=False):
+    """fresh=True (11-07): 기본 모델의 동작 통계를 섞지 않고 이 착용 녹화만으로 (특징 계산·판단 규칙은 같음).
+    오른팔 첫 착용 20261107a 재생 (CAL 로 학습 → TRANS 채점 49 회): 기본+보정 29/49, 이 착용만 47/49"""
     import copy
     E.CLASSES = GESTURES
     pk = copy.deepcopy({k: v for k, v in base.items()}); mm = pk["model"].m
@@ -310,8 +312,13 @@ def calibrate(base, spec):
         raise SystemExit(f"보정 녹화에 동작이 빠졌습니다: {missing}. 7 동작을 다 녹화하세요.")
     mm.Rref, mm.shift = wear_ref(W, Y, mm.zc_th)
     Fn = (raw_feats(W, mm.zc_th, mm.Rref) - mm.shift - mm.fmu) / mm.fsd
-    apply_stats(pk, add_stats(pk["stats"], Fn, Y, CAL_WEIGHT))
-    pk["calibrated"] = {"files": [os.path.basename(str(n)) for n, _ in spec], "windows": int(len(Y)), "weight": CAL_WEIGHT, "time": time.strftime("%Y-%m-%d %H:%M")}
+    if fresh:
+        pk["stats"] = add_stats({k: np.zeros_like(v) for k, v in pk["stats"].items()}, Fn, Y, 1)
+        apply_stats(pk, pk["stats"])
+    else:
+        apply_stats(pk, add_stats(pk["stats"], Fn, Y, CAL_WEIGHT))
+    pk["calibrated"] = {"files": [os.path.basename(str(n)) for n, _ in spec], "windows": int(len(Y)), "weight": CAL_WEIGHT,
+                        "method": "fresh" if fresh else "calib", "time": time.strftime("%Y-%m-%d %H:%M")}
     return pk
 
 
@@ -368,19 +375,19 @@ def svm_train_set(base, seed=0):
     return X, Y
 
 
-def calibrate_svm(base, spec):
+def calibrate_svm(base, spec, fresh=False):
     """LDA 보정과 같은 착용 정렬 + 보정 창 무게로 SVM 학습 (선택 옵션, 재생 비교 svm_cmp_1105). 판단 규칙은 같음"""
     import warnings
     from sklearn.svm import SVC
-    pk = calibrate(base, spec); mm = pk["model"].m
-    X, Y = svm_train_set(base)
+    pk = calibrate(base, spec, fresh=fresh); mm = pk["model"].m
+    X, Y = (np.zeros((0, len(mm.fmu)), np.float32), np.zeros(0, int)) if fresh else svm_train_set(base)   # fresh: 왼팔 등 다른 착용 표본을 안 섞음
     Wc, Yc = cal_windows(spec)
     Xc = (raw_feats(Wc, mm.zc_th, mm.Rref) - mm.shift - mm.fmu) / mm.fsd
     clf = SVC(C=1.09, gamma=1 / X.shape[1], kernel="rbf", probability=True, random_state=0, cache_size=1000)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", FutureWarning)
         clf.fit(np.vstack([X, Xc]), np.r_[Y, Yc], sample_weight=np.r_[np.ones(len(Y)), np.full(len(Yc), CAL_WEIGHT)])
-    pk["svm"] = clf; pk["svm_temp"] = G.SVM_TEMP; pk["expert"] = None; pk["calibrated"]["method"] = "svm"
+    pk["svm"] = clf; pk["svm_temp"] = G.SVM_TEMP; pk["expert"] = None; pk["calibrated"]["method"] = "svm_fresh" if fresh else "svm"
     return pk
 
 
@@ -492,8 +499,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("build"); p.add_argument("--out", required=True)
-    p = sub.add_parser("calib"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=os.path.join(DATA, "grip7_base.pkl")); p.add_argument("--out", required=True); p.add_argument("--weight", type=int, default=CAL_WEIGHT, help="보정 창 무게 (40 초 보정 = 10, 전환·힘·자세까지 녹화했으면 30)"); p.add_argument("--pt-bias", type=float, default=PT_BIAS, help="집기·세손가락 판단 문턱 올림 (끼어듦이 많을 때 4)")
-    p = sub.add_parser("calib-svm", help="선택 옵션: 같은 보정 녹화로 SVM 모델"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=os.path.join(DATA, "grip7_base.pkl")); p.add_argument("--out", required=True); p.add_argument("--weight", type=float, default=CAL_WEIGHT); p.add_argument("--pt-bias", type=float, default=PT_BIAS)
+    p = sub.add_parser("calib"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=os.path.join(DATA, "grip7_base.pkl")); p.add_argument("--out", required=True); p.add_argument("--weight", type=int, default=CAL_WEIGHT, help="보정 창 무게 (40 초 보정 = 10, 전환·힘·자세까지 녹화했으면 30)"); p.add_argument("--pt-bias", type=float, default=PT_BIAS, help="집기·세손가락 판단 문턱 올림 (끼어듦이 많을 때 4)"); p.add_argument("--fresh", action="store_true", help="기본 모델 통계를 섞지 않고 이 녹화만으로 (오른팔·처음 차는 위치)"); p.add_argument("--ref", default=None, help="밴드 위치 비교 기준 파일 (오른팔: data/S01/grip7_ref_right.pkl). 없으면 기본 모델의 기준(왼팔)")
+    p = sub.add_parser("calib-svm", help="선택 옵션: 같은 보정 녹화로 SVM 모델"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=os.path.join(DATA, "grip7_base.pkl")); p.add_argument("--out", required=True); p.add_argument("--weight", type=float, default=CAL_WEIGHT); p.add_argument("--pt-bias", type=float, default=PT_BIAS); p.add_argument("--fresh", action="store_true", help="다른 착용 표본을 섞지 않고 이 녹화만으로")
     p = sub.add_parser("gate"); p.add_argument("--accept", action="store_true", help="이번 결과를 새 기준으로 저장")
     p = sub.add_parser("report", help="정답 있는 녹화 채점: 동작별·전환별 표"); p.add_argument("csv", nargs="+"); p.add_argument("--model", required=True); p.add_argument("--min-s", type=float, default=None)
     a = ap.parse_args()
@@ -507,13 +514,14 @@ def main():
         for c in a.csv:
             d = int(load(c)[4].get("dropped", 0) or 0)
             if d: print(f"※ {os.path.basename(c)} 누락 {d} 샘플")
-        placement_report(a.csv, base["reference"])
-        pk = calibrate(base, [(c, None) for c in a.csv]); pickle.dump(pk, open(a.out, "wb"))
-        print(f"보정 저장 {a.out}  (보정 창 {pk['calibrated']['windows']} 개 ×{CAL_WEIGHT})")
+        ref = pickle.load(open(a.ref, "rb"))["reference"] if a.ref else base["reference"]   # 11-07: 오른팔은 오른팔 착용 기준과 비교
+        placement_report(a.csv, ref)
+        pk = calibrate(base, [(c, None) for c in a.csv], fresh=a.fresh); pickle.dump(pk, open(a.out, "wb"))
+        print(f"보정 저장 {a.out}  (보정 창 {pk['calibrated']['windows']} 개 " + ("· 이 착용만으로 학습)" if a.fresh else f"×{CAL_WEIGHT})"))
     elif a.cmd == "calib-svm":
         CAL_WEIGHT, PT_BIAS = a.weight, a.pt_bias
         E.CLASSES = GESTURES
-        t0 = time.time(); pk = calibrate_svm(pickle.load(open(a.base, "rb")), [(c, None) for c in a.csv])
+        t0 = time.time(); pk = calibrate_svm(pickle.load(open(a.base, "rb")), [(c, None) for c in a.csv], fresh=a.fresh)
         tmp = a.out + ".tmp"; pickle.dump(pk, open(tmp, "wb")); os.replace(tmp, a.out)
         print(f"SVM 모델 저장 {a.out}  (보정 창 {pk['calibrated']['windows']} 개 ×{CAL_WEIGHT}, 서포트 벡터 {pk['svm'].n_support_.sum()}, {time.time() - t0:.0f} s)")
     elif a.cmd == "report":

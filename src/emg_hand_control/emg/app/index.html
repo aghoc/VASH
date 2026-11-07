@@ -216,11 +216,13 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
   <section class="card">
     <h2 data-en="CALIBRATION"><b>2</b>캘리브레이션</h2>
     <div class="row"><button class="primary" id="quickStart">캘리브레이션</button><button id="quickStop" hidden>중단</button></div>
+    <p class="note" id="rightNote" hidden>오른팔: 빠른 보정 대신 [신호 보기]로 휴식 전극을 맞춘 뒤 아래 정밀 보정을 하세요.</p>
     <div class="bar" id="quickBar" hidden><i id="quickFill"></i></div>
     <div class="state" id="quickStage" aria-live="polite"></div>
     <div id="quickMsg"></div>
     <details id="fullCal"><summary class="note">정밀 보정 (동작 녹화, 약 3분)</summary>
-    <div class="row"><button id="calStart">정밀 보정 시작</button><button id="calCancel" hidden>중단</button></div>
+    <div class="row"><button id="calStart">정밀 보정 시작</button><button id="calCancel" hidden>중단</button>
+      <label class="note" title="기본 모델(왼팔 착용들)을 섞지 않고 이번 녹화만으로 LDA·SVM 을 만듭니다"><input type="checkbox" id="calFresh"> 이 착용만으로 학습 (오른팔·처음 차는 위치)</label></div>
     <div class="steps" id="calSteps" hidden><i></i><i></i><i></i><i></i><i></i></div>
     <div class="state" id="calStage"></div>
     <div id="calMsg"></div>
@@ -346,7 +348,7 @@ function blocks(s){
 }
 function quick(s){
   const q=s.quick,on=s.signal_on&&q,mid=on&&["wait","record","compute"].includes(q.stage),busy=(s.jobs.emg&&s.jobs.emg.running)||(s.jobs.record&&s.jobs.record.running)||s.flow.active;
-  $("quickStart").disabled=!!mid||busy||!s.ports[s.emg_com];$("quickStart").textContent=mid?"진행 중":"캘리브레이션";$("quickStop").hidden=!mid;
+  $("quickStart").disabled=!!mid||busy||!s.ports[s.emg_com]||s.arm==="right";$("quickStart").title=s.arm==="right"?"오른팔은 아직 빠른 보정 없음 (기본 모델이 왼팔). 정밀 보정을 쓰세요":"";$("rightNote").hidden=s.arm!=="right";$("quickStart").textContent=mid?"진행 중":"캘리브레이션";$("quickStop").hidden=!mid;
   $("quickBar").hidden=!mid;let t="",w=0;
   if(mid){const g=s.signal,bad=g?g.ch.filter(c=>c.state==="bad").map(c=>"CH"+c.n):[];
     if(q.stage==="record"){w=100*(1-q.left/q.rec_s);t=`측정 중: 힘을 뺀 채로 ${Math.ceil(q.left)}초 더 기다리세요`}
@@ -554,7 +556,7 @@ $("session").onblur=async()=>{const v=$("session").value.trim();if(st&&v&&v!==st
 for(const box of ["tests"])$(box).onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.rec)post("/api/record/"+b.dataset.rec);else if(b.dataset.recstop)post("/api/stop/record")};
 const GUIDE={A:["electrode_guide.png","측정 기준 v1 전체 배치","근육 위치는 문헌 기반 개념도입니다. 실제로는 손가락을 움직이며 신호로 확인합니다."],
   B:["section_gaps.png","단면과 계산 간격","둘레 250 mm 원형 팔로 계산한 값이고 시험으로 검증하지 않았습니다. 지금 쓰는 간격이 있으면 그 값을 유지합니다."]};
-function showGuide(k){const g=GUIDE[k];$("guideImg").src="/guide/"+g[0];$("guideImg").alt=g[1];$("guideNote").textContent=g[2];$("guideA").setAttribute("aria-selected",k==="A");$("guideB").setAttribute("aria-selected",k==="B")}
+function showGuide(k){const g=GUIDE[k];$("guideImg").src="/guide/"+(k==="A"&&st&&st.arm==="right"?"electrode_guide_right.png":g[0]);$("guideImg").alt=g[1];$("guideNote").textContent=g[2];$("guideA").setAttribute("aria-selected",k==="A");$("guideB").setAttribute("aria-selected",k==="B")}
 $("guideOpen").onclick=()=>{showGuide("A");$("guide").showModal()};
 $("guideClose").onclick=()=>$("guide").close();
 $("guide").onclick=e=>{if(e.target===$("guide"))$("guide").close()};
@@ -564,7 +566,9 @@ $("model").onchange=()=>{$("model")._c=$("model").value;modelCard($("model").val
 $("svmBuild").onclick=()=>post("/api/svm/build");
 $("quickStart").onclick=()=>post("/api/quick/start");
 $("quickStop").onclick=()=>post("/api/stop/monitor");
-$("calStart").onclick=()=>post("/api/calibration/start");
+$("calStart").onclick=()=>post("/api/calibration/start",{fresh:$("calFresh").checked});
+try{const v=localStorage.getItem("vash_cal_fresh");$("calFresh").checked=v===null?true:v==="1"}catch(e){$("calFresh").checked=true}
+$("calFresh").onchange=()=>{try{localStorage.setItem("vash_cal_fresh",$("calFresh").checked?"1":"0")}catch(e){}};
 $("calCancel").onclick=()=>post("/api/calibration/cancel");
 $("askGo").onclick=()=>post("/api/calibration/continue");
 $("askRetry").onclick=()=>post("/api/calibration/retry");
