@@ -111,7 +111,25 @@ relax:           # 대기 자세 (v9, 10-30): 사람 손이 쉴 때처럼 살짝
 #   pinch: {middle_mcp: 0.15, middle_pip: 0.10, _coupled: [ring_mcp, ring_pip, pinky_mcp, pinky_pip]}, fist: {index_mcp: 0.90}
 override: {}       # 11-07: 주먹 엄지 DIP 0.55 덮어쓰기를 지움 — 앱에서 손으로 다시 만든 주먹 값이 무시되던 원인
 
-# 주먹 풀 때 엄지가 제자리에서 먼저 펴는 마디 (ROM 비율, 작을수록 폄). 그다음 네 손가락이 펴지고 엄지가 대기 자리로 (--fist-unwind)
+# 엄지 동선 (11-07): 쥐는 정도 c 에 따른 엄지 4 관절 기준점. 값 = ROM 비율(작을수록 폄) 또는 자세 이름(그 자세의 값). c=0 은 대기 자세
+#   근거: 건강한 사람 손 쥐기/펴기 측정 (Carpinella 2011 J NeuroEng Rehabil 8:19) — 엄지는 쥘 때 MCP → IP 순서로 굽고,
+#         펼 때 IP 먼저 펴고 MCP 가 따라옴 (평균 4 % 늦게), 범위 MCP 약 61°, IP 약 64°. 주먹은 손가락이 먼저 말리고 엄지가 마지막에 덮음
+#   이 손에서의 간섭 원인: 엄지 뿌리가 손가락 위로 넘어갈 때 끝마디가 덜 펴져 있고, 마지막에 끝마디가 거의 안 굽음 (녹화 MCP 46°, DIP 31°)
+#   → ① 손가락이 말리는 동안 엄지 끝을 펴서 띄움 ② 마디를 편 채로 뿌리만 넘어감 ③ MCP 굽힘 ④ IP(DIP) 마지막에 굽혀 덮음
+#   풀 때는 이 표를 정확히 거꾸로 (끝마디 → 가운데 마디 → 뿌리 → 대기), 손가락은 엄지가 손가락 위를 비운 뒤 펴짐
+thumb_paths:
+  fist:
+    - [0.45, {thumb_cmc: 0.30, thumb_abd: 0.55, thumb_mcp: 0.30, thumb_dip: 0.15}]   # 끝을 펴서 띄움, 뿌리 살짝 돌기 시작
+    - [0.65, {thumb_cmc: 0.62, thumb_abd: 0.25, thumb_mcp: 0.30, thumb_dip: 0.15}]   # 마디 편 채로 뿌리만 손가락 위로 넘어감
+    - [0.85, {thumb_cmc: fist, thumb_abd: fist, thumb_mcp: 0.62, thumb_dip: 0.25}]   # 가운데 마디(MCP) 굽힘
+    - [1.00, {thumb_cmc: fist, thumb_abd: fist, thumb_mcp: 0.68, thumb_dip: 0.62}]   # 끝마디(IP) 마지막에 굽혀 덮음 (닿으면 전류로 멈춤)
+  wrap:                                                                                 # 0~0.35 = 엄지 크게 벌림 (wrap_pre)
+    - [0.35, {thumb_cmc: wrap_pre, thumb_abd: wrap_pre, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]
+    - [0.65, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]   # 마디 편 채로 C 자로 마주봄
+    - [0.85, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap, thumb_dip: wrap_pre}]       # MCP 굽힘
+    - [1.00, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap, thumb_dip: wrap}]           # IP 마지막
+
+# 주먹 풀 때 엄지가 제자리에서 먼저 펴는 마디 (thumb_paths 에 fist 가 없을 때만 씀) (ROM 비율, 작을수록 폄). 그다음 네 손가락이 펴지고 엄지가 대기 자리로 (--fist-unwind)
 fist_release_thumb:
   thumb_mcp: 0.15
   thumb_dip: 0.15

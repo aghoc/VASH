@@ -66,6 +66,8 @@ def command(kind, **kw):
         return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra], ORCA
     if kind == "teach":                              # 자세 가르치기 (teach_live.py: 60 mA 로 낮춰 손으로 밀어 만듦)
         return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"], "--soft", str(kw["soft"]), *(["--path"] if kw.get("path") else [])], ORCA
+    if kind == "preview":                            # 동작 미리보기 (11-07): 대기 → 쥐기(엄지 동선) → 풀기(거꾸로) → 대기, 근전도 없이
+        return [str(HAND_PY), str(HAND_DIR / "emg_bridge_guarded.py"), "--poses", "--only", kw["pose"], "--close-s", "1.5", "--hold", "1.0"], ORCA
     if kind == "emg":
         return [str(PC_PY), "grip_rt.py", "run", "--model", kw["model"], "--port", EMG_COM, "--udp", "127.0.0.1:9000", "--log", kw["log"], "--save-raw", kw["raw"],
                 *(["--svm-temp", str(kw["temp"])] if kw.get("temp") is not None else [])], PC
@@ -152,7 +154,7 @@ class Job:
 class State:
     def __init__(self):
         self.jobs = {}; self.svm_out = None; self.session = next_session(); self.t_band = None; self.report = None
-        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
+        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
         self.flow = dict(active=False, stage="", step=0, waiting=False, ask=None, message="", ok=None); self.answer = None; self.cancel = threading.Event(); self.proceed = threading.Event()
 
 
@@ -405,7 +407,7 @@ def state():
     mon = S.jobs.get("monitor")
     return dict(ports=get_ports(), jobs=jobs, flow=S.flow, signal=mon.meta if mon and mon.running else None, signal_on=running("monitor"), quick=mon.quick if mon else None, svm_out=S.svm_out, gestures=GESTURES.split(","), model_labels={m: model_label(m) for m in models()},
                 signal_error=(list(mon.lines)[-1] if mon and not mon.running and mon.code not in (0, None) and mon.lines else None), session=S.session, band_elapsed=round(time.time() - S.t_band) if S.t_band else None, report=S.report, record_kind=S.record_kind,
-                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, teach_path=S.teach_path, hand_mode=S.hand_mode,
+                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, teach_path=S.teach_path, teach_preview=S.teach_preview, hand_mode=S.hand_mode,
                 next_run=unused_run(), emg_com=EMG_COM, hand_com=HAND_COM)
 
 
@@ -640,7 +642,8 @@ def pose_list():
     """앱에서 고칠 수 있는 자세: 지금 쓰는 7 동작(emg_grips.yaml emg_map) + 감싸 쥐기·대기"""
     import yaml
     try:
-        emap = (yaml.safe_load((HAND_DIR / "emg_grips.yaml").read_text(encoding="utf-8")) or {}).get("emg_map", {})
+        grips = yaml.safe_load((HAND_DIR / "emg_grips.yaml").read_text(encoding="utf-8")) or {}
+        emap = grips.get("emg_map", {})
         tp = HAND_DIR / "taught_poses.yaml"
         taught = (yaml.safe_load(tp.read_text(encoding="utf-8")) or {}) if tp.exists() else {}
     except Exception as e:
@@ -654,7 +657,7 @@ def pose_list():
     fp = paths.get("fist_thumb") or {}
     return dict(items=[dict(label=g, pose=p, taught=p in taught) for g, p in items],
                 saved=time.strftime("%m-%d %H:%M", time.localtime(tp.stat().st_mtime)) if tp.exists() else None,
-                paths=[dict(label="주먹 엄지 (쥐었다 펴기)", name="fist_thumb", saved=fp.get("saved"), points=len(fp.get("points") or []))])
+                paths=[dict(label="주먹 엄지 (쥐었다 펴기)", name="fist_thumb", saved=fp.get("saved"), points=len(fp.get("points") or []), designed=bool((grips.get("thumb_paths") or {}).get("fist")))])
 
 
 @app.get("/api/teach/poses")
@@ -674,7 +677,21 @@ async def teach_start(req: Request):
     if running("hand") or running("teach"):
         raise HTTPException(409, "의수를 먼저 끄세요 (같은 포트를 씁니다)")
     start("teach", "teach", pose=pose, soft=soft, path=is_path)
-    S.teach_pose, S.teach_path = pose, is_path
+    S.teach_pose, S.teach_path, S.teach_preview = pose, is_path, False
+    return {"ok": True}
+
+
+@app.post("/api/teach/preview")
+async def teach_preview(req: Request):
+    pose = (await req.json()).get("pose", "")
+    if pose not in ("fist", "wrap"):
+        raise HTTPException(400, "주먹 또는 감싸 쥐기")
+    if running("hand") or running("teach"):
+        raise HTTPException(409, "의수를 먼저 끄세요 (같은 포트를 씁니다)")
+    with S.lock:
+        argv, cwd = command("preview", pose=pose)
+        S.jobs["teach"] = Job("teach", argv, cwd)
+    S.teach_pose, S.teach_path, S.teach_preview = pose, False, True
     return {"ok": True}
 
 

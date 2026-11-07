@@ -303,6 +303,8 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
     <div class="row"><label>모터 힘 <select id="teachSoft"><option value="25">25 mA (약하게)</option><option value="40" selected>40 mA (기본)</option><option value="60">60 mA (전 기본값)</option></select></label>
       <span class="note">약할수록 밀기 쉽지만 손을 떼면 줄 장력에 조금 밀려날 수 있습니다</span></div>
     <div class="tgrid" id="teachList"></div>
+    <h3 class="sub">동작 미리보기 (대기 → 쥐기 → 풀기, 실제 제어와 같은 동선)</h3>
+    <div class="row" id="previewRow"><button data-p="fist">주먹 미리보기</button><button data-p="wrap">감싸 쥐기 미리보기</button></div>
     <h3 class="sub">연속 경로 (손으로 움직이며 녹화)</h3>
     <div id="pathList"></div>
   </div>
@@ -509,24 +511,27 @@ let teachData=null;
 async function teachLoad(){try{teachData=await (await fetch("/api/teach/poses")).json()}catch(e){teachData={items:[],error:"자세 목록을 못 읽었습니다"}}teachPaint(st)}
 function teachPaint(s){
   if(!s||!$("teachDlg").open)return;
-  const tj=s.jobs.teach,tr=tj&&tj.running,hr=s.jobs.hand&&s.jobs.hand.running,portOk=s.ports[s.hand_com];
+  const tj=s.jobs.teach,tr=tj&&tj.running,hr=s.jobs.hand&&s.jobs.hand.running,portOk=s.ports[s.hand_com];document.querySelectorAll("#previewRow button").forEach(b=>b.disabled=!!(hr||!portOk||tr));
   $("teachPick").hidden=!!tr;$("teachRun").hidden=!tr&&!(tj&&tj.code!=null&&s.teach_pose&&$("teachRun")._last);
   if(teachData){const k=JSON.stringify([teachData,hr,portOk,tr]);
     if($("teachList")._k!==k){$("teachList")._k=k;
       $("teachInfo").textContent=teachData.error?teachData.error:hr?"의수를 끈 뒤 고칠 수 있습니다 (같은 포트를 씁니다).":!portOk?"의수가 연결되어 있지 않습니다.":"고칠 동작을 누르면 손이 그 자세로 이동한 뒤 모터가 약해집니다."+(teachData.saved?` · 마지막 저장 ${teachData.saved}`:"");
       $("teachList").innerHTML=teachData.items.map(it=>`<button data-p="${esc(it.pose)}" ${hr||!portOk||tr?"disabled":""}>${esc(it.label)}<small>${esc(it.pose)}${it.taught?" · 손으로 만든 자세":" · 기본 자세"}</small></button>`).join("");
       $("teachList").querySelectorAll("button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/start",{pose:b.dataset.p,soft:+$("teachSoft").value})});
-      $("pathList").innerHTML=(teachData.paths||[]).map(p=>`<div class="row"><button data-n="${esc(p.name)}" class="prec" ${hr||!portOk||tr?"disabled":""}>${esc(p.label)} 녹화</button><span class="state">${p.points?`녹화됨${p.saved?" "+esc(p.saved):""} · ${p.points} 점 (주먹 쥘 때 사용 중)`:"녹화 없음 (기본 자세 계산 사용)"}</span>${p.points?`<button data-n="${esc(p.name)}" class="pdel" ${hr||tr?"disabled":""}>지우기</button>`:""}</div>`).join("");
+      $("pathList").innerHTML=(teachData.paths||[]).map(p=>`<div class="row"><button data-n="${esc(p.name)}" class="prec" ${hr||!portOk||tr?"disabled":""}>${esc(p.label)} 녹화</button><span class="state">${p.points?`녹화됨${p.saved?" "+esc(p.saved):""} · ${p.points} 점 ${p.designed?"(지금은 엄지 동선 표가 우선이라 안 씀)":"(주먹 쥘 때 사용 중)"}`:(p.designed?"녹화 없음 · 엄지 동선 표 사용 중":"녹화 없음 (기본 자세 계산 사용)")}</span>${p.points?`<button data-n="${esc(p.name)}" class="pdel" ${hr||tr?"disabled":""}>지우기</button>`:""}</div>`).join("");
       $("pathList").querySelectorAll(".prec").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/start",{pose:b.dataset.n,path:true,soft:+$("teachSoft").value})});
       $("pathList").querySelectorAll(".pdel").forEach(b=>b.onclick=async()=>{if(!confirm("녹화한 경로를 지우고 기본 자세 계산으로 돌아갈까요? (이전 파일은 backup 에 남음)"))return;await post("/api/teach/path/delete",{name:b.dataset.n});teachLoad()})}}
   if(tj){const L=tj.lines||[],saved=L.some(l=>l.startsWith("저장:")||l.startsWith("경로 저장:")),last=[...L].reverse().find(l=>l.trim())||"";
     $("teachName").textContent=(teachData&&teachData.items.find(i=>i.pose===s.teach_pose)||{label:s.teach_pose||""}).label;
     $("teachPhase").textContent=tr?(tj.stopping?"정지 중 (토크 끔)":" · "+last.slice(0,80)):(saved?" · 저장했습니다":" · 끝났습니다 (코드 "+tj.code+")");
     $("teachJoints").textContent=tj.status||"";$("teachSoftNow").textContent=$("teachSoft").value+" mA";setLog("teachLog",L);
+    const isPrev=!!s.teach_preview;
+    ["teachSave","teachQuit"].forEach(id=>$(id).hidden=isPrev);$("teachSoftNow").parentElement.hidden=isPrev;
     const isPath=!!s.teach_path,recOn=(tj.lines||[]).some(l=>l.startsWith("녹화 시작"));
     $("pathHelp").hidden=!isPath;$("teachRec").hidden=!isPath;$("teachRedo").hidden=isPath;$("teachSave").textContent=isPath?"끝·저장":"저장";
     $("teachRec").textContent=recOn?"다시 녹화":"녹화 시작";
     if(isPath)$("teachName").textContent="주먹 엄지 경로"+(recOn?" · 녹화 중":"");
+    if(isPrev){$("teachName").textContent="미리보기: "+(s.teach_pose==="wrap"?"감싸 쥐기":"주먹");$("teachRedo").hidden=true}
     ["teachSave","teachRedo","teachQuit","teachRec"].forEach(id=>$(id).disabled=!tr||tj.stopping);$("teachStop").disabled=!tr||tj.stopping;
     if(!tr&&$("teachRun")._done!==tj.code+"|"+L.length){$("teachRun")._done=tj.code+"|"+L.length;teachLoad()}}
 }
@@ -535,6 +540,7 @@ $("teachClose").onclick=()=>{if(st&&st.jobs.teach&&st.jobs.teach.running){toast(
 $("teachDlg").addEventListener("cancel",e=>{if(st&&st.jobs.teach&&st.jobs.teach.running)e.preventDefault()});
 $("teachSave").onclick=()=>post("/api/teach/key",{key:"save"});
 $("teachRec").onclick=()=>post("/api/teach/key",{key:"rec"});
+document.querySelectorAll("#previewRow button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/preview",{pose:b.dataset.p})});
 $("teachRedo").onclick=()=>post("/api/teach/key",{key:"redo"});
 $("teachQuit").onclick=()=>post("/api/teach/key",{key:"quit"});
 $("teachStop").onclick=()=>post("/api/stop/teach");
