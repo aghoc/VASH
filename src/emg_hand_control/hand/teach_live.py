@@ -118,7 +118,7 @@ def main():
     ap.add_argument("name", help="자세 이름 (pinch, tripod, wrap 등 emg_grips.yaml 의 이름)")
     ap.add_argument("--soft", type=float, default=60.0, help="가르치는 동안 전류 상한 mA (작을수록 손으로 밀기 쉬움)")
     ap.add_argument("--hold", type=float, default=200.0, help="이동·재현 확인 때 전류 상한 mA")
-    ap.add_argument("--deadband", type=float, default=1.5, help="이 각도(°) 이상 밀린 관절만 목표를 따라 옮김")
+    ap.add_argument("--deadband", type=float, default=0.8, help="이 각도(°) 이상 밀린 관절만 목표를 따라 옮김 (11-07: 1.5 → 0.8, 덜 버팀)")
     ARGS = ap.parse_args()
     return run_guarded(run)
 

@@ -234,8 +234,9 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
       <label id="tempBox" hidden title="높을수록 끼어듦 줄고 확정 늦음">SVM 온도<select id="svmTemp"><option value="1">1 (끄기)</option><option value="1.5" selected>1.5 (기본)</option><option value="2">2</option><option value="3">3</option></select></label></div>
     <div id="modelCard"></div>
     <div class="row"><button class="primary" id="handStart">의수 켜기</button><button id="handStop">의수 끄기</button>
-      <label class="note"><input type="checkbox" id="doCal"> 의수 장력·범위 맞춤 포함</label></div>
-    <div class="row"><button id="teachOpen">동작 수정하기</button></div>
+</div>
+    <div class="row"><button id="teachOpen">동작 수정하기</button><button id="tuneStart" title="줄이 느슨해졌을 때: 장력 조절 → 캘리브레이션 → 이동량 검사 (손 제어는 시작 안 함)">장력·캘리브레이션</button>
+      <label class="note"><input type="checkbox" id="tuneNew"> 줄 교체함 (이동량 기준 새로 저장)</label></div>
     <div class="row" id="enterRow" hidden><button class="primary" id="enter">조이기 끝 (다음 단계로)</button></div>
     <div class="state" id="handPhase"></div>
     <div class="row"><button class="primary" id="emgStart">근전도 켜기</button><button id="emgStop">근전도 끄기</button></div>
@@ -298,12 +299,14 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
   <div class="guide-head"><h2 id="teachTitle" data-en="POSE EDIT">동작 수정</h2><button id="teachClose">닫기</button></div>
   <div id="teachPick">
     <p class="note" id="teachInfo"></p>
+    <div class="row"><label>모터 힘 <select id="teachSoft"><option value="25">25 mA (약하게)</option><option value="40" selected>40 mA (기본)</option><option value="60">60 mA (전 기본값)</option></select></label>
+      <span class="note">약할수록 밀기 쉽지만 손을 떼면 줄 장력에 조금 밀려날 수 있습니다</span></div>
     <div class="tgrid" id="teachList"></div>
   </div>
   <div id="teachRun" hidden>
     <div class="row"><b id="teachName"></b><span class="state" id="teachPhase"></span></div>
     <pre id="teachJoints" style="height:auto;min-height:40px"></pre>
-    <p class="note">모터는 약하게(60 mA) 버팁니다. 손가락을 손으로 밀어 자세를 만든 뒤 저장하세요. 관절 끝까지 세게 밀지 마세요.</p>
+    <p class="note">모터가 약하게 버팁니다 (<span id="teachSoftNow"></span>). 손가락을 손으로 밀어 자세를 만든 뒤 저장하세요. 관절 끝까지 세게 밀지 마세요.</p>
     <div class="row"><button class="primary" id="teachSave">저장</button><button id="teachRedo">다시 해보기 (대기 → 이 자세)</button><button id="teachQuit">저장 안 하고 끝</button><button class="danger" id="teachStop">정지 (토크 끔)</button></div>
     <pre id="teachLog" style="height:120px"></pre>
   </div>
@@ -412,9 +415,10 @@ function render(s){
   if(sel._c!==sel.value){sel._c=sel.value;modelCard(sel.value)}
   const isSvm=sel.value.includes("_svm");$("tempBox").hidden=!isSvm;
   const hj=s.jobs.hand,hr=hj&&hj.running,ej=s.jobs.emg,er=ej&&ej.running;
-  $("handStart").disabled=hr||!s.ports[s.hand_com]||!!(s.jobs.teach&&s.jobs.teach.running);$("handStop").disabled=!hr||hj.stopping;$("doCal").disabled=hr;
+  $("handStart").disabled=hr||!s.ports[s.hand_com]||!!(s.jobs.teach&&s.jobs.teach.running);$("handStop").disabled=!hr||hj.stopping;$("tuneStart").disabled=hr||!s.ports[s.hand_com]||!!(s.jobs.teach&&s.jobs.teach.running);$("tuneNew").disabled=hr;
   $("enterRow").hidden=!s.hand.waiting_enter;
-  $("handPhase").innerHTML=hr?(hj.stopping?"의수 끄는 중 (손을 펴고 토크를 끕니다)":`단계: <b></b>`):(hj?`의수 꺼짐 (코드 ${hj.code})`:"의수 꺼짐");
+  const tune=s.hand_mode==="tune",tuneOk=hj&&!hr&&hj.code===0&&tune&&(hj.lines||[]).some(l=>l.includes("장력·캘리브레이션 끝"));
+  $("handPhase").innerHTML=hr?(hj.stopping?"의수 끄는 중 (손을 펴고 토크를 끕니다)":`${tune?"장력·캘리브레이션":"단계"}: <b></b>`):(tuneOk?"장력·캘리브레이션 끝: 이동량 정상, 저장됨. 이제 [의수 켜기]":hj?`의수 꺼짐 (코드 ${hj.code})`:"의수 꺼짐");
   if(hr&&!hj.stopping)$("handPhase").querySelector("b").textContent=s.hand.phase||"시작 중";
   $("emgStart").disabled=er||!s.ports[s.emg_com]||!s.models.length||(s.jobs.record&&s.jobs.record.running)||f.active;$("emgStop").disabled=!er||ej.stopping;
   $("svmTemp").disabled=er;
@@ -507,11 +511,11 @@ function teachPaint(s){
     if($("teachList")._k!==k){$("teachList")._k=k;
       $("teachInfo").textContent=teachData.error?teachData.error:hr?"의수를 끈 뒤 고칠 수 있습니다 (같은 포트를 씁니다).":!portOk?"의수가 연결되어 있지 않습니다.":"고칠 동작을 누르면 손이 그 자세로 이동한 뒤 모터가 약해집니다."+(teachData.saved?` · 마지막 저장 ${teachData.saved}`:"");
       $("teachList").innerHTML=teachData.items.map(it=>`<button data-p="${esc(it.pose)}" ${hr||!portOk||tr?"disabled":""}>${esc(it.label)}<small>${esc(it.pose)}${it.taught?" · 손으로 만든 자세":" · 기본 자세"}</small></button>`).join("");
-      $("teachList").querySelectorAll("button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/start",{pose:b.dataset.p})})}}
+      $("teachList").querySelectorAll("button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/start",{pose:b.dataset.p,soft:+$("teachSoft").value})})}}
   if(tj){const L=tj.lines||[],saved=L.some(l=>l.startsWith("저장:")),last=[...L].reverse().find(l=>l.trim())||"";
     $("teachName").textContent=(teachData&&teachData.items.find(i=>i.pose===s.teach_pose)||{label:s.teach_pose||""}).label;
     $("teachPhase").textContent=tr?(tj.stopping?"정지 중 (토크 끔)":" · "+last.slice(0,80)):(saved?" · 저장했습니다":" · 끝났습니다 (코드 "+tj.code+")");
-    $("teachJoints").textContent=tj.status||"";setLog("teachLog",L);
+    $("teachJoints").textContent=tj.status||"";$("teachSoftNow").textContent=$("teachSoft").value+" mA";setLog("teachLog",L);
     ["teachSave","teachRedo","teachQuit"].forEach(id=>$(id).disabled=!tr||tj.stopping);$("teachStop").disabled=!tr||tj.stopping;
     if(!tr&&$("teachRun")._done!==tj.code+"|"+L.length){$("teachRun")._done=tj.code+"|"+L.length;teachLoad()}}
 }
@@ -550,7 +554,10 @@ $("askStop").onclick=()=>post("/api/calibration/cancel");
 $("askDlg").addEventListener("cancel",e=>e.preventDefault());
 $("sigStart").onclick=()=>post("/api/signal/start");
 $("sigStop").onclick=()=>post("/api/stop/monitor");
-$("handStart").onclick=()=>post("/api/hand/start",{calibrate:$("doCal").checked});
+$("handStart").onclick=()=>post("/api/hand/start",{calibrate:false});
+$("tuneStart").onclick=()=>{const nw=$("tuneNew").checked;
+  if(!confirm("장력·캘리브레이션을 시작할까요?\n\n1) 장력 조절: 라쳇으로 스풀을 팽팽할 때까지만 조인 뒤 [조이기 끝]\n2) 캘리브레이션: 관절마다 양쪽 끝까지 움직입니다. 손 주변을 비워 두세요\n3) 이동량 검사 뒤 끝 (손 제어는 시작하지 않음)"+(nw?"\n\n※ 줄 교체함: 이번 측정을 새 기준으로 저장합니다":"")))return;
+  post("/api/hand/start",{calibrate:true,update_baseline:nw})};
 $("handStop").onclick=()=>post("/api/stop/hand");
 $("enter").onclick=()=>post("/api/hand/enter");
 $("emgStart").onclick=()=>post("/api/emg/start",{model:$("model").value,temp:$("model").value.includes("_svm")?+$("svmTemp").value:null});

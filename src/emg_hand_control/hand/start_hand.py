@@ -118,6 +118,7 @@ def main():
     ap.add_argument("--calibrate", action="store_true")
     ap.add_argument("--skip-tension", action="store_true")
     ap.add_argument("--update-baseline", action="store_true")
+    ap.add_argument("--calibrate-only", action="store_true", help="장력·캘리브레이션만 하고 손 제어는 시작하지 않음 (앱의 [장력·캘리브레이션])")
     a, bridge_args = ap.parse_known_args()
     # 정지 요청(Ctrl+C / 앱 정지)은 실행 중인 단계에도 같이 전달되어 그쪽이 손을 펴고 토크를 끔.
     # 여기서 KeyboardInterrupt 로 받으면 subprocess.call 이 0.25 s 뒤 그 단계를 강제로 죽이므로, 신호만 기록하고 단계가 끝나길 기다림
@@ -137,6 +138,9 @@ def main():
             code = calibrate_and_check(a.update_baseline)
             if code:
                 return code
+            if a.calibrate_only:
+                print("장력·캘리브레이션 끝 (손 제어는 시작하지 않음)", flush=True)
+                return 0
         else:
             code = check_saved_calibration(a.update_baseline)
             if code:

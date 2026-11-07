@@ -62,9 +62,10 @@ def command(kind, **kw):
         quick = ["--quick-out", kw["quick_out"], "--quick-raw", kw["quick_raw"], "--base", str(DATA / "grip7_base.pkl")] if kw.get("quick_out") else []
         return [str(PC_PY), str(Path(__file__).with_name("signal_monitor.py")), "--port", EMG_COM, *quick], PC
     if kind == "hand":
-        return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *(["--calibrate"] if kw.get("calibrate") else [])], ORCA
+        extra = (["--calibrate", "--calibrate-only"] if kw.get("calibrate") else []) + (["--update-baseline"] if kw.get("update_baseline") else [])
+        return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra], ORCA
     if kind == "teach":                              # 자세 가르치기 (teach_live.py: 60 mA 로 낮춰 손으로 밀어 만듦)
-        return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"]], ORCA
+        return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"], "--soft", str(kw["soft"])], ORCA
     if kind == "emg":
         return [str(PC_PY), "grip_rt.py", "run", "--model", kw["model"], "--port", EMG_COM, "--udp", "127.0.0.1:9000", "--log", kw["log"], "--save-raw", kw["raw"],
                 *(["--svm-temp", str(kw["temp"])] if kw.get("temp") is not None else [])], PC
@@ -151,7 +152,7 @@ class Job:
 class State:
     def __init__(self):
         self.jobs = {}; self.svm_out = None; self.session = next_session(); self.t_band = None; self.report = None
-        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
+        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
         self.flow = dict(active=False, stage="", step=0, waiting=False, ask=None, message="", ok=None); self.answer = None; self.cancel = threading.Event(); self.proceed = threading.Event()
 
 
@@ -404,7 +405,7 @@ def state():
     mon = S.jobs.get("monitor")
     return dict(ports=get_ports(), jobs=jobs, flow=S.flow, signal=mon.meta if mon and mon.running else None, signal_on=running("monitor"), quick=mon.quick if mon else None, svm_out=S.svm_out, gestures=GESTURES.split(","), model_labels={m: model_label(m) for m in models()},
                 signal_error=(list(mon.lines)[-1] if mon and not mon.running and mon.code not in (0, None) and mon.lines else None), session=S.session, band_elapsed=round(time.time() - S.t_band) if S.t_band else None, report=S.report, record_kind=S.record_kind,
-                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose,
+                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, hand_mode=S.hand_mode,
                 next_run=unused_run(), emg_com=EMG_COM, hand_com=HAND_COM)
 
 
@@ -656,12 +657,15 @@ def teach_poses():
 
 @app.post("/api/teach/start")
 async def teach_start(req: Request):
-    pose = (await req.json()).get("pose", "")
+    body = await req.json(); pose = body.get("pose", "")
+    soft = float(body.get("soft", 40))
+    if not 15 <= soft <= 80:
+        raise HTTPException(400, "모터 힘은 15 ~ 80 mA")
     if pose not in {it["pose"] for it in pose_list()["items"]}:
         raise HTTPException(400, "고칠 동작을 고르세요")
     if running("hand") or running("teach"):
         raise HTTPException(409, "의수를 먼저 끄세요 (같은 포트를 씁니다)")
-    start("teach", "teach", pose=pose)
+    start("teach", "teach", pose=pose, soft=soft)
     S.teach_pose = pose
     return {"ok": True}
 
@@ -684,7 +688,10 @@ async def hand_start(req: Request):
     if running("teach"):
         raise HTTPException(409, "자세 수정을 먼저 끝내세요")
     n = unused_run()
-    start("hand", "hand", log=str(DATA / f"RUN{n}_hand.csv"), calibrate=bool(body.get("calibrate")))
+    cal = bool(body.get("calibrate"))                 # [장력·캘리브레이션]: 장력 → 캘리브레이션 → 이동량 검사만 하고 끝
+    start("hand", "hand", log=str(DATA / (f"TUNE_{time.strftime('%Y%m%d_%H%M%S')}_hand.csv" if cal else f"RUN{n}_hand.csv")),
+          calibrate=cal, update_baseline=cal and bool(body.get("update_baseline")))
+    S.hand_mode = "tune" if cal else "run"
     return {"ok": True}
 
 
