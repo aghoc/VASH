@@ -49,7 +49,7 @@ analysis/       연구 분석 (근육 피로, EMG·비전 융합, 그림)
 | 파일 | 역할 |
 |---|---|
 | `start_hand.py` | 의수 시작 순서: 상태 확인 → (선택) 장력·캘리브레이션 → 중립 자세 → 손 제어 |
-| `emg_bridge_guarded.py` | UDP 판단 → 손 자세. 확률 섞기, 부드러운 궤적, 닿으면 고정, 미끄러짐 반사, 비전 제안(UDP 9100). 주먹을 풀 때는 엄지가 먼저 마디를 펴고 비킨 뒤 네 손가락이 펴짐 (`--fist-unwind`, 0.6 s) |
+| `emg_bridge_guarded.py` | UDP 판단 → 손 자세. 확률 섞기, 부드러운 궤적, 닿으면 고정, 미끄러짐 반사, 비전 제안(UDP 9100). 주먹을 풀 때는 엄지가 제자리에서 먼저 마디를 편 뒤 네 손가락이 펴지고 엄지가 대기로 (`--fist-unwind`, 0.6 s, 마디 값 `fist_release_thumb`) |
 | `teach_live.py` | 토크를 켠 채(60 mA) 손으로 밀어 자세 가르치기 → `taught_poses.yaml` |
 | `emg_grips.yaml`, `taught_poses.yaml` | 자세 정의, 근전도 동작 ↔ 자세 연결 |
 | `config.yaml`, `calibration.yaml`, `travel_baseline.yaml` | 모터 연결, 이 손의 캘리브레이션, 관절 이동 기준 |

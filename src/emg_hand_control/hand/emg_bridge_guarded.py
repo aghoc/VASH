@@ -158,6 +158,7 @@ def build_poses(hand, path):
     poses["_follow"] = dict(P.get("thumb_follow", {}) or {})
     poses["_paths"] = {k: {g: sorted((float(a), float(b)) for a, b in pts) for g, pts in (v or {}).items()}
                        for k, v in (P.get("paths") or {}).items()}
+    poses["_fist_clear"] = {j: float(v) for j, v in (P.get("fist_release_thumb") or {}).items()}   # 주먹 풀 때 엄지가 먼저 펴는 마디 (ROM 비율)
     poses["_via"] = {k: sorted((float(c), str(n)) for c, n in v) for k, v in (P.get("via") or {}).items()}   # 중간 자세: 대기 → 중간(c) → 자세
     # 맞대기 직전 자세 (11-02): approach: {pinch: [c, f]} → 'pinch_pre' = 조준 관절(벌림·엄지 돌림)은 최종값, 굽힘 관절은 대기→최종의 f 만큼
     #   대기 → (c 에서) 손끝이 1 cm 쯤 떨어져 마주 보는 자세 → 굽힘 관절만 닫아 정면으로 맞닿음. 매번 같은 방향에서 접근 → 줄 마찰·백래시 영향이 같아짐
@@ -518,12 +519,14 @@ class Composer:
     def _fist_release(self, dt, final):
         """주먹 풀기 (11-07 실측: 주먹을 펼 때 엄지·검지가 부딪힘). 대기 자세의 엄지 MCP 가 0.52 로 굽어 있어서
         펴는 동안 엄지 끝이 검지 위에 남고, 검지가 그 밑으로 펴지며 걸림 → 세 구간으로 나눔 (진행 s: 0 → 1, fist_unwind s 동안)
-          0.0–0.4  엄지가 먼저: 끝 두 마디(MCP·DIP)를 펴고(0–0.3) 뿌리(CMC·벌림)를 바깥으로(0.1–0.4) → 손 펴기 때의 엄지 자리
-          0.25–0.75 네 손가락이 펴짐 (엄지가 70 % 쯤 비켰을 때 시작, 겹쳐서 진행)
-          0.65–1.0  엄지가 마지막 자리(대기 또는 손 펴기)로
+          0.0–0.35  엄지가 제자리에서 마디만 폄 (MCP·DIP → fist_release_thumb). 뿌리(CMC·벌림)는 그대로 → 끝이 들려 검지 위가 비워짐
+          0.25–0.75 네 손가락이 펴짐 (겹쳐서 진행)
+          0.6–1.0   엄지 전체가 마지막 자리(대기 또는 손 펴기)로
+        v2 (11-07): v1 은 엄지를 손 펴기 자리로 옆으로 돌려 비켰음 → 실제로는 좌우로만 흔들리는 것처럼 보이고 손 펴기 동작이 바뀐 것처럼 보임
         final = 이번 틱의 원래 목표 (대기 / 손 펴기)"""
         self.rel_s = min(1.0, self.rel_s + dt / ARGS.fist_unwind)
-        s_ = self.rel_s; A = self.rel_from; clear = self.poses["open"]
+        s_ = self.rel_s; A = self.rel_from; roms = self.poses["_roms"]
+        clear = {j: (roms[j][0] + r * (roms[j][1] - roms[j][0])) for j, r in self.poses["_fist_clear"].items()}
         def ramp(a, b):
             if s_ <= a: return 0.0
             if s_ >= b: return 1.0
@@ -531,8 +534,8 @@ class Composer:
         tgt = {}
         for j in A:
             if j in THUMB:
-                p1 = ramp(0.0, 0.3) if j in ("thumb_mcp", "thumb_dip") else ramp(0.1, 0.4)
-                q = A[j] + (clear[j] - A[j]) * p1 + (final[j] - clear[j]) * ramp(0.65, 1.0)
+                c_ = min(A[j], clear[j]) if j in clear else A[j]          # 펴는 쪽으로만 (이미 더 펴져 있으면 그대로)
+                q = A[j] + (c_ - A[j]) * ramp(0.0, 0.35) + (final[j] - c_) * ramp(0.6, 1.0)
             else:
                 q = A[j] + (final[j] - A[j]) * ramp(0.25, 0.75)
             tgt[j] = q
