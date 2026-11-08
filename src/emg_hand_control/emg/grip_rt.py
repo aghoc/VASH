@@ -214,12 +214,18 @@ SVM_TEMP = 1.5                     # SVM 모델의 동작 간 확률 온도 (휴
 class GripDecoder:
     """rt_bench.dec_hybrid 와 같은 계산을 판단 한 번씩 (상태 유지)"""
     def __init__(self, pack, step=E.STEP, tau_p=0.025, p_on=0.3, p_off=0.6, gate=0.3, rel=0.45, tau_b=1.0, tau_h=0.3,
-                 n_low=3, p_agree=0.4, tau_L=0.5, commit_p=0.9, min_s=0.25, commit_s=0.4, switch_llr=np.log(20),
+                 n_low=3, p_agree=0.4, tau_L=None, commit_p=0.9, min_s=0.25, commit_s=0.4, switch_llr=np.log(20),
                  hold_after=0.6, rel_hold=0.3, p_off_hold=0.9, rel_lock=-1.0, refractory=0.3, re_gate=0.6,
                  slow_names=("엄지", "가위", "팔움직임"), slow_min_s=0.35, slow_switch_s=1e9, z_force=None, fast_p=None, fast_s=0.1, lv_alpha=0.7, use_expert=True, no_takeover=("팔움직임",),   # 10-31: 가위도 느린 동작 (손 펴기 중 가위로 튀는 것 방지, 재생 정답·오작동 변화 없음)
-                 strict_names=(), strict_s=0.4, strict_release=0.0):
+                 strict_names=(), strict_s=0.4, strict_release=0.0, switch_hold_s=None):
         self.m = pack["model"]; self.names = pack["names"]; self.lv = pack["level"]
+        # 11-08: 모델에 저장된 판단 설정 (오른팔 = 잊힘 0.25 s, 바꿀 때 유지 0.15 s). 직접 준 값이 우선, 없으면 예전 기본 (0.5, 0)
+        dec = pack.get("dec") or {}
+        tau_L = dec.get("tau_L", 0.5) if tau_L is None else tau_L
+        switch_hold_s = dec.get("switch_hold_s", 0.0) if switch_hold_s is None else switch_hold_s
         self.expert = pack.get("expert") if use_expert else None
+        # 11-08: 2차 판단 묶음 여러 개 (pack["experts"]). 없으면 예전처럼 expert 하나
+        self.experts = ((pack.get("experts") or ([self.expert] if self.expert is not None else [])) if use_expert else [])
         self.svm = pack.get("svm")                                  # 선택 옵션 (11-05): 있으면 분류 확률만 SVM 으로, 판단 규칙은 같음
         # 11-06 재생 시험 (svm_temp2_1106): 동작끼리만 온도 2 → 끼어듦 56→48, 휴식 오작동 그대로, 확정 +36 ms. 휴식 확률은 건드리지 않음
         self.svm_temp = pack.get("svm_temp", SVM_TEMP)
@@ -251,6 +257,7 @@ class GripDecoder:
         #   계속 1 등으로 strict_s 이상 이어지고, 힘이 빠지는 중(이번 수축 최고의 strict_release 아래)이 아닐 때만 확정·전환. 그 전엔 의수 섞기에서 뺌
         self.strict = {k for k, n in enumerate(self.names) if k > 0 and E.class_key(n) in {E.class_key(x) for x in strict_names}}
         self.strict_s, self.strict_release = strict_s, strict_release; self.run_b = 0; self.run_n = 0
+        self.switch_hold_s = switch_hold_s   # 11-08: 다른 동작으로 바꿀 때만 새 동작이 이만큼 계속 1 등이어야 함 (빨리 잊힘의 깜빡임 막기, 0 = 예전)
         self.lv_alpha = lv_alpha       # 세기 평활 (0.4866 = 2.12 Hz, 클수록 빠름)
         self.fast_p, self.fast_s = fast_p, fast_s   # 아주 확실하면(누적 확률 ≥ fast_p) fast_s 만에 확정 — 애매할 때만 min_s 기다림
         self.z_force = z_force          # 세기가 휴식 기준 + z_force·Δ 를 넘으면 휴식 확률과 상관없이 켬 (켜지는 순간 창은 아직 휴식처럼 보여 늦게 켜지던 것)
@@ -284,10 +291,10 @@ class GripDecoder:
                 g = np.power(p[1:], 1.0 / self.svm_temp); p[1:] = g * (p[1:].sum() / g.sum())
         else:
             p = M.softmax_t(Fn @ m.m.W.T + m.m.b, m.m.tau)[0]
-        if self.expert is not None:                                 # 2차 판단: 헷갈리는 묶음 안의 나눔만 교체
-            ix = self.expert["idx"]; tot = p[ix].sum()
+        for ex in self.experts:                                     # 2차 판단: 헷갈리는 묶음 안의 나눔만 교체 (묶음마다)
+            ix = ex["idx"]; tot = p[ix].sum()
             if tot > 0.05:
-                e = M.softmax_t(Fn @ self.expert["W"].T + self.expert["b"], m.m.tau)[0]
+                e = M.softmax_t(Fn @ ex["W"].T + ex["b"], m.m.tau)[0]
                 p = p.copy(); p[ix] = tot * e
         ms = np.mean(w[-int(0.1 * E.FS):] ** 2, 0)
         z = float(0.5 * np.log(np.mean(ms / m.rms_rest ** 2) + 1e-9))
@@ -328,7 +335,8 @@ class GripDecoder:
                 grip = b
             else:
                 slow_ok = b not in self.slow or el < self.slow_switch_s          # 엄지로 바꾸기는 켜진 뒤 slow_switch_s 안에서만 (시작 때 잘못 잡은 것 바로잡기)
-                if strict_ok and not self.locked and b != self.cls and slow_ok and b not in self.no_take and self.L[b - 1] - self.L[self.cls - 1] > self.switch_llr:
+                hold_ok = self.run_n * self.dt >= self.switch_hold_s
+                if strict_ok and hold_ok and not self.locked and b != self.cls and slow_ok and b not in self.no_take and self.L[b - 1] - self.L[self.cls - 1] > self.switch_llr:
                     self.cls = b; self.t_commit = self.i
                 grip = self.cls
             committed = self.cls != 0

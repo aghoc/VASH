@@ -39,6 +39,9 @@ GESTURES = "손 펴기,주먹,집기 (중지 펴기),세손가락 (중지 굽힘
 #   빠른 보정(왼팔 기본 모델에 휴식만 맞춤) 끔. left = 이전(왼팔) 방식
 ARM = os.environ.get("VASH_ARM", "right")
 REF_RIGHT = DATA / "grip7_ref_right.pkl"
+# 11-08: 오른팔 기본 모델 (오른팔 착용 녹화로 만듦, grip_model.py --arm right build). 있으면 정밀·빠른 보정 모두 이것을 기준으로
+BASE_MODEL = DATA / ("grip7_base_right.pkl" if ARM == "right" else "grip7_base.pkl")
+RIGHT_BASE = ARM == "right" and BASE_MODEL.exists()
 EMG_COM = os.environ.get("VASH_EMG_PORT") or ("COM6" if WIN else "/dev/vash-emg")
 HAND_COM = os.environ.get("VASH_HAND_PORT") or ("COM7" if WIN else "/dev/vash-hand")
 NOISE = re.compile(r"findfont:|^\s*warnings\.warn|UserWarning")
@@ -46,11 +49,13 @@ LOCAL_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
 
 # 녹화 종류: (제목, 대략 길이 s, finger_test 옵션)
 RECORD = {
-    "CAL": ("40초 보정", 50, ["--reps", "1", "--relax"]),
+    "CAL": ("40초 보정", 50, ["--reps", "1", "--relax"]),       # 오른팔은 아래에서 2 회로 바꿈 (보정 녹화 2 개 = 재생 38 → 46/49)
     "TRANS": ("전환 녹화", 125, ["--reps", "1", "--hold", "2", "--chain", "7", "--all-transitions", "--relax", "--rest-jitter", "1", "--next-cue", "1"]),
     "TEST": ("시험: 쉬는 동작", 130, ["--reps", "3", "--relax", "--rest-jitter", "1", "--next-cue", "1"]),
     "CHAIN": ("시험: 연속 동작", 72, ["--reps", "3", "--hold", "2", "--chain", "4", "--relax", "--rest-jitter", "1", "--next-cue", "1"]),
 }
+if ARM == "right":                 # 11-08: 보정 녹화를 2 회 반복 (한 착용의 보정 녹화 1 개 → 2 개에서 재생 정답 38 → 46/49)
+    RECORD["CAL"] = ("보정 2 회", 90, ["--reps", "2", "--relax"])
 
 
 def command(kind, **kw):
@@ -59,12 +64,12 @@ def command(kind, **kw):
         return [str(PC_PY), "finger_test.py", "record", "--port", EMG_COM, "--ch", "1-8", "--side", "band", "--subject", "S01", "--session", kw["session"], "--task", kw["task"],
                 "--arm", ARM, "--gestures", GESTURES, "--seed", str(int(time.time()) % 100000), *RECORD[kw["task"]][2], "--out", kw["out"]], PC
     if kind == "calib":
-        ref = ["--ref", str(REF_RIGHT)] if ARM == "right" and REF_RIGHT.exists() else []
-        return [str(PC_PY), "grip_model.py", "calib", *kw["files"], "--weight", str(kw["weight"]), "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else []), *ref], PC
+        ref = ["--ref", str(REF_RIGHT)] if ARM == "right" and not RIGHT_BASE and REF_RIGHT.exists() else []   # 오른팔 기본 모델에는 오른팔 기준이 들어 있음
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib", *kw["files"], "--weight", str(kw["weight"]), "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else []), *ref], PC
     if kind == "svm":
-        return [str(PC_PY), "grip_model.py", "calib-svm", *kw["files"], "--weight", "30", "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else [])], PC
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib-svm", *kw["files"], "--weight", "30", "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else [])], PC
     if kind == "monitor":
-        quick = ["--quick-out", kw["quick_out"], "--quick-raw", kw["quick_raw"], "--base", str(DATA / "grip7_base.pkl")] if kw.get("quick_out") else []
+        quick = ["--quick-out", kw["quick_out"], "--quick-raw", kw["quick_raw"], "--base", str(BASE_MODEL)] if kw.get("quick_out") else []
         return [str(PC_PY), str(Path(__file__).with_name("signal_monitor.py")), "--port", EMG_COM, *quick], PC
     if kind == "hand":
         extra = (["--calibrate", "--calibrate-only"] if kw.get("calibrate") else []) + (["--update-baseline"] if kw.get("update_baseline") else [])
@@ -159,7 +164,7 @@ class Job:
 class State:
     def __init__(self):
         self.jobs = {}; self.svm_out = None; self.session = next_session(); self.t_band = None; self.report = None
-        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.fresh = False; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
+        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.fresh = False; self.pick = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
         self.flow = dict(active=False, stage="", step=0, waiting=False, ask=None, message="", ok=None); self.answer = None; self.cancel = threading.Event(); self.proceed = threading.Event()
 
 
@@ -180,8 +185,9 @@ def session_files(session, kind):
 
 
 def models():
-    fs = [f for f in DATA.glob("grip7_*.pkl") if f.name != "grip7_base.pkl" and "check" not in f.name]
-    return [f.name for f in sorted(fs, key=os.path.getmtime, reverse=True)]
+    fs = [f for f in DATA.glob("grip7_*.pkl") if not f.name.startswith(("grip7_base", "grip7_ref")) and "check" not in f.name]   # 기본·위치 기준 파일은 목록에서 뺌
+    # 최신 착용이 위, 같은 때 만든 LDA·SVM 은 팔의 기본 선택(오른팔 = LDA)이 위 (새로 받은 저장소는 파일 시간이 모두 같음)
+    return [f.name for f in sorted(fs, key=lambda f: (-int(f.stat().st_mtime // 60), ("svm" in f.name) == (ARM == "right"), f.name))]
 
 
 _INFO = {}
@@ -412,9 +418,9 @@ def model_card(name: str):
 def state():
     jobs = {k: v.view() for k, v in S.jobs.items() if k != "monitor"}
     mon = S.jobs.get("monitor")
-    return dict(ports=get_ports(), jobs=jobs, flow=S.flow, signal=mon.meta if mon and mon.running else None, signal_on=running("monitor"), quick=mon.quick if mon else None, svm_out=S.svm_out, gestures=GESTURES.split(","), model_labels={m: model_label(m) for m in models()},
+    return dict(ports=get_ports(), jobs=jobs, flow=S.flow, signal=mon.meta if mon and mon.running else None, signal_on=running("monitor"), quick=mon.quick if mon else None, svm_out=S.svm_out, pick=S.pick, gestures=GESTURES.split(","), model_labels={m: model_label(m) for m in models()},
                 signal_error=(list(mon.lines)[-1] if mon and not mon.running and mon.code not in (0, None) and mon.lines else None), session=S.session, band_elapsed=round(time.time() - S.t_band) if S.t_band else None, report=S.report, record_kind=S.record_kind,
-                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, teach_path=S.teach_path, teach_preview=S.teach_preview, arm=ARM, hand_mode=S.hand_mode,
+                record=RECORD_VIEW, files={k: [f.name for f in session_files(S.session, k)] for k in RECORD}, models=models(), hand=hand_view(), live=live(), run_no=S.run_no, svm_temp=S.svm_temp, last_run=last_run_view(), teach_pose=S.teach_pose, teach_path=S.teach_path, teach_preview=S.teach_preview, arm=ARM, right_base=RIGHT_BASE, hand_mode=S.hand_mode,
                 next_run=unused_run(), emg_com=EMG_COM, hand_com=HAND_COM)
 
 
@@ -468,8 +474,8 @@ def signal_start():
 @app.post("/api/quick/start")
 def quick_start():
     """대기 보정: 블록 실시간 표시 + 조용해지면 자동 측정 → 기본 모델에 적용해 새 모델 저장"""
-    if ARM == "right":
-        raise HTTPException(409, "오른팔은 아직 빠른 보정을 쓸 수 없습니다 (기본 모델이 왼팔 착용으로 만들어짐). 정밀 보정을 쓰세요")
+    if ARM == "right" and not RIGHT_BASE:
+        raise HTTPException(409, "오른팔 기본 모델(grip7_base_right.pkl)이 없어 빠른 보정을 쓸 수 없습니다. 정밀 보정을 쓰세요")
     if running("emg") or running("record") or S.flow["active"]:
         raise HTTPException(409, "근전도 포트를 쓰는 중입니다. 먼저 끄세요")
     stop_monitor()
@@ -586,7 +592,12 @@ def calibration_worker():
         if code:
             S.svm_out = None
             return ended(f"완료: {out.name}{warn}. SVM 모델은 만들지 못했습니다 (아래 기록 확인)", False)
-        ended(f"완료: {S.svm_out} 선택됨 (LDA {out.name} 도 저장됨){warn}", not S.report["severe"])
+        if S.fresh or ARM == "right":     # 11-08: 오른팔은 모든 비교에서 LDA > SVM (재생 47 대 42, 32 대 26, 오른팔 기본 + 보정도 SVM 이 6–12 낮음, 정현 체감도 LDA) → LDA 선택
+            S.pick = out.name
+            ended(f"완료: {out.name} 선택됨 (SVM {S.svm_out} 도 저장됨){warn}", not S.report["severe"])
+        else:
+            S.pick = S.svm_out
+            ended(f"완료: {S.svm_out} 선택됨 (LDA {out.name} 도 저장됨){warn}", not S.report["severe"])
     except Exception as e:
         ended(f"캘리브레이션 오류: {e}", False)
 
@@ -599,7 +610,7 @@ async def calibration_start(req: Request):
         S.fresh = False
     if S.flow["active"] or running("emg") or running("record"):
         raise HTTPException(409, "근전도 포트를 쓰는 프로그램을 먼저 끄세요")
-    S.report = None; S.cancel.clear(); S.answer = None
+    S.report = None; S.cancel.clear(); S.answer = None; S.pick = None
     S.flow.update(active=True, step=0, stage="시작 중", waiting=False, ask=None, message="", ok=None)
     threading.Thread(target=calibration_worker, daemon=True).start()
     return {"ok": True}
@@ -634,6 +645,7 @@ def svm_build():
         raise HTTPException(409, "이 착용의 정밀 보정 녹화가 없습니다")
     if running("svm") or S.flow["active"]:
         raise HTTPException(409, "모델을 만드는 중입니다")
+    S.pick = None
     start_svm()
     return {"ok": True}
 

@@ -222,7 +222,7 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
     <div id="quickMsg"></div>
     <details id="fullCal"><summary class="note">정밀 보정 (동작 녹화, 약 3분)</summary>
     <div class="row"><button id="calStart">정밀 보정 시작</button><button id="calCancel" hidden>중단</button>
-      <label class="note" title="기본 모델(왼팔 착용들)을 섞지 않고 이번 녹화만으로 LDA·SVM 을 만듭니다"><input type="checkbox" id="calFresh"> 이 착용만으로 학습 (오른팔·처음 차는 위치)</label></div>
+      <label class="note" title="기본 모델을 섞지 않고 이번 녹화만으로 LDA·SVM 을 만듭니다. 오른팔 기본 모델이 있으면 끄는 것이 더 좋음 (재생 43 대 46/49)"><input type="checkbox" id="calFresh"> 이 착용만으로 학습</label></div>
     <div class="steps" id="calSteps" hidden><i></i><i></i><i></i><i></i><i></i></div>
     <div class="state" id="calStage"></div>
     <div id="calMsg"></div>
@@ -348,7 +348,7 @@ function blocks(s){
 }
 function quick(s){
   const q=s.quick,on=s.signal_on&&q,mid=on&&["wait","record","compute"].includes(q.stage),busy=(s.jobs.emg&&s.jobs.emg.running)||(s.jobs.record&&s.jobs.record.running)||s.flow.active;
-  $("quickStart").disabled=!!mid||busy||!s.ports[s.emg_com]||s.arm==="right";$("quickStart").title=s.arm==="right"?"오른팔은 아직 빠른 보정 없음 (기본 모델이 왼팔). 정밀 보정을 쓰세요":"";$("rightNote").hidden=s.arm!=="right";$("quickStart").textContent=mid?"진행 중":"캘리브레이션";$("quickStop").hidden=!mid;
+  const noQuick=s.arm==="right"&&!s.right_base;$("quickStart").disabled=!!mid||busy||!s.ports[s.emg_com]||noQuick;$("quickStart").title=noQuick?"오른팔 기본 모델이 없어 빠른 보정 없음. 정밀 보정을 쓰세요":"";$("rightNote").hidden=!noQuick;$("quickStart").textContent=mid?"진행 중":"캘리브레이션";$("quickStop").hidden=!mid;
   $("quickBar").hidden=!mid;let t="",w=0;
   if(mid){const g=s.signal,bad=g?g.ch.filter(c=>c.state==="bad").map(c=>"CH"+c.n):[];
     if(q.stage==="record"){w=100*(1-q.left/q.rec_s);t=`측정 중: 힘을 뺀 채로 ${Math.ceil(q.left)}초 더 기다리세요`}
@@ -419,7 +419,8 @@ function render(s){
   const sel=$("model"),cur=sel.value,opts=s.models.map(m=>m+"="+(s.model_labels||{})[m]).join("|");
   if(sel._o!==opts){sel.innerHTML="";for(const m of s.models){const o=document.createElement("option");o.value=m;o.textContent=`${(s.model_labels||{})[m]||m}  ·  ${m}`;sel.append(o)}sel._o=opts;if(s.models.includes(cur)&&!r)sel.value=cur}
   if(s.quick&&s.quick.model&&sel._q!==s.quick.model&&s.models.includes(s.quick.model)){sel.value=s.quick.model;sel._q=s.quick.model}
-  const sj=s.jobs.svm;if(s.svm_out&&sj&&sj.code===0&&sel._s!==s.svm_out&&s.models.includes(s.svm_out)){sel.value=s.svm_out;sel._s=s.svm_out}
+  const sj=s.jobs.svm;if(s.pick&&sel._p!==s.pick&&s.models.includes(s.pick)){sel.value=s.pick;sel._p=s.pick;sel._s=s.svm_out}
+  else if(!s.pick&&!s.flow.active&&s.svm_out&&sj&&sj.code===0&&sel._s!==s.svm_out&&s.models.includes(s.svm_out)){sel.value=s.svm_out;sel._s=s.svm_out}
   if(sel._c!==sel.value){sel._c=sel.value;modelCard(sel.value)}
   const isSvm=sel.value.includes("_svm");$("tempBox").hidden=!isSvm;
   const hj=s.jobs.hand,hr=hj&&hj.running,ej=s.jobs.emg,er=ej&&ej.running;
@@ -567,8 +568,8 @@ $("svmBuild").onclick=()=>post("/api/svm/build");
 $("quickStart").onclick=()=>post("/api/quick/start");
 $("quickStop").onclick=()=>post("/api/stop/monitor");
 $("calStart").onclick=()=>post("/api/calibration/start",{fresh:$("calFresh").checked});
-try{const v=localStorage.getItem("vash_cal_fresh");$("calFresh").checked=v===null?true:v==="1"}catch(e){$("calFresh").checked=true}
-$("calFresh").onchange=()=>{try{localStorage.setItem("vash_cal_fresh",$("calFresh").checked?"1":"0")}catch(e){}};
+try{$("calFresh").checked=localStorage.getItem("vash_cal_fresh2")==="1"}catch(e){}
+$("calFresh").onchange=()=>{try{localStorage.setItem("vash_cal_fresh2",$("calFresh").checked?"1":"0")}catch(e){}};
 $("calCancel").onclick=()=>post("/api/calibration/cancel");
 $("askGo").onclick=()=>post("/api/calibration/continue");
 $("askRetry").onclick=()=>post("/api/calibration/retry");

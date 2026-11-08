@@ -18,7 +18,6 @@ emg/            근전도 측정·녹화·학습·실시간 판단
   app/          로컬 웹 앱 (FastAPI + 정적 HTML 한 장)
 hand/           의수 제어 (orca_core 위에서 실행)
 jetson/         Jetson 설치 스크립트, udev 규칙, 실행 스크립트
-analysis/       연구 분석 (근육 피로, EMG·비전 융합, 그림)
 ```
 
 ### emg/
@@ -28,11 +27,10 @@ analysis/       연구 분석 (근육 피로, EMG·비전 융합, 그림)
 | `grip_rt.py` | 실시간 판단기. LDA 또는 SVM 확률 → 누적 증거 → 확정(0.9). `run` = 보드 실시간 / `--replay` = 녹화 재생, 결과를 UDP 로 의수에 보냄 |
 | `grip_model.py` | 고정 기본 모델 + 착용마다 보정 (`calib`), SVM 보정 (`calib-svm`), 휴식만으로 빠른 보정, 밴드 위치·신호 검사, 합격 시험 (`gate`) |
 | `finger_test.py` | 화면 지시를 따라 동작 녹화 (보정·전환·시험 녹화) |
+| `rec_right.py` | 앱과 같은 설정으로 터미널에서 녹화: `CAL`·`TRANS`·`TEST`·`CHAIN <착용>`. 같은 이름이 있으면 `_2` 를 붙임 |
 | `emg_classifier.py`, `emg_math.py` | 필터(20–450 Hz, 60 Hz 노치), 200 ms 창 특징(TD + 리만), LDA |
 | `rt_bench.py` | 세기(언제)·동작(무엇) 분리 판단, 녹화를 실시간처럼 재생해 채점 |
 | `ads_monitor.py` | 보드 자가 검진, 실시간 파형, 시리얼 프레임 해석 |
-| `latency_live.py` | 근전도 판단 → 손 움직임까지 실제 지연 측정 |
-| `preprocess.py` | 녹화를 데이터 표준 v1 형식으로 정리 |
 
 ### emg/app/
 
@@ -53,7 +51,7 @@ analysis/       연구 분석 (근육 피로, EMG·비전 융합, 그림)
 | `teach_live.py` | 토크를 켠 채(60 mA) 손으로 밀어 자세 가르치기 → `taught_poses.yaml` |
 | `emg_grips.yaml`, `taught_poses.yaml` | 자세 정의, 근전도 동작 ↔ 자세 연결 |
 | `config.yaml`, `calibration.yaml`, `travel_baseline.yaml` | 모터 연결, 이 손의 캘리브레이션, 관절 이동 기준 |
-| `neutral_guarded.py`, `calibrate_guarded.py`, `hold_tension.py` 등 | 0 전류 시작·한계 검사·종료 시 토크 해제를 지키는 실행기 (`README_team_bundle.md`) |
+| `neutral_guarded.py`, `calibrate_guarded.py`, `hold_tension.py` | 0 전류 시작·한계 검사·종료 시 토크 해제를 지키는 실행기 (`start_hand.py` 가 부름) |
 
 ## 앱
 
@@ -64,7 +62,7 @@ analysis/       연구 분석 (근육 피로, EMG·비전 융합, 그림)
 ```
 
 - 정밀 보정 중 접촉이나 품질에 문제가 있으면 팝업으로 묻습니다: 전극을 고친 뒤 다시 / 그대로 진행 / 중단.
-- **이 착용만으로 학습** (정밀 보정 체크, 오른팔에서는 기본): 기본 모델(왼팔 착용들)을 섞지 않고 이번 녹화만으로 LDA·SVM 을 만듭니다. 오른팔 첫 착용 재생 (CAL 학습 → TRANS 49 회 채점): 기본+보정 LDA 29·SVM 22, 이 착용만 LDA 47·SVM 42 (`grip_model.py calib --fresh`, `calib-svm --fresh`).
+- 정밀 보정은 오른팔 기본 모델(`grip7_base_right.pkl`)에 이번 착용 녹화(보정 2 회 + 전환)를 더해 LDA·SVM 을 만들고, **LDA 를 선택**합니다. 오른팔에서는 SVM 이 매번 LDA 보다 낮았습니다(재생 49 회 중 6–12 회). **이 착용만으로 학습** 체크는 기본 모델을 섞지 않을 때만 씁니다.
 - 근전도를 켜면 휴식이 5초 이어질 때까지 기다립니다. 첫 신호가 휴식 기준이 되기 때문입니다.
 - 쓰는 중에 `Space` 를 누르면 그 순간이 `RUN{n}_marks.csv` 에 남습니다. 근전도를 끄면 요약과 앞 RUN 비교가 나오고, 평가(좋음/비슷/나쁨)와 메모를 `RUN{n}_note.json` 으로 저장합니다.
 - **동작 미리보기** (동작 수정 팝업): 근전도 없이 주먹·감싸 쥐기를 실제 제어와 같은 동선으로 쥐었다 폅니다.
@@ -113,12 +111,16 @@ S01 의 모델이 `emg/data/S01/` 에 들어 있습니다. 녹화 원본(CSV)은
 
 | 파일 | 용도 |
 |---|---|
-| `grip7_base.pkl` | 기본 모델 (7동작, 여러 착용 녹화로 학습) |
-| `grip7_svm_train.npz` | SVM 보정에 쓰는 기본 학습 창 |
-| `grip7_20261106b.pkl`, `grip7_20261106b_svm.pkl` | 11-06 착용 보정 모델 (LDA, SVM). 밴드를 새로 차면 앱에서 다시 보정 |
-| `grip7_gate.json`, `model_eval.json` | 합격 시험 기준, 앱 모델 카드의 검증 기록 |
+| `grip7_base_right.pkl` | 오른팔 기본 모델 (7동작, 오른팔 4 착용 13 녹화). 보정의 출발점 |
+| `grip7_20261108b.pkl` | 지금 쓰는 착용 모델 (LDA, 11-08 착용). **실행할 때 이것을 고름** |
+| `grip7_20261108b_svm.pkl` | 같은 착용의 SVM (비교용) |
+| `grip7_svm_train_right.npz` | SVM 보정에 쓰는 기본 학습 특징 |
+| `grip7_ref_right.pkl` | 밴드 위치 일치도 기준 |
+| `grip7_gate_right.json`, `model_eval.json` | 합격 시험 기준 (171/182), 앱 모델 카드의 검증 기록 |
 
-모델은 `requirements.txt` 의 numpy·scikit-learn 버전에서 불러야 합니다. 다른 사람에게는 맞지 않으므로 그 사람의 녹화로 새로 만듭니다(`docs/emg_hand_control/개편_측정녹화_가이드.md`). 기본 모델을 새로 만들 때는 `grip_model.py gate` 를 먼저 통과해야 합니다.
+밴드를 새로 차면 앱에서 다시 보정하고, 새로 생긴 착용 모델을 고릅니다. 앱 모델 목록에는 착용 모델만 보입니다.
+
+모델은 `requirements.txt` 의 numpy·scikit-learn 버전에서 불러야 합니다. 다른 사람에게는 맞지 않으므로 그 사람의 녹화로 새로 만듭니다(`docs/emg_hand_control/개편_측정녹화_가이드.md`). 기본 모델을 새로 만들 때는 녹화 원본이 있는 PC 에서 `grip_model.py --arm right build` 뒤 `gate` 를 통과해야 합니다.
 
 ## 실행
 
@@ -133,7 +135,7 @@ uv run --frozen --no-dev python ../hand/start_hand.py
 
 # 근전도 — emg 폴더
 cd src/emg_hand_control/emg
-.venv/bin/python grip_rt.py run --model data/S01/grip7_<착용>_svm.pkl --port /dev/vash-emg --udp 127.0.0.1:9000
+.venv/bin/python grip_rt.py run --model data/S01/grip7_20261108b.pkl --port /dev/vash-emg --udp 127.0.0.1:9000
 ```
 
 Windows 는 `.venv\Scripts\python`, `--port COM6`.
@@ -144,10 +146,14 @@ Windows 는 `.venv\Scripts\python`, `--port COM6`.
 
 | 항목 | `right` | `left` |
 |---|---|---|
-| 정밀 보정 | 이 착용 녹화만으로 학습 (기본 체크) | 기본 모델 + 이번 녹화 |
-| 밴드 위치 일치도 | `data/S01/grip7_ref_right.pkl` (오른팔 착용 기준) | 기본 모델의 기준 (왼팔) |
-| 배치도 | `assets/electrode_guide_right.png` (왼팔 배치의 거울) | `assets/electrode_guide.png` |
-| 빠른 보정 (휴식 15 초) | 끔 (기본 모델이 왼팔 착용으로 만들어짐) | 사용 |
+| 기본 모델 | `grip7_base_right.pkl` | `grip7_base.pkl` (저장소에 없음) |
+| 정밀 보정 | 기본 + 보정 2 회 + 전환 → LDA 선택 | 기본 + 보정 1 회 + 전환 → SVM 선택 |
+| 2차 판단 | 집기·세손가락·손 펴기, 검지·엄지, 검지·가위 | 집기·세손가락·손 펴기 |
+| 동작 바꾸기 | 누적 잊힘 0.25 s, 새 동작 0.15 s 계속 1 등 | 0.5 s, 조건 없음 |
+| 밴드 위치 일치도 | `grip7_ref_right.pkl` | 기본 모델의 기준 |
+| 배치도 | `assets/electrode_guide_right.png` | `assets/electrode_guide.png` |
+
+이 저장소의 모델은 오른팔용만 들어 있습니다. 판단 설정(2차 판단, 동작 바꾸기)은 모델 파일 안에 저장돼 있어서 실행 명령에 따로 줄 것이 없습니다.
 
 오른팔은 같은 해부학 위치에 붙입니다: CH1 = 척골 능선 바로 옆 손등 쪽, 손등 → 엄지 쪽 → 손바닥 순서로 CH8 까지, BIAS = 팔꿈치 바깥 뼈(외측상과). 팔꿈치 쪽에서 보면 시계 반대 방향으로 감깁니다. 왼팔 기본 모델에 채널 순서를 거울·회전으로 맞춰 써 보면 최고 37/49 라, 오른팔은 오른팔 녹화로 만듭니다.
 
@@ -156,13 +162,15 @@ Windows 는 `.venv\Scripts\python`, `--port COM6`.
 | 항목 | 값 | 비고 |
 |---|---|---|
 | 창 / 간격 | 200 ms / 50 ms | 20–450 Hz, 60 Hz 노치 |
-| 분류 | LDA 또는 SVM (RBF) | 착용 보정 뒤 SVM 모델이 기본 선택, LDA 모델도 같이 저장 |
+| 분류 | LDA (오른팔 기본) 또는 SVM (RBF) | 보정하면 둘 다 저장 |
+| 2차 판단 | 헷갈리는 쌍만 다시 가름 | 집기·세손 문턱 2 |
+| 동작 바꾸기 | 누적 잊힘 0.25 s + 새 동작 0.15 s 유지 | 쉬지 않는 전환 114 회 재생: 성공 106 → 109, 넘어가기 0.55 → 0.49 s |
 | 확정 | 누적 확률 0.9, 최소 0.25 s | |
 | SVM 온도 | 1.5 | 동작끼리만 적용 (휴식 확률은 그대로). 높을수록 끼어듦 감소, 확정 지연 |
 
-실측(11-02, `latency_live.py`): 확정 0.27 s, 손 5° 0.31 s, 절반 0.41 s, 90 % 0.62 s.
+실측(11-02, 왼팔): 확정 0.27 s, 손 5° 0.31 s, 절반 0.41 s, 90 % 0.62 s.
 
-착용 20261106b 시험 녹화(보정에 안 쓴 녹화)를 재생해 채점하면 쉬는 동작·연속 동작 모두 42/42 정답, 동작 사이 끼어듦은 LDA 11 회, SVM 8 회였습니다. 같은 사람·같은 날 재생 결과이고, 다른 사용자나 장기 사용 성능은 아직 재지 않았습니다.
+오른팔 4 착용을 하나씩 빼고 (나머지로 기본 → 빠진 착용 보정 → 그 착용 시험 녹화 재생) 채점하면 182 회 중 172 정답, 휴식 오작동 0 % 였습니다. 같은 사람의 재생 결과이고, 실시간 성능과 다른 사용자는 아직 재지 않았습니다.
 
 ## 문제 해결
 

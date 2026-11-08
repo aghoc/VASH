@@ -46,8 +46,8 @@ grep '^port:' "$BASE/hand/config.yaml"
 
 step "데이터 폴더"
 mkdir -p "$BASE/emg/data/S01"
-if [ ! -f "$BASE/emg/data/S01/grip7_base.pkl" ]; then
-  echo "emg/data/S01/ 에 기본 모델이 없습니다. PC 의 data/S01 폴더(grip7_base.pkl, grip7_svm_train.npz, 착용 모델)를 복사하세요."
+if [ ! -f "$BASE/emg/data/S01/grip7_base_right.pkl" ]; then
+  echo "emg/data/S01/ 에 기본 모델이 없습니다. PC 의 data/S01 폴더(grip7_base_right.pkl, grip7_svm_train_right.npz, grip7_ref_right.pkl, 착용 모델)를 복사하세요."
 fi
 
 step "실행 아이콘"
