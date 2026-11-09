@@ -10,6 +10,7 @@
 """
 import argparse
 import json
+import math
 from pathlib import Path
 import shutil
 import signal
@@ -23,7 +24,9 @@ import yaml
 HERE = Path(__file__).resolve().parent
 CALIBRATION = HERE / "calibration.yaml"
 BASELINE = HERE / "travel_baseline.yaml"
-NEUTRAL_LIMIT_DEG = 3.0
+NEUTRAL_LIMIT_DEG = 3.0                  # 중립 도착 한도 최소값 (모터 각도)
+NEUTRAL_LIMIT_FRAC = 0.08                # 11-09: 모터별 한도 = 캘리브레이션 범위의 8 % (ID 14 약 52° → 4.2°)
+NEUTRAL_LIMIT_MAX_DEG = 5.0              #   단 5° 넘게는 안 늘림 (범위 큰 MCP 133° → 5°)
 TRAVEL_MARGIN = 0.25                     # 11-02: 줄이 풀린 ID 14 는 평소 45~62° 가 8° 로 측정됨. 기준은 줄 교체 뒤 값 (travel_baseline.yaml)
 
 
@@ -87,13 +90,32 @@ def neutral_close_enough(since, limit_deg=NEUTRAL_LIMIT_DEG):
     if not path.exists() or path.stat().st_mtime < since:
         return False
     rows = json.loads(path.read_text())["motors"]
+    lim = neutral_limits(limit_deg)
     faults = [r["motor"] for r in rows if r["hardware_error"]]
-    far = [f"ID {r['motor']} {r['motor_error_deg']:.1f}°" for r in rows if r["motor_error_deg"] > limit_deg]
+    far = [f"ID {r['motor']} {r['motor_error_deg']:.1f}° (한도 {lim.get(r['motor'], limit_deg):.1f}°)" for r in rows
+           if r["motor_error_deg"] > lim.get(r["motor"], limit_deg)]
     if faults or far:
         print(f"중립 도착 실패 — 하드웨어 오류 {faults}, 많이 벗어남 {far}. 멈춥니다.", flush=True)
         return False
-    print(f"※ 위 시간 초과 오류는 허용치를 조금 넘은 것입니다: 최대 오차 {max(r['motor_error_deg'] for r in rows):.1f}° (기준 {limit_deg:g}° 이내) → 계속 진행", flush=True)
+    worst = max(rows, key=lambda r: r["motor_error_deg"] / lim.get(r["motor"], limit_deg))
+    print(f"※ 위 시간 초과 오류는 허용치를 조금 넘은 것입니다: 가장 큰 ID {worst['motor']} {worst['motor_error_deg']:.1f}° "
+          f"(한도 {lim.get(worst['motor'], limit_deg):.1f}°) → 계속 진행", flush=True)
     return True
+
+
+def neutral_limits(limit_deg=NEUTRAL_LIMIT_DEG):
+    """모터별 중립 도착 한도 (11-09): 캘리브레이션 모터 범위의 NEUTRAL_LIMIT_FRAC, 최소 limit_deg, 최대 NEUTRAL_LIMIT_MAX_DEG.
+    범위가 좁은 엄지 벌림(ID 14, 약 52°)은 같은 3° 가 범위의 6 % 라 다른 관절보다 훨씬 엄격했음"""
+    try:
+        L = yaml.safe_load(CALIBRATION.read_text(encoding="utf-8")).get("motor_limits") or {}
+    except Exception:
+        return {}
+    out = {}
+    for mid, v in L.items():
+        if v and None not in v:
+            span = abs(math.degrees(float(v[1]) - float(v[0])))
+            out[int(mid)] = min(NEUTRAL_LIMIT_MAX_DEG, max(limit_deg, NEUTRAL_LIMIT_FRAC * span))
+    return out
 
 
 def check_saved_calibration(update_baseline):
@@ -118,6 +140,7 @@ def main():
     ap.add_argument("--calibrate", action="store_true")
     ap.add_argument("--skip-tension", action="store_true")
     ap.add_argument("--update-baseline", action="store_true")
+    ap.add_argument("--calibrate-only", action="store_true", help="장력·캘리브레이션만 하고 손 제어는 시작하지 않음 (앱의 [장력·캘리브레이션])")
     a, bridge_args = ap.parse_known_args()
     # 정지 요청(Ctrl+C / 앱 정지)은 실행 중인 단계에도 같이 전달되어 그쪽이 손을 펴고 토크를 끔.
     # 여기서 KeyboardInterrupt 로 받으면 subprocess.call 이 0.25 s 뒤 그 단계를 강제로 죽이므로, 신호만 기록하고 단계가 끝나길 기다림
@@ -137,6 +160,9 @@ def main():
             code = calibrate_and_check(a.update_baseline)
             if code:
                 return code
+            if a.calibrate_only:
+                print("장력·캘리브레이션 끝 (손 제어는 시작하지 않음)", flush=True)
+                return 0
         else:
             code = check_saved_calibration(a.update_baseline)
             if code:

@@ -34,22 +34,22 @@ pinch:
   pinky_mcp: 0.129
   pinky_pip: 0.276
 fist:
-  thumb_cmc: 0.815
-  thumb_abd: 0.126
-  thumb_mcp: 0.534
-  thumb_dip: 0.444
-  index_abd: 0.339
-  index_mcp: 0.946
-  index_pip: 0.943
-  middle_abd: 0.518
-  middle_mcp: 0.931
-  middle_pip: 0.888
-  ring_abd: 0.543
-  ring_mcp: 0.938
-  ring_pip: 0.91
-  pinky_abd: 0.587
-  pinky_mcp: 0.921
-  pinky_pip: 0.831
+  thumb_cmc: 0.943
+  thumb_abd: 0.152
+  thumb_mcp: 0.459
+  thumb_dip: 0.348
+  index_abd: 0.427
+  index_mcp: 0.91
+  index_pip: 0.87
+  middle_abd: 0.504
+  middle_mcp: 0.92
+  middle_pip: 0.839
+  ring_abd: 0.454
+  ring_mcp: 0.91
+  ring_pip: 0.865
+  pinky_abd: 0.486
+  pinky_mcp: 0.95
+  pinky_pip: 0.814
 relax:
   thumb_cmc: 0.241
   thumb_abd: 0.735
@@ -68,39 +68,39 @@ relax:
   pinky_mcp: 0.393
   pinky_pip: 0.28
 open:
-  thumb_cmc: 0.08
-  thumb_abd: 0.729
-  thumb_mcp: 0.156
-  thumb_dip: 0.319
-  index_abd: 0.555
-  index_mcp: 0.16
-  index_pip: 0.092
-  middle_abd: 0.513
-  middle_mcp: 0.137
-  middle_pip: 0.242
-  ring_abd: 0.451
-  ring_mcp: 0.139
-  ring_pip: 0.204
-  pinky_abd: 0.374
-  pinky_mcp: 0.167
-  pinky_pip: 0.124
+  thumb_cmc: 0.102
+  thumb_abd: 0.89
+  thumb_mcp: 0.105
+  thumb_dip: 0.109
+  index_abd: 0.578
+  index_mcp: 0.138
+  index_pip: 0.115
+  middle_abd: 0.514
+  middle_mcp: 0.079
+  middle_pip: 0.257
+  ring_abd: 0.454
+  ring_mcp: 0.137
+  ring_pip: 0.228
+  pinky_abd: 0.424
+  pinky_mcp: 0.111
+  pinky_pip: 0.147
 scissors:
-  thumb_cmc: 0.901
-  thumb_abd: 0.08
-  thumb_mcp: 0.461
-  thumb_dip: 0.343
-  index_abd: 0.46
-  index_mcp: 0.17
-  index_pip: 0.262
-  middle_abd: 0.421
-  middle_mcp: 0.258
-  middle_pip: 0.198
-  ring_abd: 0.317
-  ring_mcp: 0.939
-  ring_pip: 0.92
-  pinky_abd: 0.499
-  pinky_mcp: 0.923
-  pinky_pip: 0.853
+  thumb_cmc: 0.841
+  thumb_abd: 0.105
+  thumb_mcp: 0.473
+  thumb_dip: 0.331
+  index_abd: 0.569
+  index_mcp: 0.13
+  index_pip: 0.27
+  middle_abd: 0.49
+  middle_mcp: 0.182
+  middle_pip: 0.206
+  ring_abd: 0.369
+  ring_mcp: 0.93
+  ring_pip: 0.909
+  pinky_abd: 0.504
+  pinky_mcp: 0.902
+  pinky_pip: 0.845
 thumb_flex:
   thumb_cmc: 0.288
   thumb_abd: 0.892
@@ -153,39 +153,39 @@ middle_flex:
   pinky_mcp: 0.28
   pinky_pip: 0.303
 thumb_ext:
-  thumb_cmc: 0.071
-  thumb_abd: 0.861
-  thumb_mcp: 0.069
-  thumb_dip: 0.198
-  index_abd: 0.339
-  index_mcp: 0.93
-  index_pip: 0.948
-  middle_abd: 0.421
-  middle_mcp: 0.941
-  middle_pip: 0.921
-  ring_abd: 0.395
-  ring_mcp: 0.939
-  ring_pip: 0.927
-  pinky_abd: 0.499
-  pinky_mcp: 0.923
-  pinky_pip: 0.857
+  thumb_cmc: 0.064
+  thumb_abd: 0.904
+  thumb_mcp: 0.086
+  thumb_dip: 0.156
+  index_abd: 0.365
+  index_mcp: 0.934
+  index_pip: 0.937
+  middle_abd: 0.43
+  middle_mcp: 0.932
+  middle_pip: 0.911
+  ring_abd: 0.443
+  ring_mcp: 0.928
+  ring_pip: 0.919
+  pinky_abd: 0.505
+  pinky_mcp: 0.902
+  pinky_pip: 0.847
 index_ext:
-  thumb_cmc: 0.91
-  thumb_abd: 0.081
-  thumb_mcp: 0.511
-  thumb_dip: 0.255
-  index_abd: 0.293
-  index_mcp: 0.173
-  index_pip: 0.262
-  middle_abd: 0.344
-  middle_mcp: 0.943
-  middle_pip: 0.924
-  ring_abd: 0.422
-  ring_mcp: 0.939
-  ring_pip: 0.929
-  pinky_abd: 0.499
-  pinky_mcp: 0.924
-  pinky_pip: 0.856
+  thumb_cmc: 0.851
+  thumb_abd: 0.105
+  thumb_mcp: 0.505
+  thumb_dip: 0.265
+  index_abd: 0.322
+  index_mcp: 0.184
+  index_pip: 0.267
+  middle_abd: 0.356
+  middle_mcp: 0.934
+  middle_pip: 0.915
+  ring_abd: 0.418
+  ring_mcp: 0.93
+  ring_pip: 0.913
+  pinky_abd: 0.504
+  pinky_mcp: 0.901
+  pinky_pip: 0.846
 middle_ext:
   thumb_cmc: 0.61
   thumb_abd: 0.15
@@ -255,19 +255,19 @@ open_thumb:
   pinky_mcp: 0.173
   pinky_pip: 0.129
 wrap:
-  thumb_cmc: 0.695
-  thumb_abd: 0.291
-  thumb_mcp: 0.585
-  thumb_dip: 0.329
-  index_abd: 0.328
-  index_mcp: 0.928
-  index_pip: 0.951
-  middle_abd: 0.4
-  middle_mcp: 0.939
-  middle_pip: 0.912
-  ring_abd: 0.441
-  ring_mcp: 0.935
-  ring_pip: 0.935
-  pinky_abd: 0.404
-  pinky_mcp: 0.939
-  pinky_pip: 0.855
+  thumb_cmc: 0.775
+  thumb_abd: 0.314
+  thumb_mcp: 0.564
+  thumb_dip: 0.316
+  index_abd: 0.357
+  index_mcp: 0.927
+  index_pip: 0.939
+  middle_abd: 0.41
+  middle_mcp: 0.931
+  middle_pip: 0.903
+  ring_abd: 0.42
+  ring_mcp: 0.922
+  ring_pip: 0.922
+  pinky_abd: 0.424
+  pinky_mcp: 0.914
+  pinky_pip: 0.846

@@ -1,6 +1,7 @@
 """
-draw_electrode_hand.py — 측정 기준 v1 전극 배치를 손·아래팔 그림으로 (왼팔)
-실행: python draw_electrode_hand.py [글꼴이름 또는 .ttc 경로] [출력.png]
+draw_electrode_hand.py — 측정 기준 v1 전극 배치를 손·아래팔 그림으로 (왼팔 / 오른팔)
+실행: python draw_electrode_hand.py [글꼴이름 또는 .ttc 경로] [출력.png] [left|right]
+오른팔 (11-07): 같은 해부학 위치(CH1 = 척골 능선 옆 손등 쪽, 손등 → 엄지 쪽 → 손바닥)를 거울로 그림
 """
 import sys, math
 import numpy as np
@@ -16,6 +17,9 @@ if FONT.endswith((".ttc", ".ttf", ".otf")):
 plt.rcParams["font.family"] = [FONT, "DejaVu Sans"]
 plt.rcParams["axes.unicode_minus"] = False
 OUT = sys.argv[2] if len(sys.argv) > 2 else "electrode_hand_guide.png"
+ARM = sys.argv[3] if len(sys.argv) > 3 else "left"
+SIDE = -1 if ARM == "right" else 1          # 오른팔 = 좌우 거울 (손등에서 보면 엄지가 왼쪽)
+ARM_KO = "오른팔" if ARM == "right" else "왼팔"
 
 SKIN, SKIN_D, LINE = "#f2d2bd", "#d9a98b", "#8a5a44"
 BLK, P_C, N_C, BAND = "#2b2f3a", "#d32f2f", "#1976d2", "#6b7280"
@@ -100,7 +104,7 @@ def electrode_view(ax, center_u, title, thumb_side, palm):
         th = 2 * math.pi * (u - center_u) / 100
         if abs(th) >= math.pi / 2 * 0.98:
             continue
-        x = width(yb) / 2 * math.sin(th)
+        x = SIDE * width(yb) / 2 * math.sin(th)
         w = max(BLK_W * math.cos(th) * 0.85, 5)
         ax.add_patch(FancyBboxPatch((x - w / 2, yb - BLK_L / 2), w, BLK_L, boxstyle="round,pad=0,rounding_size=2.5",
                                     fc=BLK, ec="black", lw=0.8, zorder=8))
@@ -124,32 +128,32 @@ def electrode_view(ax, center_u, title, thumb_side, palm):
 
 
 fig = plt.figure(figsize=(17, 11.5), dpi=120)
-fig.suptitle("측정 기준 v1 — 왼팔 전극 배치 (블록 8개 · 밴드 25 mm · 블록 중심선 = 팔 길이 40 %)", fontsize=16, weight="bold", y=0.99)
-ax1 = fig.add_axes((0.01, 0.20, 0.27, 0.74)); electrode_view(ax1, 25, "① 손등 쪽에서 본 모습", +1, False)
-ax2 = fig.add_axes((0.29, 0.20, 0.27, 0.74)); electrode_view(ax2, 75, "② 손바닥 쪽에서 본 모습", -1, True)
+fig.suptitle(f"측정 기준 v1 — {ARM_KO} 전극 배치 (블록 8개 · 밴드 25 mm · 블록 중심선 = 팔 길이 40 %)", fontsize=16, weight="bold", y=0.99)
+ax1 = fig.add_axes((0.01, 0.20, 0.27, 0.74)); electrode_view(ax1, 25, "① 손등 쪽에서 본 모습", +SIDE, False)
+ax2 = fig.add_axes((0.29, 0.20, 0.27, 0.74)); electrode_view(ax2, 75, "② 손바닥 쪽에서 본 모습", -SIDE, True)
 
 # ③ 단면
 ax3 = fig.add_axes((0.585, 0.50, 0.40, 0.40)); ax3.set_aspect("equal"); ax3.axis("off")
 A, B = 46, 36
 t = np.linspace(0, 2 * np.pi, 200)
 ax3.fill(A * np.cos(t), B * np.sin(t), color=SKIN, ec=LINE, lw=1.6)
-ax3.add_patch(Ellipse((-30, 8), 13, 11, fc="#f5f5f0", ec="#9e9e9e", lw=1.2)); ax3.text(-30, 8, "척골", ha="center", va="center", fontsize=8)
-ax3.add_patch(Ellipse((25, -2), 16, 11, fc="#f5f5f0", ec="#9e9e9e", lw=1.2)); ax3.text(25, -2, "요골", ha="center", va="center", fontsize=8)
+ax3.add_patch(Ellipse((-30 * SIDE, 8), 13, 11, fc="#f5f5f0", ec="#9e9e9e", lw=1.2)); ax3.text(-30 * SIDE, 8, "척골", ha="center", va="center", fontsize=8)
+ax3.add_patch(Ellipse((25 * SIDE, -2), 16, 11, fc="#f5f5f0", ec="#9e9e9e", lw=1.2)); ax3.text(25 * SIDE, -2, "요골", ha="center", va="center", fontsize=8)
 for i, u in enumerate(U):
     ph = math.pi / 2 - 2 * math.pi * (u - 25) / 100       # 위 = 손등 가운데(u=25), 오른쪽 = 요측(u=50)
-    x, y = A * math.cos(ph), B * math.sin(ph)
+    x, y = SIDE * A * math.cos(ph), B * math.sin(ph)
     nx, ny = x / A ** 2, y / B ** 2; nn = math.hypot(nx, ny); nx, ny = nx / nn, ny / nn
     bx, by = x + nx * 6, y + ny * 6
     ang = math.degrees(math.atan2(ny, nx)) - 90
     blk = Rectangle((bx - 9, by - 4.5), 18, 9, angle=ang, rotation_point="center", fc=BLK, ec="black", lw=0.8)
     ax3.add_patch(blk)
     ax3.text(x + nx * 19, y + ny * 19, f"CH{i+1}", ha="center", va="center", fontsize=10.5, weight="bold")
-    ax3.text(x + nx * 33 + (8 if i == 4 else 0), y + ny * 33 - (7 if i == 4 else 0), ROLE[i], ha="center", va="center", fontsize=8, color="#555")
-ax3.annotate("척골 능선\n(비워 둠)", xy=(-A - 1, 0), xytext=(-A - 30, -26), fontsize=9, color="#b71c1c", weight="bold",
+    ax3.text(x + nx * 33 + SIDE * (8 if i == 4 else 0), y + ny * 33 - (7 if i == 4 else 0), ROLE[i], ha="center", va="center", fontsize=8, color="#555")
+ax3.annotate("척골 능선\n(비워 둠)", xy=(SIDE * (-A - 1), 0), xytext=(SIDE * (-A - 30), -26), fontsize=9, color="#b71c1c", weight="bold",
              ha="center", arrowprops=dict(arrowstyle="->", color="#b71c1c"))
 ax3.text(0, B + 44, "손등", ha="center", fontsize=11, weight="bold"); ax3.text(0, -B - 46, "손바닥", ha="center", fontsize=11, weight="bold")
-ax3.text(A + 62, 18, "요측\n(엄지)", ha="center", va="center", fontsize=10, weight="bold")
-ax3.set_xlim(-100, 105); ax3.set_ylim(-88, 88)
+ax3.text(SIDE * (A + 62), 18, "요측\n(엄지)", ha="center", va="center", fontsize=10, weight="bold")
+ax3.set_xlim(-100, 105) if SIDE > 0 else ax3.set_xlim(-105, 100); ax3.set_ylim(-88, 88)
 ax3.set_title("③ 단면 (팔꿈치 쪽에서 손 방향으로, 손등이 위)\nCH1 → CH8 순서로 감기", fontsize=12, weight="bold")
 
 # ④ 블록 한 개 확대
@@ -168,7 +172,7 @@ ax4.set_title("④ 블록 1개 (25.7 × 60 mm)", fontsize=11, weight="bold")
 axs = [fig.add_axes((0.755 + 0.06 * k, 0.15, 0.058, 0.27)) for k in range(4)]
 labels = ["휴식", "엄지", "검지", "중지"]
 for k, ax in enumerate(axs):
-    hand(ax, 0, -1, palm=True, flex=(None, 1, 2, 3)[k], scale=0.55)
+    hand(ax, 0, -SIDE, palm=True, flex=(None, 1, 2, 3)[k], scale=0.55)
     ax.add_patch(Polygon([(-width(L) / 2 * 0.55, 0), (width(L) / 2 * 0.55, 0), (width(L) / 2 * 0.62, -25), (-width(L) / 2 * 0.62, -25)],
                          fc=SKIN, ec=LINE, lw=1.2, zorder=1))
     ax.set_xlim(-45, 45); ax.set_ylim(-25, 110); ax.set_aspect("equal"); ax.axis("off")
@@ -178,8 +182,9 @@ fig.text(0.87, 0.445, "⑤ 녹화 동작 (손바닥 쪽, 노란 손가락을 구
 notes = ("붙이는 순서  ① 팔 길이 L = 팔꿈치 뾰족한 뼈(주두) → 손목 새끼 쪽 뼈(척골 경상돌기) 측정   ② 0.4 × L 지점에 펜으로 둘레 선   "
          "③ 척골 능선(팔꿈치→손목 새끼 쪽으로 만져지는 뼈 줄) 표시\n"
          "④ CH1 블록을 능선 바로 옆 손등 쪽에, P(빨강)가 팔꿈치 쪽을 향하게   ⑤ 손등 → 엄지 쪽 → 손바닥 순서로 CH2 … CH8   "
-         "⑥ 능선 위는 비워 둠   ⑦ BIAS 전극은 팔꿈치 바깥 뼈(외측상과)\n"
-         "그림 치수는 L = 25 cm 예시 (P 중심 36 %, N 중심 44 %). 근육 위치는 문헌 기반 개념도 — 실제로는 손가락을 움직이며 실시간 파형으로 확인")
+         "⑥ 능선 위는 비워 둠   ⑦ BIAS 전극은 팔꿈치 바깥 뼈(외측상과)" + ("") + "\n"
+         "그림 치수는 L = 25 cm 예시 (P 중심 36 %, N 중심 44 %). 근육 위치는 문헌 기반 개념도 — 실제로는 손가락을 움직이며 실시간 파형으로 확인"
+         + ("\n※ 오른팔 = 왼팔 배치의 거울 (CH 번호마다 같은 근육). 팔꿈치 쪽에서 보면 CH1 → CH8 이 시계 반대 방향으로 감김" if SIDE < 0 else ""))
 fig.text(0.015, 0.035, notes, fontsize=10, va="bottom", linespacing=1.6,
          bbox=dict(boxstyle="round,pad=0.6", fc="#fffde7", ec="#f9a825"))
 fig.savefig(OUT, dpi=120)

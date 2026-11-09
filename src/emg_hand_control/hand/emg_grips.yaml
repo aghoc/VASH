@@ -109,7 +109,35 @@ relax:           # 대기 자세 (v9, 10-30): 사람 손이 쉴 때처럼 살짝
 #   주먹: 검지 mcp 0.81 → 0.90 (끝까지 쥐기)
 #   v12 (10-30 저녁): 모든 자세를 손으로 다시 만들기로 함 → 덮어쓰기 끔 (손으로 만든 값을 그대로 사용). 이전 값:
 #   pinch: {middle_mcp: 0.15, middle_pip: 0.10, _coupled: [ring_mcp, ring_pip, pinky_mcp, pinky_pip]}, fist: {index_mcp: 0.90}
-override: {}
+override: {}       # 11-07: 주먹 엄지 DIP 0.55 덮어쓰기를 지움 — 앱에서 손으로 다시 만든 주먹 값이 무시되던 원인
+
+# 엄지 동선 (11-07): 쥐는 정도 c 에 따른 엄지 4 관절 기준점. 값 = ROM 비율(작을수록 폄) 또는 자세 이름(그 자세의 값). c=0 은 대기 자세
+#   근거: 건강한 사람 손 쥐기/펴기 측정 (Carpinella 2011 J NeuroEng Rehabil 8:19) — 엄지는 쥘 때 MCP → IP 순서로 굽고,
+#         펼 때 IP 먼저 펴고 MCP 가 따라옴 (평균 4 % 늦게), 범위 MCP 약 61°, IP 약 64°. 주먹은 손가락이 먼저 말리고 엄지가 마지막에 덮음
+#   이 손에서의 간섭 원인: 엄지 뿌리가 손가락 위로 넘어갈 때 끝마디가 덜 펴져 있고, 마지막에 끝마디가 거의 안 굽음 (녹화 MCP 46°, DIP 31°)
+#   → ① 손가락이 말리는 동안 엄지 끝을 펴서 띄움 ② 마디를 편 채로 뿌리만 넘어감 ③ MCP 굽힘 ④ IP(DIP) 마지막에 굽혀 덮음
+#   풀 때는 이 표를 정확히 거꾸로 (끝마디 → 가운데 마디 → 뿌리 → 대기), 손가락은 엄지가 손가락 위를 비운 뒤 펴짐
+thumb_paths:
+  fist:
+    - [0.45, {thumb_cmc: 0.30, thumb_abd: 0.55, thumb_mcp: 0.30, thumb_dip: 0.15}]   # 끝을 펴서 띄움, 뿌리 살짝 돌기 시작
+    - [0.65, {thumb_cmc: 0.62, thumb_abd: 0.25, thumb_mcp: 0.30, thumb_dip: 0.15}]   # 마디 편 채로 뿌리만 손가락 위로 넘어감
+    - [0.85, {thumb_cmc: fist, thumb_abd: fist, thumb_mcp: 0.62, thumb_dip: 0.25}]   # 가운데 마디(MCP) 굽힘
+    - [1.00, {thumb_cmc: fist, thumb_abd: fist, thumb_mcp: 0.68, thumb_dip: 0.62}]   # 끝마디(IP) 마지막에 굽혀 덮음 (닿으면 전류로 멈춤)
+  wrap:                                                                                 # 0~0.35 = 엄지 크게 벌림 (wrap_pre)
+    - [0.35, {thumb_cmc: wrap_pre, thumb_abd: wrap_pre, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]
+    - [0.65, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]   # 마디 편 채로 C 자로 마주봄
+    - [0.85, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap, thumb_dip: wrap_pre}]       # MCP 굽힘
+    - [1.00, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap, thumb_dip: wrap}]           # IP 마지막
+  tripod:          # 11-09 (정현: 세손가락은 집기보다 큰 물건 → 엄지가 아래로 돌고 밖으로 벌렸다가 쥐기, wrap 참고, 마지막 닿는 자세는 그대로)
+    - [0.35, {thumb_cmc: wrap_pre, thumb_abd: wrap_pre, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]   # 엄지 크게 벌림 (wrap 준비 자세의 엄지)
+    - [0.65, {thumb_cmc: tripod, thumb_abd: tripod, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]       # 마디 편 채로 뿌리만 돌아 마주봄
+    - [0.85, {thumb_cmc: tripod, thumb_abd: tripod, thumb_mcp: tripod, thumb_dip: wrap_pre}]         # MCP 굽힘
+    - [1.00, {thumb_cmc: tripod, thumb_abd: tripod, thumb_mcp: tripod, thumb_dip: tripod}]           # IP 마지막 = 지금 세손가락 자세 그대로
+
+# 주먹 풀 때 엄지가 제자리에서 먼저 펴는 마디 (thumb_paths 에 fist 가 없을 때만 씀) (ROM 비율, 작을수록 폄). 그다음 네 손가락이 펴지고 엄지가 대기 자리로 (--fist-unwind)
+fist_release_thumb:
+  thumb_mcp: 0.15
+  thumb_dip: 0.15
 
 # 손가락 하나씩 (v10, 10-30): 대기 자세(relax)에서 그 손가락만 굽힘. 근전도 '엄지/검지/중지 굽히기' 녹화로 학습한 모델일 때 사용
 #   확률 섞기(--blend)로 동작끼리 섞이면 손가락별 자세가 연속으로 바뀜 (예: 검지 + 엄지 → 집기 쪽)
@@ -217,7 +245,7 @@ paths:
 #   중지는 약지·소지를 적지 않음 → 중지에서 예측 (coupling tuck, --ring-lag/--pinky-lag 로 늦게 따라옴)
 #   v14 (10-31): 엄지 척(thumb_ext)·검지 가리키기(index_ext)는 나머지 손가락을 접은 전체 모양 그대로 사용 (손으로 만든 16 관절 전부)
 # 손 펴기 엄지만 손으로 다시 만들기 (10-31): teach_pose.py open_thumb → 엄지 4 관절만 open 에 덮어씀 (네 손가락은 지금 open 그대로)
-taught_keep_copy: [open]
+taught_keep_copy: []   # 11-07: [open] 을 비움 — 앱에서 손 펴기를 저장해도 엄지가 예전 open_thumb 으로 덮여 '저장이 안 되는' 것처럼 보였음
 open_thumb:
   _base: open
 
@@ -300,7 +328,13 @@ wrap_pre:
 # 맞대기 직전 자세 (11-02): [중간 지점 c, 굽힘 비율 f] — 집기·세손가락은 손끝이 떨어진 채 마주 본 뒤 굽힘 관절만 닫음 (손끝 틀어짐 대응). 끄려면 줄 지우기
 approach:
   pinch:  [0.5, 0.6]
-  tripod: [0.5, 0.6]
+  tripod: [0.35, 0.6]   # 11-09: 0.5 → 0.35 (엄지 크게 벌리는 지점과 맞춤, 검지·중지도 여기서 폈다가 닫음)
+# 준비 자세에서 손 펴기(open) 값까지 펴는 관절 (11-09, 정현: 넓은 물체 → 검지·중지 폈다가 집기). 끄려면 줄 지우기 (0.5 로 되돌리기)
+approach_open:
+  tripod: [index_mcp, index_pip, middle_mcp, middle_pip]
+# 준비 자세의 엄지를 다른 자세에서 가져옴 (11-09): 비전이 물체를 보고 손 펴기 → 세손가락 준비 자세에서 엄지가 wrap 처럼 크게 벌림. 끄려면 줄 지우기
+approach_thumb:
+  tripod: wrap_pre
 
 via:
   wrap: [[0.35, wrap_pre]]      # 0~0.35 엄지 벌리며 준비 → 0.35~1 끝까지 감싸 쥐기 (닿으면 각자 멈춤)

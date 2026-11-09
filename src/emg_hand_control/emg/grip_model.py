@@ -40,6 +40,39 @@ WEARS = {
                   cal=[("CAL_20261103a", None)]),
 }
 REF_WEARS = ("1031", "1102a")   # 밴드 위치 기준 (재생 정답이 높았던 착용). 1030b 는 약 반 칸 돌아간 착용
+
+# 오른팔 (11-08, 대회까지 오른팔만): 위 WEARS 는 모두 왼팔 착용. --arm right 이면 아래 착용·파일로 바꿔 씀
+#   착용 A = 11-07 오후, B = 11-07 저녁 (밴드를 다시 참, 보정 녹화 2 개)
+#   재생 (다른 착용으로 기본 모델 → 이 착용 보정 → 전환 녹화 49 회): 왼팔 기본 25, 이 착용만 43, 오른팔 기본 + 보정 2 개 46
+WEARS_RIGHT = {
+    "R1107a": dict(train=["CAL_20261107a", "TRANS_20261107a"], test=["TRANS_20261107a"], cal=[("CAL_20261107a", None)]),
+    "R1107b": dict(train=["CAL_20261107a_2", "CAL_20261107a_3", "TRANS_20261107a_2"], test=["TRANS_20261107a_2"],
+                   cal=[("CAL_20261107a_2", None), ("CAL_20261107a_3", None)]),
+    # 11-08 착용 C (털 정리 전), D (털 정리, BIAS 다시 붙임). 빼 둔 녹화: CAL_20261108a (15 s 에서 끊김), CAL_20261108a_2 (CH3·CH7 접촉 약함), CAL_20261108b (BIAS 없음, 60 Hz 1747 µV)
+    #   비교 (C·D 시험 84 회, 그 착용 보정 2 회 + 전환 ×30): 어제 2 착용 기본 83/84 오류 없음 42, 다른 3 착용 기본 83/84 오류 없음 45, 이 착용만 76/84
+    "R1108a": dict(train=["CAL_20261108a_3", "TRANS_20261108a", "TEST_20261108a", "CHAIN_20261108a"], test=["TEST_20261108a", "CHAIN_20261108a"],
+                   cal=[("CAL_20261108a_3", None), ("TRANS_20261108a", None)]),
+    "R1108b": dict(train=["CAL_20261108b_2", "TRANS_20261108b", "TEST_20261108b", "CHAIN_20261108b"], test=["TEST_20261108b", "CHAIN_20261108b"],
+                   cal=[("CAL_20261108b_2", None), ("TRANS_20261108b", None)]),
+}
+ARM = "left"
+DEC = {}                       # 판단 설정 (grip_rt.GripDecoder 가 pack["dec"] 로 읽음). 왼팔 = 예전 그대로
+BASE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "S01", "grip7_base.pkl")
+
+
+def use_arm(arm):
+    """착용 팔에 맞춰 착용 목록·기본 모델·합격 기준·SVM 표본 파일을 바꿈 (모듈 전역)"""
+    global WEARS, REF_WEARS, GATE_FILE, SVM_TRAIN, BASE_FILE, ARM, EXPERT_GROUPS, PT_BIAS, DEC
+    ARM = arm
+    if arm == "right":
+        # 11-08 헷갈리는 쌍 시험 (4 착용 빼기, 정답 녹화 182 회): 지금 165, 쌍별 2차 판단 + 문턱 2 → 171, 검지↔가위 틀림 2 → 0, 확정 573 → 547 ms
+        EXPERT_GROUPS = [G.EXPERT_DEFAULT, ("검지 펴기", "엄지 펴기"), ("검지 펴기", "가위")]
+        PT_BIAS = 2.0
+        # 11-08 전환 늦음 (RUN28 틀림 표시): 쉬지 않는 전환 114 회 성공 106 → 109, 넘어가기 중앙 0.55 → 0.49 s, RUN28 짧은 확정 36 → 31
+        DEC = dict(tau_L=0.25, switch_hold_s=0.15)
+        WEARS = WEARS_RIGHT; REF_WEARS = tuple(WEARS_RIGHT)
+        GATE_FILE = os.path.join(DATA, "grip7_gate_right.json"); SVM_TRAIN = os.path.join(DATA, "grip7_svm_train_right.npz")
+        BASE_FILE = os.path.join(DATA, "grip7_base_right.pkl")
 _cache = {}
 
 
@@ -148,20 +181,30 @@ def add_stats(st, Fn, Y, weight):
     return out
 
 
-def expert_idx(names):
-    keys = {E.class_key(g) for g in G.EXPERT_DEFAULT}
+EXPERT_GROUPS = [G.EXPERT_DEFAULT]   # 2차 판단 묶음 (11-08: 여러 개 가능, 첫 묶음 = 예전 expert)
+
+
+def expert_idx(names, group=None):
+    keys = {E.class_key(g) for g in (group or G.EXPERT_DEFAULT)}
     return [i for i, n in enumerate(names) if i > 0 and E.class_key(n) in keys]
 
 
 def apply_stats(pack, st):
     mm = pack["model"].m
     mm.W, mm.b = lda_from_stats(st, np.arange(K))
-    ix = expert_idx(pack["names"]); We, be = lda_from_stats(st, np.array(ix))
     # 집기·세손가락은 오판하면 손이 스스로 끝까지 닫아 눈에 띔 → 판단 문턱을 올림 (11-03 재생: 끼어듦 12 → 3, 정답 24 → 22/24, 집기 확정 +112 ms)
     strict = [i for i, n in enumerate(pack["names"]) if n in BIASED]
     mm.b[strict] -= PT_BIAS
-    be -= PT_BIAS * np.isin(ix, strict)
-    pack["expert"] = {"idx": ix, "W": We, "b": be}
+    experts = []
+    for grp in EXPERT_GROUPS:
+        ix = expert_idx(pack["names"], grp)
+        if len(ix) < 2:
+            continue
+        We, be = lda_from_stats(st, np.array(ix))
+        be -= PT_BIAS * np.isin(ix, strict)
+        experts.append({"idx": ix, "W": We, "b": be})
+    pack["expert"] = experts[0] if experts else None
+    pack["experts"] = experts
 
 
 # ---- 학습 ----
@@ -212,6 +255,10 @@ def build(wears, with_levels=True):
             "stats": st, "wears": list(wears), "created": time.strftime("%Y-%m-%d %H:%M")}
     apply_stats(pack, st)
     pack["reference"] = reference({t: [n for n in WEARS[t]["test"]] for t in wears if t in REF_WEARS} or {t: WEARS[t]["test"] for t in wears})
+    left = os.path.join(DATA, "grip7_base.pkl")
+    if ARM == "right" and os.path.exists(left):
+        pack["reference"]["rest"] = np.asarray(pickle.load(open(left, "rb"))["reference"]["rest"]).copy()
+    pack["arm"] = ARM; pack["dec"] = dict(DEC)
     if with_levels:
         paths = [fpath(n) for n in names]
         pack["level"] = G.fallback_levels(m, paths, list(range(1, K)))
@@ -300,7 +347,9 @@ def placement_report(names, ref):
 
 
 # ---- 착용 보정 ----
-def calibrate(base, spec):
+def calibrate(base, spec, fresh=False):
+    """fresh=True (11-07): 기본 모델의 동작 통계를 섞지 않고 이 착용 녹화만으로 (특징 계산·판단 규칙은 같음).
+    오른팔 첫 착용 20261107a 재생 (CAL 로 학습 → TRANS 채점 49 회): 기본+보정 29/49, 이 착용만 47/49"""
     import copy
     E.CLASSES = GESTURES
     pk = copy.deepcopy({k: v for k, v in base.items()}); mm = pk["model"].m
@@ -310,8 +359,14 @@ def calibrate(base, spec):
         raise SystemExit(f"보정 녹화에 동작이 빠졌습니다: {missing}. 7 동작을 다 녹화하세요.")
     mm.Rref, mm.shift = wear_ref(W, Y, mm.zc_th)
     Fn = (raw_feats(W, mm.zc_th, mm.Rref) - mm.shift - mm.fmu) / mm.fsd
-    apply_stats(pk, add_stats(pk["stats"], Fn, Y, CAL_WEIGHT))
-    pk["calibrated"] = {"files": [os.path.basename(str(n)) for n, _ in spec], "windows": int(len(Y)), "weight": CAL_WEIGHT, "time": time.strftime("%Y-%m-%d %H:%M")}
+    if fresh:
+        pk["stats"] = add_stats({k: np.zeros_like(v) for k, v in pk["stats"].items()}, Fn, Y, 1)
+        apply_stats(pk, pk["stats"])
+    else:
+        apply_stats(pk, add_stats(pk["stats"], Fn, Y, CAL_WEIGHT))
+    if pk.get("arm", ARM) == ARM: pk["dec"] = dict(DEC)
+    pk["calibrated"] = {"files": [os.path.basename(str(n)) for n, _ in spec], "windows": int(len(Y)), "weight": CAL_WEIGHT,
+                        "method": "fresh" if fresh else "calib", "time": time.strftime("%Y-%m-%d %H:%M")}
     return pk
 
 
@@ -368,19 +423,19 @@ def svm_train_set(base, seed=0):
     return X, Y
 
 
-def calibrate_svm(base, spec):
+def calibrate_svm(base, spec, fresh=False):
     """LDA 보정과 같은 착용 정렬 + 보정 창 무게로 SVM 학습 (선택 옵션, 재생 비교 svm_cmp_1105). 판단 규칙은 같음"""
     import warnings
     from sklearn.svm import SVC
-    pk = calibrate(base, spec); mm = pk["model"].m
-    X, Y = svm_train_set(base)
+    pk = calibrate(base, spec, fresh=fresh); mm = pk["model"].m
+    X, Y = (np.zeros((0, len(mm.fmu)), np.float32), np.zeros(0, int)) if fresh else svm_train_set(base)   # fresh: 왼팔 등 다른 착용 표본을 안 섞음
     Wc, Yc = cal_windows(spec)
     Xc = (raw_feats(Wc, mm.zc_th, mm.Rref) - mm.shift - mm.fmu) / mm.fsd
     clf = SVC(C=1.09, gamma=1 / X.shape[1], kernel="rbf", probability=True, random_state=0, cache_size=1000)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", FutureWarning)
         clf.fit(np.vstack([X, Xc]), np.r_[Y, Yc], sample_weight=np.r_[np.ones(len(Y)), np.full(len(Yc), CAL_WEIGHT)])
-    pk["svm"] = clf; pk["svm_temp"] = G.SVM_TEMP; pk["expert"] = None; pk["calibrated"]["method"] = "svm"
+    pk["svm"] = clf; pk["svm_temp"] = G.SVM_TEMP; pk["expert"] = None; pk["experts"] = []; pk["calibrated"]["method"] = "svm_fresh" if fresh else "svm"
     return pk
 
 
@@ -490,13 +545,19 @@ def gate(accept=False):
 def main():
     global CAL_WEIGHT, PT_BIAS
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--arm", choices=["left", "right"], default="left", help="착용 팔 (right = WEARS_RIGHT, grip7_base_right.pkl, grip7_gate_right.json). 하위 명령 앞에 씀")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("build"); p.add_argument("--out", required=True)
-    p = sub.add_parser("calib"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=os.path.join(DATA, "grip7_base.pkl")); p.add_argument("--out", required=True); p.add_argument("--weight", type=int, default=CAL_WEIGHT, help="보정 창 무게 (40 초 보정 = 10, 전환·힘·자세까지 녹화했으면 30)"); p.add_argument("--pt-bias", type=float, default=PT_BIAS, help="집기·세손가락 판단 문턱 올림 (끼어듦이 많을 때 4)")
-    p = sub.add_parser("calib-svm", help="선택 옵션: 같은 보정 녹화로 SVM 모델"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=os.path.join(DATA, "grip7_base.pkl")); p.add_argument("--out", required=True); p.add_argument("--weight", type=float, default=CAL_WEIGHT); p.add_argument("--pt-bias", type=float, default=PT_BIAS)
+    p = sub.add_parser("calib"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=None); p.add_argument("--out", required=True); p.add_argument("--weight", type=int, default=CAL_WEIGHT, help="보정 창 무게 (40 초 보정 = 10, 전환·힘·자세까지 녹화했으면 30)"); p.add_argument("--pt-bias", type=float, default=None, help="집기·세손가락 판단 문턱 올림 (끼어듦이 많을 때 4)"); p.add_argument("--fresh", action="store_true", help="기본 모델 통계를 섞지 않고 이 녹화만으로 (오른팔·처음 차는 위치)"); p.add_argument("--ref", default=None, help="밴드 위치 비교 기준 파일 (오른팔: data/S01/grip7_ref_right.pkl). 없으면 기본 모델의 기준(왼팔)")
+    p = sub.add_parser("calib-svm", help="선택 옵션: 같은 보정 녹화로 SVM 모델"); p.add_argument("csv", nargs="+"); p.add_argument("--base", default=None); p.add_argument("--out", required=True); p.add_argument("--weight", type=float, default=CAL_WEIGHT); p.add_argument("--pt-bias", type=float, default=None); p.add_argument("--fresh", action="store_true", help="다른 착용 표본을 섞지 않고 이 녹화만으로")
     p = sub.add_parser("gate"); p.add_argument("--accept", action="store_true", help="이번 결과를 새 기준으로 저장")
     p = sub.add_parser("report", help="정답 있는 녹화 채점: 동작별·전환별 표"); p.add_argument("csv", nargs="+"); p.add_argument("--model", required=True); p.add_argument("--min-s", type=float, default=None)
     a = ap.parse_args()
+    use_arm(a.arm)
+    if getattr(a, "pt_bias", 0) is None:
+        a.pt_bias = PT_BIAS                          # 팔에 맞는 기본값 (왼팔 4, 오른팔 2)
+    if getattr(a, "base", "x") is None:
+        a.base = BASE_FILE
     if a.cmd == "build":
         pk = build(list(WEARS)); pickle.dump(pk, open(a.out, "wb"))
         print(f"저장 {a.out}  착용 {pk['wears']}  녹화 {len(pk['files'])} 개  동작 {pk['names'][1:]}  τ {pk['model'].m.tau:.2f}")
@@ -507,13 +568,14 @@ def main():
         for c in a.csv:
             d = int(load(c)[4].get("dropped", 0) or 0)
             if d: print(f"※ {os.path.basename(c)} 누락 {d} 샘플")
-        placement_report(a.csv, base["reference"])
-        pk = calibrate(base, [(c, None) for c in a.csv]); pickle.dump(pk, open(a.out, "wb"))
-        print(f"보정 저장 {a.out}  (보정 창 {pk['calibrated']['windows']} 개 ×{CAL_WEIGHT})")
+        ref = pickle.load(open(a.ref, "rb"))["reference"] if a.ref else base["reference"]   # 11-07: 오른팔은 오른팔 착용 기준과 비교
+        placement_report(a.csv, ref)
+        pk = calibrate(base, [(c, None) for c in a.csv], fresh=a.fresh); pickle.dump(pk, open(a.out, "wb"))
+        print(f"보정 저장 {a.out}  (보정 창 {pk['calibrated']['windows']} 개 " + ("· 이 착용만으로 학습)" if a.fresh else f"×{CAL_WEIGHT})"))
     elif a.cmd == "calib-svm":
         CAL_WEIGHT, PT_BIAS = a.weight, a.pt_bias
         E.CLASSES = GESTURES
-        t0 = time.time(); pk = calibrate_svm(pickle.load(open(a.base, "rb")), [(c, None) for c in a.csv])
+        t0 = time.time(); pk = calibrate_svm(pickle.load(open(a.base, "rb")), [(c, None) for c in a.csv], fresh=a.fresh)
         tmp = a.out + ".tmp"; pickle.dump(pk, open(tmp, "wb")); os.replace(tmp, a.out)
         print(f"SVM 모델 저장 {a.out}  (보정 창 {pk['calibrated']['windows']} 개 ×{CAL_WEIGHT}, 서포트 벡터 {pk['svm'].n_support_.sum()}, {time.time() - t0:.0f} s)")
     elif a.cmd == "report":
