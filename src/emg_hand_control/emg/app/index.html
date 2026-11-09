@@ -441,8 +441,9 @@ function render(s){
   $("stopAll").disabled=!(hr||er||s.signal_on||s.flow.active||(s.jobs.record&&s.jobs.record.running));
   const L=s.live,g=$("gesture"),fresh=er&&L&&L.age<1.5;
   if(fresh){
-    if(L.state==="active"&&L.grip){g.textContent=L.grip;g.className="gesture"+(L.committed?"":" tent")}else{g.textContent="휴식";g.className="gesture rest"}
-    const act=L.state==="active"&&L.grip;$("livePill").hidden=!act;$("livePill").textContent=L.committed?"확정":"판단 중";$("livePill").className="pill"+(L.committed?" ok":"");
+    // 11-09: 확정 전 후보 이름은 보이지 않음 (집기 시작 때 가위·손 펴기가 먼저 잡혀 헷갈림) → "판단 중"
+    if(L.state==="active"&&L.grip){g.textContent=L.committed?L.grip:"판단 중";g.className="gesture"+(L.committed?"":" tent")}else{g.textContent="휴식";g.className="gesture rest"}
+    const act=L.state==="active"&&L.grip;$("livePill").hidden=!act||!L.committed;$("livePill").textContent=L.committed?"확정":"판단 중";$("livePill").className="pill"+(L.committed?" ok":"");
     $("level").style.width=Math.min(100,L.level*100)+"%";$("liveInfo").textContent=`세기 ${L.level.toFixed(2)} · z ${L.z.toFixed(2)} · ${L.t.toFixed(0)}초`;
   }else{g.textContent=er?"신호 기다리는 중":"대기";g.className="gesture rest";$("livePill").hidden=true;$("level").style.width="0";$("liveInfo").textContent=er?"근전도 시작 중":"근전도가 꺼져 있습니다"}
   probs(s,fresh?L:null);
