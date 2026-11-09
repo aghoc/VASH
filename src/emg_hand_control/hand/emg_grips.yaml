@@ -128,6 +128,11 @@ thumb_paths:
     - [0.65, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]   # 마디 편 채로 C 자로 마주봄
     - [0.85, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap, thumb_dip: wrap_pre}]       # MCP 굽힘
     - [1.00, {thumb_cmc: wrap, thumb_abd: wrap, thumb_mcp: wrap, thumb_dip: wrap}]           # IP 마지막
+  tripod:          # 11-09 (정현: 세손가락은 집기보다 큰 물건 → 엄지가 아래로 돌고 밖으로 벌렸다가 쥐기, wrap 참고, 마지막 닿는 자세는 그대로)
+    - [0.35, {thumb_cmc: wrap_pre, thumb_abd: wrap_pre, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]   # 엄지 크게 벌림 (wrap 준비 자세의 엄지)
+    - [0.65, {thumb_cmc: tripod, thumb_abd: tripod, thumb_mcp: wrap_pre, thumb_dip: wrap_pre}]       # 마디 편 채로 뿌리만 돌아 마주봄
+    - [0.85, {thumb_cmc: tripod, thumb_abd: tripod, thumb_mcp: tripod, thumb_dip: wrap_pre}]         # MCP 굽힘
+    - [1.00, {thumb_cmc: tripod, thumb_abd: tripod, thumb_mcp: tripod, thumb_dip: tripod}]           # IP 마지막 = 지금 세손가락 자세 그대로
 
 # 주먹 풀 때 엄지가 제자리에서 먼저 펴는 마디 (thumb_paths 에 fist 가 없을 때만 씀) (ROM 비율, 작을수록 폄). 그다음 네 손가락이 펴지고 엄지가 대기 자리로 (--fist-unwind)
 fist_release_thumb:
@@ -323,7 +328,13 @@ wrap_pre:
 # 맞대기 직전 자세 (11-02): [중간 지점 c, 굽힘 비율 f] — 집기·세손가락은 손끝이 떨어진 채 마주 본 뒤 굽힘 관절만 닫음 (손끝 틀어짐 대응). 끄려면 줄 지우기
 approach:
   pinch:  [0.5, 0.6]
-  tripod: [0.5, 0.6]
+  tripod: [0.35, 0.6]   # 11-09: 0.5 → 0.35 (엄지 크게 벌리는 지점과 맞춤, 검지·중지도 여기서 폈다가 닫음)
+# 준비 자세에서 손 펴기(open) 값까지 펴는 관절 (11-09, 정현: 넓은 물체 → 검지·중지 폈다가 집기). 끄려면 줄 지우기 (0.5 로 되돌리기)
+approach_open:
+  tripod: [index_mcp, index_pip, middle_mcp, middle_pip]
+# 준비 자세의 엄지를 다른 자세에서 가져옴 (11-09): 비전이 물체를 보고 손 펴기 → 세손가락 준비 자세에서 엄지가 wrap 처럼 크게 벌림. 끄려면 줄 지우기
+approach_thumb:
+  tripod: wrap_pre
 
 via:
   wrap: [[0.35, wrap_pre]]      # 0~0.35 엄지 벌리며 준비 → 0.35~1 끝까지 감싸 쥐기 (닿으면 각자 멈춤)
