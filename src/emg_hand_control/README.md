@@ -27,7 +27,7 @@ jetson/         Jetson 설치 스크립트, udev 규칙, 실행 스크립트
 | `grip_rt.py` | 실시간 판단기. LDA 또는 SVM 확률 → 누적 증거 → 확정(0.9). `run` = 보드 실시간 / `--replay` = 녹화 재생, 결과를 UDP 로 의수에 보냄 |
 | `grip_model.py` | 고정 기본 모델 + 착용마다 보정 (`calib`), SVM 보정 (`calib-svm`), 휴식만으로 빠른 보정, 밴드 위치·신호 검사, 합격 시험 (`gate`) |
 | `finger_test.py` | 화면 지시를 따라 동작 녹화 (보정·전환·시험 녹화) |
-| `rec_right.py` | 앱과 같은 설정으로 터미널에서 녹화: `CAL`·`TRANS`·`TEST`·`CHAIN <착용>`. 같은 이름이 있으면 `_2` 를 붙임 |
+| `rec_right.py` | 앱과 같은 설정으로 터미널에서 녹화: `CAL`·`TRANS`·`TEST`·`CHAIN <착용>`, 집중 녹화 `FOCUS <착용>` (손 펴기·집기·세손가락·가위만 1.5 s, 보정에 파일로 추가). 같은 이름이 있으면 `_2` 를 붙임 |
 | `emg_classifier.py`, `emg_math.py` | 필터(20–450 Hz, 60 Hz 노치), 200 ms 창 특징(TD + 리만), LDA |
 | `rt_bench.py` | 세기(언제)·동작(무엇) 분리 판단, 녹화를 실시간처럼 재생해 채점 |
 | `ads_monitor.py` | 보드 자가 검진, 실시간 파형, 시리얼 프레임 해석 |
@@ -135,7 +135,7 @@ uv run --frozen --no-dev python ../hand/start_hand.py
 
 # 근전도 — emg 폴더
 cd src/emg_hand_control/emg
-.venv/bin/python grip_rt.py run --model data/S01/grip7_20261108b.pkl --port /dev/vash-emg --udp 127.0.0.1:9000
+.venv/bin/python grip_rt.py run --model data/S01/grip7_미장착_lda_1108.pkl --port /dev/vash-emg --udp 127.0.0.1:9000
 ```
 
 Windows 는 `.venv\Scripts\python`, `--port COM6`.
@@ -173,6 +173,8 @@ Windows 는 `.venv\Scripts\python`, `--port COM6`.
 오른팔 4 착용을 하나씩 빼고 (나머지로 기본 → 빠진 착용 보정 → 그 착용 시험 녹화 재생) 채점하면 182 회 중 172 정답, 휴식 오작동 0 % 였습니다. 같은 사람의 재생 결과이고, 실시간 성능과 다른 사용자는 아직 재지 않았습니다.
 
 ## 문제 해결
+
+의수 오류(버스 끊김, 중립 도착 실패, 캘리브레이션 범위 밖, 과부하)와 최근 변경은 [`docs/emg_hand_control/변경기록_및_오류대처.md`](../../docs/emg_hand_control/변경기록_및_오류대처.md) 를 보세요.
 
 | 증상 | 확인 |
 |---|---|
