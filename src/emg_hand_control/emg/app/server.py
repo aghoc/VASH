@@ -44,6 +44,8 @@ BASE_MODEL = DATA / ("grip7_base_right.pkl" if ARM == "right" else "grip7_base.p
 RIGHT_BASE = ARM == "right" and BASE_MODEL.exists()
 EMG_COM = os.environ.get("VASH_EMG_PORT") or ("COM6" if WIN else "/dev/vash-emg")
 HAND_COM = os.environ.get("VASH_HAND_PORT") or ("COM7" if WIN else "/dev/vash-hand")
+FLOW_ALL = "pinch,scissors,index_ext,thumb_ext"
+HAND_FLOW = os.environ.get("VASH_HAND_FLOW", FLOW_ALL)   # 11-10 동작 흐름 (emg_bridge_guarded --flow). 11-10 정현 결정으로 기본 켬, VASH_HAND_FLOW= (빈 값) 이면 끔
 NOISE = re.compile(r"findfont:|^\s*warnings\.warn|UserWarning")
 LOCAL_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
 
@@ -73,11 +75,12 @@ def command(kind, **kw):
         return [str(PC_PY), str(Path(__file__).with_name("signal_monitor.py")), "--port", EMG_COM, *quick], PC
     if kind == "hand":
         extra = (["--calibrate", "--calibrate-only"] if kw.get("calibrate") else []) + (["--update-baseline"] if kw.get("update_baseline") else [])
-        return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra], ORCA
+        return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra, *(["--flow", HAND_FLOW] if not kw.get("calibrate") else [])], ORCA
     if kind == "teach":                              # 자세 가르치기 (teach_live.py: 60 mA 로 낮춰 손으로 밀어 만듦)
         return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"], "--soft", str(kw["soft"]), *(["--path"] if kw.get("path") else [])], ORCA
     if kind == "preview":                            # 동작 미리보기 (11-07): 대기 → 쥐기(엄지 동선) → 풀기(거꾸로) → 대기, 근전도 없이
-        return [str(HAND_PY), str(HAND_DIR / "emg_bridge_guarded.py"), "--poses", "--only", kw["pose"], "--close-s", "1.5", "--hold", "1.0"], ORCA
+        return [str(HAND_PY), str(HAND_DIR / "emg_bridge_guarded.py"), "--poses", "--only", kw["pose"], "--close-s", "1.5", "--hold", "1.0",
+                "--flow", FLOW_ALL if kw.get("flow") else ""], ORCA
     if kind == "emg":
         return [str(PC_PY), "grip_rt.py", "run", "--model", kw["model"], "--port", EMG_COM, "--udp", "127.0.0.1:9000", "--log", kw["log"], "--save-raw", kw["raw"],
                 *(["--svm-temp", str(kw["temp"])] if kw.get("temp") is not None else [])], PC
@@ -711,13 +714,13 @@ async def teach_start(req: Request):
 
 @app.post("/api/teach/preview")
 async def teach_preview(req: Request):
-    pose = (await req.json()).get("pose", "")
-    if pose not in ("fist", "wrap"):
-        raise HTTPException(400, "주먹 또는 감싸 쥐기")
+    body = await req.json(); pose = body.get("pose", "")
+    if pose not in ("fist", "wrap", "tripod", "pinch", "scissors", "index_ext", "thumb_ext"):
+        raise HTTPException(400, "미리보기 동작을 고르세요")
     if running("hand") or running("teach"):
         raise HTTPException(409, "의수를 먼저 끄세요 (같은 포트를 씁니다)")
     with S.lock:
-        argv, cwd = command("preview", pose=pose)
+        argv, cwd = command("preview", pose=pose, flow=bool(body.get("flow")))
         S.jobs["teach"] = Job("teach", argv, cwd)
     S.teach_pose, S.teach_path, S.teach_preview = pose, False, True
     return {"ok": True}

@@ -306,7 +306,8 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
       <span class="note">약할수록 밀기 쉽지만 손을 떼면 줄 장력에 조금 밀려날 수 있습니다</span></div>
     <div class="tgrid" id="teachList"></div>
     <h3 class="sub">동작 미리보기 (대기 → 쥐기 → 풀기, 실제 제어와 같은 동선)</h3>
-    <div class="row" id="previewRow"><button data-p="fist">주먹 미리보기</button><button data-p="wrap">감싸 쥐기 미리보기</button></div>
+    <div class="row" id="previewRow"><button data-p="fist">주먹 미리보기</button><button data-p="wrap">감싸 쥐기 미리보기</button><button data-p="tripod">세손가락</button><button data-p="pinch">집기</button><button data-p="scissors">가위</button><button data-p="index_ext">검지 펴기</button><button data-p="thumb_ext">엄지 펴기</button>
+      <label><input type="checkbox" id="previewFlow" checked> 새 동작 흐름 (11-10, 집기·가위·검지·엄지)</label></div>
     <h3 class="sub">연속 경로 (손으로 움직이며 녹화)</h3>
     <div id="pathList"></div>
   </div>
@@ -535,7 +536,7 @@ function teachPaint(s){
     $("pathHelp").hidden=!isPath;$("teachRec").hidden=!isPath;$("teachRedo").hidden=isPath;$("teachSave").textContent=isPath?"끝·저장":"저장";
     $("teachRec").textContent=recOn?"다시 녹화":"녹화 시작";
     if(isPath)$("teachName").textContent="주먹 엄지 경로"+(recOn?" · 녹화 중":"");
-    if(isPrev){$("teachName").textContent="미리보기: "+(s.teach_pose==="wrap"?"감싸 쥐기":"주먹");$("teachRedo").hidden=true}
+    if(isPrev){$("teachName").textContent="미리보기: "+({wrap:"감싸 쥐기",fist:"주먹",tripod:"세손가락",pinch:"집기",scissors:"가위",index_ext:"검지 펴기",thumb_ext:"엄지 펴기"}[s.teach_pose]||s.teach_pose);$("teachRedo").hidden=true}
     ["teachSave","teachRedo","teachQuit","teachRec"].forEach(id=>$(id).disabled=!tr||tj.stopping);$("teachStop").disabled=!tr||tj.stopping;
     if(!tr&&$("teachRun")._done!==tj.code+"|"+L.length){$("teachRun")._done=tj.code+"|"+L.length;teachLoad()}}
 }
@@ -544,7 +545,7 @@ $("teachClose").onclick=()=>{if(st&&st.jobs.teach&&st.jobs.teach.running){toast(
 $("teachDlg").addEventListener("cancel",e=>{if(st&&st.jobs.teach&&st.jobs.teach.running)e.preventDefault()});
 $("teachSave").onclick=()=>post("/api/teach/key",{key:"save"});
 $("teachRec").onclick=()=>post("/api/teach/key",{key:"rec"});
-document.querySelectorAll("#previewRow button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/preview",{pose:b.dataset.p})});
+document.querySelectorAll("#previewRow button").forEach(b=>b.onclick=async()=>{$("teachRun")._last=true;await post("/api/teach/preview",{pose:b.dataset.p,flow:$("previewFlow").checked})});
 $("teachRedo").onclick=()=>post("/api/teach/key",{key:"redo"});
 $("teachQuit").onclick=()=>post("/api/teach/key",{key:"quit"});
 $("teachStop").onclick=()=>post("/api/stop/teach");

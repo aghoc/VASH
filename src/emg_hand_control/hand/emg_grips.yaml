@@ -339,6 +339,55 @@ approach_thumb:
 via:
   wrap: [[0.35, wrap_pre]]      # 0~0.35 엄지 벌리며 준비 → 0.35~1 끝까지 감싸 쥐기 (닿으면 각자 멈춤)
 
+# 동작 흐름 (11-10, 기본 꺼짐): 세손가락처럼 '순서 있는' 움직임을 다른 동작에도. 시작·끝 자세는 그대로, 사이 순서만 바꿈
+#   켜기: emg_bridge_guarded.py --flow pinch,scissors,index_ext,thumb_ext  (또는 --flow all). 안 주면 아래는 전부 무시 = 이전과 같음
+#   항목 (모두 선택): thumb_path = thumb_paths 와 같은 형식 / paths = paths[자세] 를 이것으로 바꿈 / approach·approach_open = 같은 이름 항목을 이것으로
+#   풀 때는 같은 표를 거꾸로 (--flow-unwind s), 동작 모드 자세(가위·가리키기·엄지 척)는 c 가 --flow-close-s 보다 빨리 0→1 로 못 감 (근전도 세기가 확 올라도 순서 유지)
+#   근거: 엄지 쥘 때 MCP→IP, 펼 때 IP 먼저 (Carpinella 2011) / 집기는 엄지가 먼저 자리 잡고 검지가 벌렸다 닫음 (Jeannerod 1984, Wing & Fraser 1983)
+#         약지·소지는 중지와 묶여 함께 굽음 (Häger-Ross & Schieber 2000) / 엄지가 손가락 위를 덮는 동작은 손가락이 먼저 말린 뒤 (이 손 간섭 기하, 주먹과 같은 이유)
+flow:
+  index_ext:       # 가리키기: 검지 먼저 폄 → 중지·약지·소지 말림 → 엄지 끝 들고 뿌리만 넘어감 → MCP → IP 로 중지 위를 덮음 (주먹 엄지와 같은 순서)
+    paths:
+      index:  [[0.35, 1.0]]
+      middle: [[0.3, 0.5], [0.6, 0.95], [1.0, 1.0]]
+      ring:   [[0.35, 0.45], [0.65, 0.92], [1.0, 1.0]]
+      pinky:  [[0.4, 0.4], [0.7, 0.9], [1.0, 1.0]]
+      spread: [[0.5, 1.0]]
+    thumb_path:
+      - [0.45, {thumb_cmc: 0.30, thumb_abd: 0.55, thumb_mcp: 0.30, thumb_dip: 0.15}]   # 끝을 펴서 띄움
+      - [0.70, {thumb_cmc: 0.62, thumb_abd: 0.25, thumb_mcp: 0.30, thumb_dip: 0.15}]   # 마디 편 채 뿌리만 넘어감 (중지 거의 다 말린 뒤)
+      - [0.85, {thumb_cmc: index_ext, thumb_abd: index_ext, thumb_mcp: index_ext, thumb_dip: 0.15}]   # MCP
+      - [1.00, {thumb_cmc: index_ext, thumb_abd: index_ext, thumb_mcp: index_ext, thumb_dip: index_ext}]   # IP 마지막 = 지금 자세 그대로
+  scissors:        # 가위: 약지·소지 먼저 말림 → 엄지 끝 들고 뿌리가 약지·소지 위로 → 검지·중지 폄 → V 벌림 → 엄지 MCP·IP 눌러 덮음
+    paths:
+      ring:   [[0.4, 0.85], [0.6, 1.0]]
+      pinky:  [[0.45, 0.85], [0.65, 1.0]]
+      index:  [[0.5, 0.2], [0.85, 1.0]]
+      middle: [[0.5, 0.2], [0.85, 1.0]]
+      spread: [[0.6, 0.0], [0.9, 1.0]]
+    thumb_path:
+      - [0.30, {thumb_cmc: 0.30, thumb_abd: 0.55, thumb_mcp: 0.30, thumb_dip: 0.15}]
+      - [0.55, {thumb_cmc: 0.62, thumb_abd: 0.25, thumb_mcp: 0.30, thumb_dip: 0.15}]
+      - [0.75, {thumb_cmc: scissors, thumb_abd: scissors, thumb_mcp: scissors, thumb_dip: 0.15}]
+      - [1.00, {thumb_cmc: scissors, thumb_abd: scissors, thumb_mcp: scissors, thumb_dip: scissors}]
+  thumb_ext:       # 엄지 척: 엄지가 먼저 밖으로 비킴 (IP → MCP·뿌리, 펼 때 IP 먼저) → 네 손가락 말림 (약지·소지 조금 늦게)
+    paths:
+      index:  [[0.4, 0.1], [0.8, 0.92], [1.0, 1.0]]
+      middle: [[0.4, 0.1], [0.8, 0.92], [1.0, 1.0]]
+      ring:   [[0.45, 0.08], [0.85, 0.9], [1.0, 1.0]]
+      pinky:  [[0.5, 0.06], [0.9, 0.88], [1.0, 1.0]]
+      spread: [[0.5, 1.0]]
+    thumb_path:
+      - [0.15, {thumb_cmc: 0.20, thumb_abd: 0.80, thumb_mcp: 0.40, thumb_dip: thumb_ext}]   # 끝마디 먼저 폄
+      - [0.40, {thumb_cmc: thumb_ext, thumb_abd: thumb_ext, thumb_mcp: thumb_ext, thumb_dip: thumb_ext}]   # MCP·뿌리 → 다 비킨 뒤 손가락이 말림
+  pinch:           # 집기: 엄지가 먼저 마주보는 자리로 돌고, 검지는 폈다가(벌림) 머문 뒤 엄지 쪽으로 닫음 → 엄지 MCP → IP. 풀 때 거꾸로
+    approach: [0.35, 0.6]                     # 이전 [0.5, 0.6]
+    approach_open: [index_mcp, index_pip]     # 준비 지점에서 검지를 손 펴기 값까지 (머묾 = --flow-open-hold)
+    thumb_path:
+      - [0.35, {thumb_cmc: pinch_pre, thumb_abd: pinch_pre, thumb_mcp: pinch_pre, thumb_dip: pinch_pre}]   # 뿌리는 최종 자리, 마디는 덜 굽힘 (준비 자세 엄지와 같음)
+      - [0.70, {thumb_cmc: pinch, thumb_abd: pinch, thumb_mcp: pinch, thumb_dip: pinch_pre}]   # MCP
+      - [1.00, {thumb_cmc: pinch, thumb_abd: pinch, thumb_mcp: pinch, thumb_dip: pinch}]       # IP 마지막
+
 mode_map:
   mode_grasp:
     "주먹": wrap

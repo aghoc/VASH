@@ -124,6 +124,17 @@ def build_poses(hand, path):
         ov = dict(ov); drop = ov.pop("_coupled", [])
         P[name] = {k: v for k, v in P[name].items() if k not in drop}; P[name].update(ov)
         print(f"덮어쓰기 {name}: {ov}" + (f", 중지에서 예측: {drop}" if drop else ""), flush=True)
+    fl = P.get("flow") or {}                                     # 동작 흐름 (11-10, --flow 로 켠 자세만): 같은 이름 항목을 이 값으로 바꿈
+    if "all" in FLOW:
+        FLOW.discard("all"); FLOW.update(fl)
+    for key in sorted(FLOW):
+        F = fl.get(key) or {}
+        if key not in P or not F:
+            print(f"동작 흐름: {key} 는 emg_grips.yaml flow 에 없음 → 무시", flush=True); continue
+        for src, dst in (("paths", "paths"), ("thumb_path", "thumb_paths"), ("approach", "approach"), ("approach_open", "approach_open")):
+            if src in F:
+                P[dst] = {**(P.get(dst) or {}), key: F[src]}
+        print(f"동작 흐름 사용: {key} ({', '.join(k for k in F)})", flush=True)
     roms = hand.config.joint_roms_dict
     joints = list(hand.config.joint_ids)
     cp = P.get("coupling", {})
@@ -202,7 +213,7 @@ def build_poses(hand, path):
                 ang[j] = poses[v][j] if isinstance(v, str) else roms[j][0] + float(v) * (roms[j][1] - roms[j][0])
             pts.append((float(c_), ang))
         poses["_thumb_path"][key] = sorted(pts, key=lambda p: p[0])
-        if (P.get("approach_thumb") or {}).get(key) and rows:
+        if ((P.get("approach_thumb") or {}).get(key) or (key in FLOW and key + "_pre" in poses)) and rows:   # 흐름: 첫 기준점 = 준비 자세 엄지 (집기)
             poses.setdefault("_pre_thumb_c", {})[key] = float(min(r[0] for r in rows))
         print(f"엄지 동선 사용: {key} ({len(rows)} 기준점)", flush=True)
     return poses, P.get("emg_map", {})
@@ -669,15 +680,17 @@ class Composer:
             self.key = None
         return tgt
 
-    def _unwind_tripod(self, dt, stop_at_via=False):
+    def _unwind_tripod(self, dt, stop_at_via=False, key="tripod"):
         """세손가락 풀기 (11-09, 정현: 돌아올 때도 벌리면서 돌아와야 간섭 없음): 쥘 때 경로를 거꾸로 —
         엄지 IP → MCP 펴고 → 뿌리가 돌아 크게 벌린 자리(엄지 동선 첫 기준점)로 나가며 손가락 폄 → tripod_rel_hold s 머묾 → 대기.
-        다시 쥐면 지금 c 에서 이어서 닫음 (엄지 진행 tc 도 같이 맞춤)"""
-        vc = self.poses.get("_pre_thumb_c", {}).get("tripod", 0.0)
-        rate = dt / ARGS.tripod_unwind
+        다시 쥐면 지금 c 에서 이어서 닫음 (엄지 진행 tc 도 같이 맞춤)
+        11-10: key = 동작 흐름(--flow) 자세도 같은 계산 (--flow-unwind, --flow-rel-hold, 머무는 곳 = 준비 자세 지점, 없으면 안 머묾)"""
+        tri = key == "tripod"
+        vc = self.poses.get("_pre_thumb_c", {}).get(key, 0.0)
+        rate = dt / (ARGS.tripod_unwind if tri else ARGS.flow_unwind)
         if self.c > vc:
             self.c = max(vc, self.c - rate); self.dwell = 0.0
-        elif self.dwell < ARGS.tripod_rel_hold:
+        elif self.dwell < (ARGS.tripod_rel_hold if tri else (ARGS.flow_rel_hold if vc > 0 else 0.0)):
             self.dwell += dt
         elif stop_at_via:
             self.c = 0.0
@@ -685,17 +698,21 @@ class Composer:
             self.c = max(0.0, self.c - rate)
         roms = self.poses["_roms"]; tgt = {}
         for j in self.poses["relax"]:
-            v = thumb_key_at(self.poses, "tripod", j, self.c) if j in THUMB else None
+            v = thumb_key_at(self.poses, key, j, self.c) if j in THUMB else None
             if v is None:
-                v = pose_at(self.poses, "tripod", j, self.c)
+                v = pose_at(self.poses, key, j, self.c)
             tgt[j] = min(max(v, roms[j][0]), roms[j][1])
-        self.tkey, self.tc = "tripod", self.c
+        self.tkey, self.tc = key, self.c
         if self.c <= 0:
             self.key = None; self.tkey = None
         return tgt
 
     def _tri_rel(self):
         return self.key == "tripod" and ARGS.tripod_unwind > 0 and self.c > 0 and "tripod" in self.poses.get("_thumb_path", {})
+
+    def _flow_rel(self):
+        """동작 흐름(--flow) 자세를 풀 때: 쥘 때 표를 거꾸로 (11-10)"""
+        return self.key in FLOW and self.key != "tripod" and ARGS.flow_unwind > 0 and self.c > 0
 
     def base(self):
         return (self.poses["relax"], "relax") if ARGS.rest_pose == "relax" else (self.poses["open"], "open")
@@ -717,6 +734,9 @@ class Composer:
             if self._tri_rel():
                 self.tg += (0.0 - self.tg) * (1 - math.exp(-dt / ARGS.thumb_fall))
                 return self._unwind_tripod(dt), rest_key, 0.0
+            if self._flow_rel():
+                self.tg += (0.0 - self.tg) * (1 - math.exp(-dt / ARGS.thumb_fall))
+                return self._unwind_tripod(dt, key=self.key), rest_key, 0.0
             self._release_start()
             self.key, self.c = None, 0.0
             self.tg += (0.0 - self.tg) * (1 - math.exp(-dt / ARGS.thumb_fall))
@@ -731,6 +751,8 @@ class Composer:
                 return self._unwind(dt), rest_key, 0.0
             if self._tri_rel():
                 return self._unwind_tripod(dt), rest_key, 0.0
+            if self._flow_rel():
+                return self._unwind_tripod(dt, key=self.key), rest_key, 0.0
             if self.rel_from is not None:
                 return self._fist_release(dt, o), rest_key, 0.0
             return o, rest_key, 0.0
@@ -788,6 +810,8 @@ class Composer:
             return self._unwind(dt, stop_at_via=(key == "open")), rest_key, 0.0
         if key != "tripod" and self._tri_rel():
             return self._unwind_tripod(dt, stop_at_via=(key in ("open", "tripod_pre"))), rest_key, 0.0
+        if key != self.key and self._flow_rel():
+            return self._unwind_tripod(dt, stop_at_via=(key in ("open", self.key + "_pre")), key=self.key), rest_key, 0.0
         if key in ("open", "relax", "preshape"):
             if self.key == "fist":
                 self._release_start()
@@ -806,15 +830,19 @@ class Composer:
                 c0 = 0.0
             self.c = min(1.0, c0 + dt / ARGS.auto_close)
             vo = self.poses.get("_open_c", {}).get(key)              # 11-09 세손가락: 손가락 편 준비 지점에서 잠깐 머묾 (안 머물면 부드럽게 따라가느라 거의 안 펴짐)
-            if vo is not None and ARGS.tripod_open_hold > 0:
+            hold = ARGS.tripod_open_hold if key == "tripod" else ARGS.flow_open_hold   # 11-10: 흐름 켠 집기는 --flow-open-hold
+            if vo is not None and hold > 0:
                 if key != self.key and c0 >= vo:
-                    self.open_held = ARGS.tripod_open_hold          # 이미 준비 자세에서 이어 쥠 (비전 손 펴기) → 안 머묾
+                    self.open_held = hold                           # 이미 준비 자세에서 이어 쥠 (비전 손 펴기) → 안 머묾
                 elif key != self.key:
                     self.open_held = 0.0
-                if c0 < vo <= self.c or (abs(c0 - vo) < 1e-9 and self.open_held < ARGS.tripod_open_hold):
+                if c0 < vo <= self.c or (abs(c0 - vo) < 1e-9 and self.open_held < hold):
                     self.c = vo; self.open_held += dt
         else:                                       # 동작 모드: 자세 의도 유지 (같은 동작이면 최고값을 천천히 놓음)
+            c_prev = self.c if key == self.key else 0.0
             self.c = max(self.c - ARGS.leak * dt, lv) if key == self.key else lv
+            if key in FLOW and ARGS.flow_close_s > 0:  # 11-10 동작 흐름: 세기가 확 올라도 표 순서대로 (0→1 최소 flow_close_s)
+                self.c = min(self.c, c_prev + dt / ARGS.flow_close_s)
         self.key = key
         self.firm = bool(msg.get("firm")) and key in FIRM_KEYS
         if ARGS.commit_floor > 0 and msg.get("committed") and not auto and key not in ("relax", "preshape"):
@@ -850,7 +878,10 @@ class Composer:
                 if j in THUMB and k in self.poses.get("_thumb_path", {}):
                     # 엄지 동선 표 (11-07): 엄지 문(tg)은 진행을 늦추는 데 씀 → 직선으로 질러가지 않고 같은 동선 위에서만 움직임
                     g_ = self.tg if k in self.thumb_keys else 1.0
-                    q += w * (thumb_key_at(self.poses, k, j, (self.tc if k == self.tkey else c) * g_) - o[j])
+                    u_ = (self.tc if k == self.tkey else c) * g_
+                    q += w * (thumb_key_at(self.poses, k, j, u_) - o[j])
+                    if k in FLOW and not (k in PRECISION_KEYS and j in AIM_JOINTS):   # 11-10 흐름 자세: 눌러 쥐기(squeeze)는 이전과 같게 → 끝 자세 그대로 (진행만큼 늘림)
+                        q += w * sq * (self.poses[k][j] - o[j]) * min(1.0, u_)
                     continue
                 tp = tpath_at(self.poses, j, c) if (k == "fist" and j in THUMB) else None
                 if tp is not None:                 # 손으로 녹화한 엄지 경로 (동선 표가 없을 때만)
@@ -908,6 +939,9 @@ class Stiffness:
             self.caps = {m2j.get(mid): cap_of(m2j.get(mid)) for mid in self.hand.config.motor_ids}
             self.last = i; self.t_last = now; self.last_aim = aim; self.last_tri = tri
         return self.last
+
+
+FLOW_DEFAULT = "pinch,scissors,index_ext,thumb_ext"   # 11-10: 실제 손 미리보기 확인(정현 '괜찮음') 뒤 기본으로 켬. 끄려면 --flow ""
 
 
 def run(hand, stopped, read, registers):
@@ -1031,6 +1065,15 @@ def run(hand, stopped, read, registers):
                 comp_._release_start()
                 while comp_.rel_from is not None and not stopped.is_set():
                     q = comp_._fist_release(dt, poses["relax"])
+                    tick = time.monotonic(); hand.set_joint_positions(contact.apply(dict(sm.step(q, "relax", t, dt)), sm, q)); health()
+                    t += dt; stopped.wait(max(0.0, dt - (time.monotonic() - tick)))
+                for _ in range(int(1.0 / dt)):
+                    tick = time.monotonic(); hand.set_joint_positions(contact.apply(dict(sm.step(poses["relax"], "relax", t, dt)), sm, poses["relax"])); health()
+                    t += dt; stopped.wait(max(0.0, dt - (time.monotonic() - tick)))
+            elif name == "relax" and prev in FLOW and prev != "tripod" and ARGS.flow_unwind > 0:   # 11-10 동작 흐름 풀기 = 표를 거꾸로 (실제 제어와 같은 계산)
+                comp_ = Composer(poses, {}); comp_.key, comp_.c, comp_.tkey, comp_.tc = prev, 1.0, prev, 1.0
+                while comp_.key and not stopped.is_set():
+                    q = comp_._unwind_tripod(dt, key=prev)
                     tick = time.monotonic(); hand.set_joint_positions(contact.apply(dict(sm.step(q, "relax", t, dt)), sm, q)); health()
                     t += dt; stopped.wait(max(0.0, dt - (time.monotonic() - tick)))
                 for _ in range(int(1.0 / dt)):
@@ -1194,6 +1237,11 @@ def main():
     ap.add_argument("--tripod-unwind", type=float, default=0.6, help="(11-09) 세손가락 풀기 = 쥘 때 경로를 거꾸로 (엄지 IP→MCP→뿌리가 벌린 자리로 돌아나감 → 대기). 끝→대기 전체 시간 s, 0 = 이전처럼 바로 대기로")
     ap.add_argument("--tripod-open-hold", type=float, default=0.2, help="(11-09) 세손가락 쥘 때 검지·중지 편 준비 지점(approach_open)에서 머무는 시간 s. 0 = 안 머묾")
     ap.add_argument("--tripod-rel-hold", type=float, default=0.15, help="세손가락 풀 때 엄지 벌린 자리에서 머무는 시간 s")
+    ap.add_argument("--flow", default=FLOW_DEFAULT, help="(11-10 기본 끔 → 11-10 실제 손 확인 뒤 정현 결정으로 기본 켬, --flow \"\" = 끔) 동작 흐름 켤 자세들 (emg_grips.yaml flow): 예 pinch,scissors,index_ext,thumb_ext 또는 all. 시작·끝 자세는 같고 사이 순서만 바뀜")
+    ap.add_argument("--flow-close-s", type=float, default=0.45, help="흐름 켠 동작 모드 자세(가위·가리키기·엄지 척): 쥐는 정도 0→1 최소 시간 s (0 = 제한 없음)")
+    ap.add_argument("--flow-unwind", type=float, default=0.5, help="흐름 켠 자세 풀기 = 표를 거꾸로, 끝→대기 시간 s (0 = 이전처럼 바로 대기로)")
+    ap.add_argument("--flow-open-hold", type=float, default=0.15, help="흐름 켠 집기: 검지 편 준비 지점에서 머무는 시간 s")
+    ap.add_argument("--flow-rel-hold", type=float, default=0.1, help="흐름 켠 집기 풀 때 준비 지점(엄지 마주봄·검지 폄)에서 머무는 시간 s")
     ap.add_argument("--wrap-rel-hold", type=float, default=0.5, help="풀 때 엄지 벌린 준비 자세(wrap_pre)에서 머무는 시간 s (물체가 빠질 틈)")
     ap.add_argument("--open-window", type=float, default=0.0, help="(비전 없을 때 임시) 손 펴기 뒤 이 시간(s) 안에 주먹 → 감싸 쥐기. 11-02 부터 기본 0 = 감싸 쥐기는 비전이 물체를 볼 때만, 평소 주먹은 주먹")
     ap.add_argument("--no-vision-lock", dest="vision_lock", action="store_false", help="(기본 켬) 비전이 물체를 보면 쥐기 종류는 비전, 쥐기와 상관없는 동작은 무시")
@@ -1241,6 +1289,7 @@ def main():
         for k_, v_ in dict(on_delay=0.10, on_ramp=0.15, auto_close=0.9, w_flex=13.0, vflex=250.0, thumb_rise=0.25, lv_lo=0.40, lv_hi=0.65, open_delay_tuck=False).items():
             setattr(ARGS, k_, v_)
     FIRM_KEYS.clear(); FIRM_KEYS.update(k.strip() for k in ARGS.firm_keys.split(",") if k.strip())
+    FLOW.clear(); FLOW.update(k.strip() for k in ARGS.flow.split(",") if k.strip())
     for f_, m_ in (("ring", ARGS.ring_lag), ("pinky", ARGS.pinky_lag)):
         for jt in ("mcp", "pip"):
             LAG[f"{f_}_{jt}"] = m_
@@ -1250,6 +1299,7 @@ def main():
 ARGS = None
 AUTO_KEYS = {"wrap", "pinch", "tripod", "cylinder"}     # 쥐기 모드 자세 = 스스로 쥐기 (동작 모드 fist=바위·가위·가리키기·엄지 척은 세기 비례 그대로)
 FIRM_KEYS = {"wrap", "tripod"}
+FLOW = set()          # 동작 흐름 켠 자세 (--flow, 11-10). 비어 있으면 이전과 같음
 CUR_JOINTS = ("index_mcp", "index_pip", "middle_mcp", "middle_pip", "thumb_cmc", "thumb_abd", "thumb_mcp", "thumb_dip", "ring_mcp", "pinky_mcp")
 LOG_JOINTS = ("thumb_mcp", "thumb_cmc", "index_mcp", "index_pip", "middle_mcp", "ring_mcp")
 PRECISION_KEYS = {"pinch", "tripod"}        # 손끝을 맞대는 쥐기
