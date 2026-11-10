@@ -70,6 +70,8 @@ def command(kind, **kw):
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib", *kw["files"], "--weight", str(kw["weight"]), "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else []), *ref], PC
     if kind == "svm":
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib-svm", *kw["files"], "--weight", "30", "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else [])], PC
+    if kind == "reinforce":                          # 11-10: 정밀 보정 녹화 → 착용 목록 → 기본 모델 다시 → 메인 LDA·SVM 덮어씀
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "reinforce", "--session", kw["session"], "--cal", *kw["cal"], "--trans", *kw["trans"]], PC
     if kind == "monitor":
         quick = ["--quick-out", kw["quick_out"], "--quick-raw", kw["quick_raw"], "--base", str(BASE_MODEL)] if kw.get("quick_out") else []
         return [str(PC_PY), str(Path(__file__).with_name("signal_monitor.py")), "--port", EMG_COM, *quick], PC
@@ -187,7 +189,12 @@ def session_files(session, kind):
     return sorted(DATA.glob(f"{kind}_{session}*.csv"), key=os.path.getmtime)
 
 
+MAIN_MODELS = ("grip7_main_lda.pkl", "grip7_main_svm.pkl")   # 11-10 정현 요청: 앱 목록은 메인 2 개만 (정밀 보정마다 강화)
+
+
 def models():
+    if ARM == "right":
+        return [n for n in MAIN_MODELS if (DATA / n).exists()]
     fs = [f for f in DATA.glob("grip7_*.pkl") if not f.name.startswith(("grip7_base", "grip7_ref")) and "check" not in f.name]   # 기본·위치 기준 파일은 목록에서 뺌
     # 최신 착용이 위, 같은 때 만든 LDA·SVM 은 팔의 기본 선택(오른팔 = LDA)이 위 (새로 받은 저장소는 파일 시간이 모두 같음)
     return [f.name for f in sorted(fs, key=lambda f: (-int(f.stat().st_mtime // 60), ("svm" in f.name) == (ARM == "right"), f.name))]
@@ -198,6 +205,8 @@ _INFO = {}
 
 def model_label(name):
     """목록용 이름: 파일 이름만 보고 만듦 (grip7_20261106b_svm.pkl → VASH SVM 1106b)"""
+    if name in MAIN_MODELS:
+        return "VASH LDA (메인)" if "lda" in name else "VASH SVM (메인)"
     n = re.match(r"grip7_(장착|미장착)_(svm|lda)_(\d+)\.pkl", name)     # 11-09: 정현이 알아보기 쉬운 이름 (grip7_장착_svm_1109.pkl → 장착 · SVM · 1109)
     if n:
         return f"의수 {n.group(1)} · {n.group(2).upper()} · {n.group(3)}"
@@ -498,6 +507,13 @@ def wait_job(name):
     return S.jobs[name].code
 
 
+def run_reinforce():
+    cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
+    start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
+    code = wait_job("svm")
+    return code, parse_report(list(S.jobs["svm"].lines))
+
+
 def run_calib(files, weight, out, fresh=False):
     start("calib", "calib", files=files, weight=weight, out=str(out), fresh=fresh)
     code = wait_job("calib")
@@ -583,6 +599,14 @@ def calibration_worker():
         code = record("TRANS")
         if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
         if code: return ended(f"녹화가 오류로 멈췄습니다 (코드 {code}). 아래 기록을 확인하세요.", False)
+        if ARM == "right":                # 11-10: 새 파일을 만들지 않고 메인 LDA·SVM 을 강화
+            stage(5, "5/5 기본 모델 강화 + 메인 LDA·SVM (약 2–3 분)")
+            code, S.report = run_reinforce()
+            if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
+            if code or not S.report["saved"]: return ended("모델을 만들지 못했습니다. 아래 기록을 확인하세요.", False)
+            warn = " (경고 있음, 위 내용을 확인하세요)" if S.report["severe"] else ""
+            S.pick = "grip7_main_lda.pkl"
+            return ended(f"완료: 메인 LDA·SVM 강화됨, LDA 선택{warn}", not S.report["severe"])
         stage(5, "5/5 모델 만들기")
         fr = "_fresh" if S.fresh else ""; out = DATA / f"grip7_{S.session}{fr}.pkl"; k = 2
         while out.exists():
@@ -637,7 +661,7 @@ def calibration_retry():
 @app.post("/api/calibration/cancel")
 def calibration_cancel():
     S.cancel.set()
-    for name in ("record", "svm", "monitor"):
+    for name in ("record", "svm", "monitor", "calib"):
         if running(name):
             S.jobs[name].stop()
     return {"ok": True}
@@ -652,6 +676,13 @@ def svm_build():
     if running("svm") or S.flow["active"]:
         raise HTTPException(409, "모델을 만드는 중입니다")
     S.pick = None
+    if ARM == "right":                    # 11-10: 같은 착용 녹화로 메인 LDA·SVM 다시 강화 (새 파일 없음)
+        if not session_files(S.session, "TRANS"):
+            raise HTTPException(409, "이 착용의 전환 녹화가 없습니다")
+        cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
+        S.svm_out = "grip7_main_svm.pkl"
+        start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
+        return {"ok": True}
     start_svm()
     return {"ok": True}
 

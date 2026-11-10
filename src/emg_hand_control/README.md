@@ -135,7 +135,7 @@ uv run --frozen --no-dev python ../hand/start_hand.py
 
 # 근전도 — emg 폴더
 cd src/emg_hand_control/emg
-.venv/bin/python grip_rt.py run --model data/S01/grip7_미장착_lda_1108.pkl --port /dev/vash-emg --udp 127.0.0.1:9000
+.venv/bin/python grip_rt.py run --model data/S01/grip7_main_lda.pkl --port /dev/vash-emg --udp 127.0.0.1:9000
 ```
 
 Windows 는 `.venv\Scripts\python`, `--port COM6`.

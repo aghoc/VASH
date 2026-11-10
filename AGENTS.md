@@ -19,5 +19,6 @@
 ## 3. 실행 요약
 - 앱: Jetson 은 바탕 화면 VASH 아이콘(`jetson/start_vash.sh`), Windows 는 `emg/app/start_windows.vbs`
 - 의수만: `cd src/emg_hand_control/orca_core && uv run --frozen --no-dev python ../hand/start_hand.py`
-- 모델: `emg/data/S01/` 의 `grip7_장착_svm_1109.pkl` (의수 거치대 착용 = SVM), `grip7_미장착_lda_1108.pkl` (거치대 없이 = LDA). 지난 모델은 `models_old/` (앱 목록에는 안 보임). 착용 모델은 밴드를 다시 차면 다시 보정해야 합니다.
+- 모델: `emg/data/S01/` 의 **`grip7_main_lda.pkl`, `grip7_main_svm.pkl` 2 개만** 씁니다 (앱 목록도 이 2 개). 앱 정밀 보정을 하면 새 파일을 만들지 않고 이 2 개를 덮어씁니다 (이전 것은 `models_old/` 에 시간 붙여 보관). 밴드를 다시 차서 인식이 나빠지면 정밀 보정을 다시 합니다.
+- 기본 모델 강화(`grip7_base_right.pkl` 다시 만들기)는 녹화 원본이 있는 컴퓨터(정현 Windows 노트북)에서만 됩니다. 원본이 없는 컴퓨터에서는 정밀 보정해도 기본 모델은 그대로이고 메인 2 개만 그 착용으로 보정됩니다. 이 경우 `wears_right.json` 에 착용이 추가되지만 원본이 없으므로 그 변경은 올리지 말고 사람에게 알립니다.
 - 자세한 설치·앱 설명은 `src/emg_hand_control/README.md`
