@@ -195,6 +195,9 @@ _INFO = {}
 
 def model_label(name):
     """목록용 이름: 파일 이름만 보고 만듦 (grip7_20261106b_svm.pkl → VASH SVM 1106b)"""
+    n = re.match(r"grip7_(장착|미장착)_(svm|lda)_(\d+)\.pkl", name)     # 11-09: 정현이 알아보기 쉬운 이름 (grip7_장착_svm_1109.pkl → 장착 · SVM · 1109)
+    if n:
+        return f"의수 {n.group(1)} · {n.group(2).upper()} · {n.group(3)}"
     m = re.match(r"grip7_\d{4}(\d{2})(\d{2})([a-z]?)_?(.*)\.pkl", name)
     if not m:
         return name
