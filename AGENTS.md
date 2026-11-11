@@ -1,6 +1,8 @@
 # AGENTS.md — VASH 저장소 작업 규칙 (Claude Code · Codex 공통)
 
 이 저장소는 여러 컴퓨터(Windows 노트북 2 대, Jetson)에서 AI 도구가 함께 고칩니다.
+
+> **비전 + 근전도 통합 앱(제슨용)을 고치는 AI 는 먼저 `docs/emg_hand_control/통합앱_적용가이드_1111.md` 를 읽고, 거기 '꼭 넣을 것' 을 통합 앱에 같은 동작으로 넣어야 합니다.** `src/emg_hand_control/emg/app/` 근전도 앱은 정현 전용이라 제슨에서는 쓰지 않으므로, 그 앱만 바뀌어도 제슨에는 반영되지 않습니다.
 **작업을 시작하기 전에 이 파일과 `docs/emg_hand_control/변경기록_및_오류대처.md` 를 먼저 읽으세요.**
 답은 한국어로, 짧고 직접적으로 합니다. 모의 계산·재생 결과를 실측이라고 말하지 않습니다.
 
@@ -17,6 +19,7 @@
 - 커밋은 기능 단위로 나누고, main 에는 PR 로 합칩니다.
 
 ## 3. 실행 요약
+- **대회·시연 절차는 `docs/emg_hand_control/대회_보정절차_1111.md`**: 착용 → [위치 확인] → 정밀 보정 (거치대면 `거치대 착용` 체크) → SVM 자동 선택 → [분류 확인] → 사용
 - 앱: Jetson 은 바탕 화면 VASH 아이콘(`jetson/start_vash.sh`), Windows 는 `emg/app/start_windows.vbs`
 - 의수만: `cd src/emg_hand_control/orca_core && uv run --frozen --no-dev python ../hand/start_hand.py`
 - 모델: `emg/data/S01/` 의 **`grip7_main_lda.pkl`, `grip7_main_svm.pkl` 2 개만** 씁니다 (앱 목록도 이 2 개). 앱 정밀 보정을 하면 새 파일을 만들지 않고 이 2 개를 덮어씁니다 (이전 것은 `models_old/` 에 시간 붙여 보관). 밴드를 다시 차서 인식이 나빠지면 정밀 보정을 다시 합니다.

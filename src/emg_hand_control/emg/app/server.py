@@ -56,6 +56,10 @@ RECORD = {
     "TEST": ("시험: 쉬는 동작", 130, ["--reps", "3", "--relax", "--rest-jitter", "1", "--next-cue", "1"]),
     "CHAIN": ("시험: 연속 동작", 72, ["--reps", "3", "--hold", "2", "--chain", "4", "--relax", "--rest-jitter", "1", "--next-cue", "1"]),
 }
+# 11-11 착용 확인: 위치 확인 = 무늬가 뚜렷한 5 동작 한 번씩 (약 30 초), 분류 확인 = 7 동작 한 번씩 (약 40 초)
+RECORD["PLACE"] = ("위치 확인", 30, ["--reps", "1", "--hold", "2.5", "--rest", "2", "--relax"])
+RECORD["CHECK"] = ("분류 확인", 40, ["--reps", "1", "--hold", "2", "--rest", "2.5", "--relax", "--rest-jitter", "0.5", "--next-cue", "1"])
+TASK_GESTURES = {"PLACE": "손 펴기,주먹,가위,검지 펴기,엄지 펴기"}
 if ARM == "right":                 # 11-08: 보정 녹화를 2 회 반복 (한 착용의 보정 녹화 1 개 → 2 개에서 재생 정답 38 → 46/49)
     RECORD["CAL"] = ("보정 2 회", 90, ["--reps", "2", "--relax"])
 
@@ -64,14 +68,19 @@ def command(kind, **kw):
     """실행할 명령과 폴더. 시험 때 가짜 명령으로 바꿈"""
     if kind == "record":
         return [str(PC_PY), "finger_test.py", "record", "--port", EMG_COM, "--ch", "1-8", "--side", "band", "--subject", "S01", "--session", kw["session"], "--task", kw["task"],
-                "--arm", ARM, "--gestures", GESTURES, "--seed", str(int(time.time()) % 100000), *RECORD[kw["task"]][2], "--out", kw["out"]], PC
+                "--arm", ARM, "--gestures", TASK_GESTURES.get(kw["task"], GESTURES), "--seed", str(int(time.time()) % 100000), *RECORD[kw["task"]][2], "--out", kw["out"]], PC
     if kind == "calib":
         ref = ["--ref", str(REF_RIGHT)] if ARM == "right" and not RIGHT_BASE and REF_RIGHT.exists() else []   # 오른팔 기본 모델에는 오른팔 기준이 들어 있음
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib", *kw["files"], "--weight", str(kw["weight"]), "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else []), *ref], PC
     if kind == "svm":
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib-svm", *kw["files"], "--weight", "30", "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else [])], PC
     if kind == "reinforce":                          # 11-10: 정밀 보정 녹화 → 착용 목록 → 기본 모델 다시 → 메인 LDA·SVM 덮어씀
-        return [str(PC_PY), "grip_model.py", "--arm", ARM, "reinforce", "--session", kw["session"], "--cal", *kw["cal"], "--trans", *kw["trans"]], PC
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "reinforce", "--session", kw["session"], "--cal", *kw["cal"], "--trans", *kw["trans"], "--no-base"], PC
+    if kind == "check":                              # 11-11 착용 확인 (위치·분류)
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "placecheck" if kw["what"] == "PLACE" else "classcheck", kw["csv"], "--model", kw["model"],
+                *(["--skip-ch", "5,6,7"] if kw.get("mount") and kw["what"] == "PLACE" else [])], PC
+    if kind == "rebuild_base":                       # 11-11: 정밀 보정 뒤 뒤에서 기본 모델 강화 (다음 보정부터 쓰임)
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "rebuild-base"], PC
     if kind == "monitor":
         quick = ["--quick-out", kw["quick_out"], "--quick-raw", kw["quick_raw"], "--base", str(BASE_MODEL)] if kw.get("quick_out") else []
         return [str(PC_PY), str(Path(__file__).with_name("signal_monitor.py")), "--port", EMG_COM, *quick], PC
@@ -169,7 +178,7 @@ class Job:
 class State:
     def __init__(self):
         self.jobs = {}; self.svm_out = None; self.session = next_session(); self.t_band = None; self.report = None
-        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.fresh = False; self.pick = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
+        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.fresh = False; self.mount = False; self.pick = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
         self.flow = dict(active=False, stage="", step=0, waiting=False, ask=None, message="", ok=None); self.answer = None; self.cancel = threading.Event(); self.proceed = threading.Event()
 
 
@@ -457,6 +466,36 @@ def new_session():
     return {"session": S.session}
 
 
+def check_worker(what, mount):
+    csv = DATA / f"{what}_{S.session}_{time.strftime('%H%M%S')}.csv"
+    S.record_kind = what
+    start("record", "record", session=S.session, task=what, out=str(csv))
+    if wait_job("record") or not csv.exists():
+        return
+    model = DATA / (S.pick if what == "CHECK" and S.pick in MAIN_MODELS else "grip7_main_svm.pkl")
+    start("check", "check", what=what, csv=str(csv), model=str(model), mount=mount)
+
+
+@app.post("/api/check/{what}")
+async def check_start(what: str, req: Request):
+    """11-11: [위치 확인] 착용 직후 밴드 위치·접촉, [분류 확인] 정밀 보정 뒤 동작별 맞음·틀림"""
+    if what not in ("PLACE", "CHECK"):
+        raise HTTPException(404, "확인 종류 없음")
+    if not (DATA / "grip7_main_svm.pkl").exists():
+        raise HTTPException(409, "메인 모델이 없습니다. 먼저 정밀 보정을 하세요")
+    if running("emg") or running("record") or running("check") or S.flow["active"]:
+        raise HTTPException(409, "근전도 포트를 쓰는 프로그램을 먼저 끄세요")
+    try:
+        mount = bool((await req.json()).get("mount"))
+    except Exception:
+        mount = False
+    stop_monitor()
+    if "check" in S.jobs:
+        del S.jobs["check"]
+    threading.Thread(target=check_worker, args=(what, mount), daemon=True).start()
+    return {"ok": True}
+
+
 @app.post("/api/record/{task}")
 def record(task: str):
     if task not in RECORD:
@@ -509,9 +548,30 @@ def wait_job(name):
 
 def run_reinforce():
     cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
+    if running("base"):                   # 앞 보정의 기본 모델 강화가 끝날 때까지 (같은 파일을 씀)
+        wait_job("base")
     start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
     code = wait_job("svm")
-    return code, parse_report(list(S.jobs["svm"].lines))
+    if not code:
+        start("base", "rebuild_base")     # 뒤에서 기본 모델 강화 → 다음 정밀 보정에 쓰임 (지금 메인 2 개는 바로 사용)
+    return code, mount_filter(parse_report(list(S.jobs["svm"].lines)))
+
+
+MOUNT_CH = {5, 6, 7}                      # 11-11 정현: 의수 거치대가 팔 아래에 달려 위쪽(CH5–7)이 눌림 → 잡음·약한 신호·위치 경고가 늘 뜸
+
+
+def mount_filter(rep):
+    """거치대 착용이면 CH5–7 만의 경고와 위치 경고는 빼고, 남은 경고로만 severe 를 다시 정함"""
+    if not S.mount:
+        return rep
+    keep = []
+    for it in rep["items"]:
+        chs = {int(c) for c in re.findall(r"CH(\d)", it["text"])}
+        if it["text"].startswith("위치 ") or (chs and chs <= MOUNT_CH):
+            continue
+        keep.append(it)
+    rep = dict(rep, items=keep); rep["severe"] = any(it["level"] == "bad" for it in keep)
+    return rep
 
 
 def run_calib(files, weight, out, fresh=False):
@@ -573,6 +633,8 @@ def calibration_worker():
         while True:
             stage(1, "1/5 전극 접촉 확인 (힘을 빼고 기다려 주세요)")
             items = contact_check()
+            if S.mount:                   # 거치대 착용: CH5–7 접촉 경고는 늘 뜨므로 묻지 않음
+                items = [it for it in items if not ({int(c) for c in re.findall(r"CH(\d)", it["text"])} <= MOUNT_CH)]
             if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
             if not items: break
             ans = ask("contact", "전극 접촉이 불안정합니다", items, "표시된 채널의 전극을 눌러 보거나 다시 끼운 뒤 [다시 확인]을 누르세요. 이대로 녹화하면 동작 구분이 나빠질 수 있습니다.")
@@ -587,6 +649,7 @@ def calibration_worker():
             stage(3, "3/5 신호 품질 확인")
             code, S.report = run_calib([str(session_files(S.session, "CAL")[-1])], 10, DATA / "grip7_check.pkl")
             if code: return ended("품질 확인이 오류로 멈췄습니다. 아래 기록을 확인하세요.", False)
+            S.report = mount_filter(S.report)
             items = [it for it in S.report["items"] if it["level"] != "ok"]
             if not items: break
             pos_only = all(it["text"].startswith("위치 ") for it in items)
@@ -600,13 +663,13 @@ def calibration_worker():
         if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
         if code: return ended(f"녹화가 오류로 멈췄습니다 (코드 {code}). 아래 기록을 확인하세요.", False)
         if ARM == "right":                # 11-10: 새 파일을 만들지 않고 메인 LDA·SVM 을 강화
-            stage(5, "5/5 기본 모델 강화 + 메인 LDA·SVM (약 2–3 분)")
+            stage(5, "5/5 메인 LDA·SVM 만들기 (약 40 초)")
             code, S.report = run_reinforce()
             if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
             if code or not S.report["saved"]: return ended("모델을 만들지 못했습니다. 아래 기록을 확인하세요.", False)
             warn = " (경고 있음, 위 내용을 확인하세요)" if S.report["severe"] else ""
-            S.pick = "grip7_main_lda.pkl"
-            return ended(f"완료: 메인 LDA·SVM 강화됨, LDA 선택{warn}", not S.report["severe"])
+            S.pick = "grip7_main_svm.pkl"   # 11-11 재생 (7 착용 시험 349 회, 정밀 보정 한 번): SVM 343 대 LDA 311, 거치대 착용에서도 SVM 이 위
+            return ended(f"완료: 메인 SVM 선택 (LDA 도 만듦){warn}. 기본 모델 강화는 뒤에서 계속 (다음 보정부터 쓰임)", not S.report["severe"])
         stage(5, "5/5 모델 만들기")
         fr = "_fresh" if S.fresh else ""; out = DATA / f"grip7_{S.session}{fr}.pkl"; k = 2
         while out.exists():
@@ -635,9 +698,11 @@ def calibration_worker():
 @app.post("/api/calibration/start")
 async def calibration_start(req: Request):
     try:
-        S.fresh = bool((await req.json()).get("fresh"))    # 11-07: 이 착용만으로 학습 (오른팔·처음 차는 위치)
+        body = await req.json()
+        S.fresh = bool(body.get("fresh"))    # 11-07: 이 착용만으로 학습 (오른팔·처음 차는 위치)
+        S.mount = bool(body.get("mount"))    # 11-11: 의수 거치대 착용 (CH5–7 경고 무시)
     except Exception:
-        S.fresh = False
+        S.fresh = False; S.mount = False
     if S.flow["active"] or running("emg") or running("record"):
         raise HTTPException(409, "근전도 포트를 쓰는 프로그램을 먼저 끄세요")
     S.report = None; S.cancel.clear(); S.answer = None; S.pick = None

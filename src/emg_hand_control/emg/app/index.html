@@ -220,9 +220,14 @@ html[data-theme=mecha][data-alert] main{outline:3px solid #ff3030;outline-offset
     <div class="bar" id="quickBar" hidden><i id="quickFill"></i></div>
     <div class="state" id="quickStage" aria-live="polite"></div>
     <div id="quickMsg"></div>
+    <div class="row"><button id="placeCheck" title="착용 직후: 손 펴기·주먹·가위·검지·엄지를 한 번씩 (약 30 초) → 마지막 정밀 보정 때 위치와 비교해 돌릴 방향·접촉 나쁜 채널 안내">위치 확인</button>
+      <button id="classCheck" title="정밀 보정 뒤: 7 동작을 한 번씩 (약 40 초) → 지금 선택한 메인 모델로 동작별 맞음·틀림">분류 확인</button>
+      <span class="note">거치대를 달았으면 아래 '거치대 착용' 을 체크</span></div>
+    <pre id="chkLog" hidden></pre>
     <details id="fullCal"><summary class="note">정밀 보정 (동작 녹화, 약 3분)</summary>
     <div class="row"><button id="calStart">정밀 보정 시작</button><button id="calCancel" hidden>중단</button>
-      <label class="note" title="기본 모델을 섞지 않고 이번 녹화만으로 LDA·SVM 을 만듭니다. 오른팔 기본 모델이 있으면 끄는 것이 더 좋음 (재생 43 대 46/49)"><input type="checkbox" id="calFresh"> 이 착용만으로 학습 (왼팔만, 오른팔은 메인 2 개 강화)</label></div>
+      <label class="note" title="기본 모델을 섞지 않고 이번 녹화만으로 LDA·SVM 을 만듭니다. 오른팔 기본 모델이 있으면 끄는 것이 더 좋음 (재생 43 대 46/49)"><input type="checkbox" id="calFresh"> 이 착용만으로 학습 (왼팔만)</label>
+      <label class="note" title="의수 거치대를 단 채 보정: 눌리는 CH5–7 의 잡음·약한 신호·위치 경고는 묻지 않고 진행"><input type="checkbox" id="calMount"> 거치대 착용</label></div>
     <div class="steps" id="calSteps" hidden><i></i><i></i><i></i><i></i><i></i></div>
     <div class="state" id="calStage"></div>
     <div id="calMsg"></div>
@@ -369,7 +374,7 @@ function quick(s){
 }
 function svm(s){
   const j=s.jobs.svm,r=j&&j.running,hasCal=s.files.CAL.length>0;$("svmBuild").disabled=!!r||!hasCal||s.flow.active;
-  $("svmState").textContent=r?`만드는 중 (${Math.round(j.elapsed)}초)`:j?(j.code===0?`완료: ${s.svm_out}`:`실패 (코드 ${j.code}). 아래 기록을 확인하세요`):(hasCal?"":"먼저 정밀 보정을 합니다");
+  $("svmState").textContent=(s.jobs.base&&s.jobs.base.running)?`기본 모델 강화 중 (${Math.round(s.jobs.base.elapsed)}초, 다음 보정부터 쓰임 · 근전도는 써도 됨)`:r?`만드는 중 (${Math.round(j.elapsed)}초)`:j?(j.code===0?`완료: ${s.svm_out}`:`실패 (코드 ${j.code}). 아래 기록을 확인하세요`):(hasCal?"":"먼저 정밀 보정을 합니다");
 }
 // 모델 카드: 고른 모델의 판단 방식·보정 녹화·검증 기록
 const cards={};
@@ -450,6 +455,10 @@ function render(s){
   probs(s,fresh?L:null);
   $("handStatus").textContent=s.hand.status.replace(/\s+/g," ").slice(0,110);$("emgStatus").textContent=ej?ej.status.replace(/\s+/g," ").slice(0,110):"";
   setLog("handLog",hj&&hj.lines);setLog("emgLog",ej&&ej.lines);
+  {const ck=s.record_kind==="PLACE"||s.record_kind==="CHECK",cj2=s.jobs.check,busy=(s.jobs.record&&s.jobs.record.running)||(cj2&&cj2.running)||s.flow.active||(s.jobs.emg&&s.jobs.emg.running);
+   $("placeCheck").disabled=$("classCheck").disabled=!!busy||!s.ports[s.emg_com];
+   const cl=[...(ck&&s.jobs.record?s.jobs.record.lines.slice(-3):[]),...(cj2?cj2.lines.filter(l=>!l.startsWith("착용 위치 일치도")):[])];
+   $("chkLog").hidden=!cl.length;setLog("chkLog",cl)}
   const rl=[...((s.jobs.record&&s.jobs.record.lines)||[]),...(cj?["--- 품질 확인·모델 ---",...cj.lines]:[]),...(s.jobs.svm?["--- SVM 모델 ---",...s.jobs.svm.lines]:[])];setLog("recLog",rl);
 }
 async function poll(){try{const r=await fetch("/api/state");render(await r.json())}catch(e){$("liveInfo").textContent="앱 서버와 연결이 끊겼습니다"}}
@@ -569,7 +578,11 @@ $("model").onchange=()=>{$("model")._c=$("model").value;modelCard($("model").val
 $("svmBuild").onclick=()=>post("/api/svm/build");
 $("quickStart").onclick=()=>post("/api/quick/start");
 $("quickStop").onclick=()=>post("/api/stop/monitor");
-$("calStart").onclick=()=>post("/api/calibration/start",{fresh:$("calFresh").checked});
+$("calStart").onclick=()=>post("/api/calibration/start",{fresh:$("calFresh").checked,mount:$("calMount").checked});
+$("placeCheck").onclick=()=>post("/api/check/PLACE",{mount:$("calMount").checked});
+$("classCheck").onclick=()=>post("/api/check/CHECK",{});
+try{$("calMount").checked=localStorage.getItem("vash_cal_mount")==="1"}catch(e){}
+$("calMount").onchange=()=>{try{localStorage.setItem("vash_cal_mount",$("calMount").checked?"1":"0")}catch(e){}};
 try{$("calFresh").checked=localStorage.getItem("vash_cal_fresh2")==="1"}catch(e){}
 $("calFresh").onchange=()=>{try{localStorage.setItem("vash_cal_fresh2",$("calFresh").checked?"1":"0")}catch(e){}};
 $("calCancel").onclick=()=>post("/api/calibration/cancel");
