@@ -78,7 +78,8 @@ TASK_GESTURES = {"PLACE": "손 펴기,주먹,가위,검지 펴기,엄지 펴기"
 RECORD["CAL"] = ("보정 2 회", 90, ["--reps", "2", "--relax"])
 # 11-12 정현: 정밀 보정에 팔 자세 녹화 (rec_right.py 와 같은 설정). 재생: 손바닥 아래 검지 판단 5→70 %, 자세 빼기 SVM 155→157/164 LDA 135→151
 POSES = {"FWD": "팔을 앞으로 뻗어 어깨 높이 (팔꿈치 폄)", "UP": "팔꿈치 90° 접어 손이 위로 (위팔은 몸통 옆)",
-         "DOWN": "팔꿈치 90°, 손바닥이 바닥을 향함 (엎침)", "SIDE": "팔꿈치 90°, 엄지가 위 (손바닥이 옆을 향함)"}
+         "DOWN": "팔꿈치 90°, 손바닥이 바닥을 향함 (엎침)", "SIDE": "팔꿈치 90°, 엄지가 위 (손바닥이 옆을 향함)",
+         "HELLO": "위팔을 어깨 높이로 들고 팔꿈치 90°, 손이 위 (인사 자세)"}   # 11-12 정현: 이 자세에서 손 펴기가 휴식으로 뜸 (RUN65)
 for _k in POSES:
     RECORD[_k] = (f"자세 {_k}", 90, ["--reps", "2", "--relax", "--rest-jitter", "1", "--next-cue", "1"])
 POSE_PREP_S = 6                           # 자세를 바꿀 시간
@@ -668,7 +669,7 @@ def calibration_worker():
     f = S.flow
     n = 6 if S.pose else 5                # 11-12: 자세 녹화를 하면 6 단계
     def stage(step, text):
-        f.update(step=step, stage=text.replace("/5 ", f"/{n} "), steps=n)
+        f.update(step=step, stage=re.sub(r"^(\d)/5 ", lambda m: m.group(1) + f"/{n} ", text), steps=n)
     def ended(msg, ok):
         f.update(active=False, waiting=False, ask=None, message=msg, ok=ok, stage="")
     def record(task):

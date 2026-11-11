@@ -6,6 +6,19 @@
 > **11-11 밤: 근전도 밴드를 왼팔로 옮김 (거치대는 오른팔).** 앱에 '착용 팔' 선택이 생겼습니다. 통합 앱에는 적용 가이드 **7번(착용 팔 선택)** 을 넣으세요. 왼팔은 `--arm left`, 메인 모델 `grip7_main_left_*.pkl`, 착용 목록·기본 모델 강화 없음.
 > **11-12: 정밀 보정에 팔 자세 녹화 (기본 켬).** 통합 앱에는 적용 가이드 **8번** 을 넣으세요 (자세 4 개 녹화 + `reinforce --pose`). 왼팔도 이제 착용 목록(`wears_left.json`)·기본 모델 강화를 합니다.
 > **11-11 밤: 동작 흐름(`--flow`) 다시 기본 끔.** 집기·가위·검지·엄지 흐름 롤백, 주먹·세손가락 동선은 그대로. 통합 앱이 `--flow ...` 를 붙이고 있으면 빼세요.
+> **11-12: 정밀 보정 자세 녹화에 인사 자세(HELLO) 추가** — 적용 가이드 8번 표 참고 (자세 5 개).
+
+## 0. 이 저장소 받기 · 근전도 대시보드(앱) 옮기기
+사람이 "받아 줘" / "최신으로" 라고 하면 아래 순서로 합니다.
+1. 처음이면 `git clone https://github.com/aghoc/VASH.git`. 이미 있으면 그 폴더에서 `git status` (고친 파일이 있으면 덮어쓰기 전에 사람에게 묻기) → `git switch main` → `git pull`
+2. 받은 뒤 `docs/emg_hand_control/변경기록_및_오류대처.md` 맨 위 항목을 읽고 무엇이 바뀌었는지 한두 줄로 알림
+3. 근전도 대시보드 = `src/emg_hand_control/emg/app/` (`server.py` + `index.html`, 브라우저 `http://127.0.0.1:8765`). 앱이 부르는 코드는 `src/emg_hand_control/emg/*.py`, 모델은 `src/emg_hand_control/emg/data/S01/`
+   - 파이썬 환경: `src/emg_hand_control/emg` 에서 `python -m venv .venv` → `.venv` 의 pip 로 `pip install -r requirements.txt`
+   - 실행: Windows 는 `emg/app/start_windows.vbs` (터미널로 보려면 `.venv` 파이썬으로 `python app/server.py`), Jetson 은 `src/emg_hand_control/jetson/start_vash.sh`
+   - 포트: 근전도 `VASH_EMG_PORT` (Windows 기본 COM6), 손 `VASH_HAND_PORT` (기본 COM7). 다르면 환경 변수로
+   - 착용 팔: `emg/data/S01/app_arm.txt` (지금 `left`). 화면 1번 칸에서 바꿈
+4. 녹화 원본이 없는 컴퓨터에서는 정밀 보정해도 기본 모델은 그대로이고 메인 2 개만 그 착용으로 만들어집니다 (정상)
+
 **작업을 시작하기 전에 이 파일과 `docs/emg_hand_control/변경기록_및_오류대처.md` 를 먼저 읽으세요.**
 답은 한국어로, 짧고 직접적으로 합니다. 모의 계산·재생 결과를 실측이라고 말하지 않습니다.
 
