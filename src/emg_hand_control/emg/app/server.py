@@ -37,11 +37,25 @@ GESTURES = "손 펴기,주먹,집기 (중지 펴기),세손가락 (중지 굽힘
 # 제슨은 udev 규칙(jetson/99-vash.rules)이 만드는 고정 이름을 씀
 # 11-07: 대회까지 오른팔만 사용. right = 녹화 헤더 arm=right, 정밀 보정 '이 착용만으로 학습' 기본, 오른팔 위치 기준, 오른팔 배치도,
 #   빠른 보정(왼팔 기본 모델에 휴식만 맞춤) 끔. left = 이전(왼팔) 방식
-ARM = os.environ.get("VASH_ARM", "right")
+# 11-11 정현: 거치대는 오른팔, 근전도는 왼팔로 옮길 수 있게 → 화면에서 착용 팔을 고름 (마지막 선택은 data/S01/app_arm.txt, VASH_ARM 환경 변수가 있으면 그것)
+ARM_FILE = DATA / "app_arm.txt"
 REF_RIGHT = DATA / "grip7_ref_right.pkl"
-# 11-08: 오른팔 기본 모델 (오른팔 착용 녹화로 만듦, grip_model.py --arm right build). 있으면 정밀·빠른 보정 모두 이것을 기준으로
-BASE_MODEL = DATA / ("grip7_base_right.pkl" if ARM == "right" else "grip7_base.pkl")
-RIGHT_BASE = ARM == "right" and BASE_MODEL.exists()
+
+
+def set_arm(arm):
+    """착용 팔 바꿈. 오른팔 = 오른팔 기본 모델 + 메인 grip7_main_*.pkl, 왼팔 = 왼팔 기본 모델(grip7_base.pkl) + 메인 grip7_main_left_*.pkl"""
+    global ARM, BASE_MODEL, RIGHT_BASE
+    ARM = arm
+    # 11-08: 오른팔 기본 모델 (오른팔 착용 녹화로 만듦, grip_model.py --arm right build). 있으면 정밀·빠른 보정 모두 이것을 기준으로
+    BASE_MODEL = DATA / ("grip7_base_right.pkl" if ARM == "right" else "grip7_base.pkl")
+    RIGHT_BASE = ARM == "right" and BASE_MODEL.exists()
+
+
+try:
+    _arm0 = os.environ.get("VASH_ARM") or ARM_FILE.read_text(encoding="utf-8").strip()
+except OSError:
+    _arm0 = "right"
+set_arm(_arm0 if _arm0 in ("left", "right") else "right")
 EMG_COM = os.environ.get("VASH_EMG_PORT") or ("COM6" if WIN else "/dev/vash-emg")
 HAND_COM = os.environ.get("VASH_HAND_PORT") or ("COM7" if WIN else "/dev/vash-hand")
 FLOW_ALL = "pinch,scissors,index_ext,thumb_ext"
@@ -60,8 +74,8 @@ RECORD = {
 RECORD["PLACE"] = ("위치 확인", 30, ["--reps", "1", "--hold", "2.5", "--rest", "2", "--relax"])
 RECORD["CHECK"] = ("분류 확인", 40, ["--reps", "1", "--hold", "2", "--rest", "2.5", "--relax", "--rest-jitter", "0.5", "--next-cue", "1"])
 TASK_GESTURES = {"PLACE": "손 펴기,주먹,가위,검지 펴기,엄지 펴기"}
-if ARM == "right":                 # 11-08: 보정 녹화를 2 회 반복 (한 착용의 보정 녹화 1 개 → 2 개에서 재생 정답 38 → 46/49)
-    RECORD["CAL"] = ("보정 2 회", 90, ["--reps", "2", "--relax"])
+# 11-08: 보정 녹화를 2 회 반복 (한 착용의 보정 녹화 1 개 → 2 개에서 재생 정답 38 → 46/49). 11-11 왼팔도 같게
+RECORD["CAL"] = ("보정 2 회", 90, ["--reps", "2", "--relax"])
 
 
 def command(kind, **kw):
@@ -199,14 +213,19 @@ def session_files(session, kind):
 
 
 MAIN_MODELS = ("grip7_main_lda.pkl", "grip7_main_svm.pkl")   # 11-10 정현 요청: 앱 목록은 메인 2 개만 (정밀 보정마다 강화)
+MAIN_LEFT = ("grip7_main_left_lda.pkl", "grip7_main_left_svm.pkl")   # 11-11 왼팔 메인 (grip_model --arm left reinforce)
+
+
+def main_models():
+    return MAIN_MODELS if ARM == "right" else MAIN_LEFT
+
+
+def main_svm():
+    return main_models()[1]
 
 
 def models():
-    if ARM == "right":
-        return [n for n in MAIN_MODELS if (DATA / n).exists()]
-    fs = [f for f in DATA.glob("grip7_*.pkl") if not f.name.startswith(("grip7_base", "grip7_ref")) and "check" not in f.name]   # 기본·위치 기준 파일은 목록에서 뺌
-    # 최신 착용이 위, 같은 때 만든 LDA·SVM 은 팔의 기본 선택(오른팔 = LDA)이 위 (새로 받은 저장소는 파일 시간이 모두 같음)
-    return [f.name for f in sorted(fs, key=lambda f: (-int(f.stat().st_mtime // 60), ("svm" in f.name) == (ARM == "right"), f.name))]
+    return [n for n in main_models() if (DATA / n).exists()]
 
 
 _INFO = {}
@@ -214,8 +233,8 @@ _INFO = {}
 
 def model_label(name):
     """목록용 이름: 파일 이름만 보고 만듦 (grip7_20261106b_svm.pkl → VASH SVM 1106b)"""
-    if name in MAIN_MODELS:
-        return "VASH LDA (메인)" if "lda" in name else "VASH SVM (메인)"
+    if name in MAIN_MODELS + MAIN_LEFT:
+        return ("VASH LDA" if "lda" in name else "VASH SVM") + (" (왼팔 메인)" if "left" in name else " (메인)")
     n = re.match(r"grip7_(장착|미장착)_(svm|lda)_(\d+)\.pkl", name)     # 11-09: 정현이 알아보기 쉬운 이름 (grip7_장착_svm_1109.pkl → 장착 · SVM · 1109)
     if n:
         return f"의수 {n.group(1)} · {n.group(2).upper()} · {n.group(3)}"
@@ -472,8 +491,24 @@ def check_worker(what, mount):
     start("record", "record", session=S.session, task=what, out=str(csv))
     if wait_job("record") or not csv.exists():
         return
-    model = DATA / (S.pick if what == "CHECK" and S.pick in MAIN_MODELS else "grip7_main_svm.pkl")
+    model = DATA / (S.pick if what == "CHECK" and S.pick in main_models() else main_svm())
     start("check", "check", what=what, csv=str(csv), model=str(model), mount=mount)
+
+
+@app.post("/api/arm")
+async def arm_set(req: Request):
+    """11-11: 착용 팔 바꿈 (근전도·녹화·보정이 꺼져 있을 때만)"""
+    arm = (await req.json()).get("arm")
+    if arm not in ("left", "right"):
+        raise HTTPException(400, "left 또는 right")
+    if S.flow["active"] or any(running(n) for n in ("emg", "record", "check", "svm", "monitor")):
+        raise HTTPException(409, "근전도·녹화·보정을 먼저 끄세요")
+    set_arm(arm); S.pick = None; S.svm_out = None
+    try:
+        ARM_FILE.write_text(arm, encoding="utf-8")
+    except OSError:
+        pass
+    return {"ok": True}
 
 
 @app.post("/api/check/{what}")
@@ -481,8 +516,8 @@ async def check_start(what: str, req: Request):
     """11-11: [위치 확인] 착용 직후 밴드 위치·접촉, [분류 확인] 정밀 보정 뒤 동작별 맞음·틀림"""
     if what not in ("PLACE", "CHECK"):
         raise HTTPException(404, "확인 종류 없음")
-    if not (DATA / "grip7_main_svm.pkl").exists():
-        raise HTTPException(409, "메인 모델이 없습니다. 먼저 정밀 보정을 하세요")
+    if not (DATA / main_svm()).exists():
+        raise HTTPException(409, "이 팔의 메인 모델이 없습니다. 먼저 정밀 보정을 하세요" + (" (왼팔 첫 정밀 보정 전에는 위치 확인 기준이 없음)" if ARM != "right" else ""))
     if running("emg") or running("record") or running("check") or S.flow["active"]:
         raise HTTPException(409, "근전도 포트를 쓰는 프로그램을 먼저 끄세요")
     try:
@@ -552,7 +587,7 @@ def run_reinforce():
         wait_job("base")
     start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
     code = wait_job("svm")
-    if not code:
+    if not code and ARM == "right":      # 왼팔은 기본 모델 강화 없음
         start("base", "rebuild_base")     # 뒤에서 기본 모델 강화 → 다음 정밀 보정에 쓰임 (지금 메인 2 개는 바로 사용)
     return code, mount_filter(parse_report(list(S.jobs["svm"].lines)))
 
@@ -662,35 +697,14 @@ def calibration_worker():
         code = record("TRANS")
         if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
         if code: return ended(f"녹화가 오류로 멈췄습니다 (코드 {code}). 아래 기록을 확인하세요.", False)
-        if ARM == "right":                # 11-10: 새 파일을 만들지 않고 메인 LDA·SVM 을 강화
-            stage(5, "5/5 메인 LDA·SVM 만들기 (약 40 초)")
-            code, S.report = run_reinforce()
-            if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
-            if code or not S.report["saved"]: return ended("모델을 만들지 못했습니다. 아래 기록을 확인하세요.", False)
-            warn = " (경고 있음, 위 내용을 확인하세요)" if S.report["severe"] else ""
-            S.pick = "grip7_main_svm.pkl"   # 11-11 재생 (7 착용 시험 349 회, 정밀 보정 한 번): SVM 343 대 LDA 311, 거치대 착용에서도 SVM 이 위
-            return ended(f"완료: 메인 SVM 선택 (LDA 도 만듦){warn}. 기본 모델 강화는 뒤에서 계속 (다음 보정부터 쓰임)", not S.report["severe"])
-        stage(5, "5/5 모델 만들기")
-        fr = "_fresh" if S.fresh else ""; out = DATA / f"grip7_{S.session}{fr}.pkl"; k = 2
-        while out.exists():
-            out = DATA / f"grip7_{S.session}{fr}_{k}.pkl"; k += 1
-        code, S.report = run_calib([str(session_files(S.session, "CAL")[-1]), str(session_files(S.session, "TRANS")[-1])], 30, out, fresh=S.fresh)
+        # 11-10: 새 파일을 만들지 않고 메인 LDA·SVM 을 강화 (11-11 왼팔도 = 왼팔 메인 2 개)
+        stage(5, "5/5 메인 LDA·SVM 만들기 (약 40 초)")
+        code, S.report = run_reinforce()
+        if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
         if code or not S.report["saved"]: return ended("모델을 만들지 못했습니다. 아래 기록을 확인하세요.", False)
-        # 11-06 실사용 평가 "SVM 이 더 나았어" → 같은 녹화로 SVM 모델도 만들어 선택해 둠 (LDA 모델은 그대로 남음)
-        stage(5, "5/5 SVM 모델 만들기 (약 20초)")
-        start_svm()
-        code = wait_job("svm")
-        if S.cancel.is_set(): return ended(f"캘리브레이션을 중단했습니다. LDA 모델 {out.name} 은 저장됨", None)
         warn = " (경고 있음, 위 내용을 확인하세요)" if S.report["severe"] else ""
-        if code:
-            S.svm_out = None
-            return ended(f"완료: {out.name}{warn}. SVM 모델은 만들지 못했습니다 (아래 기록 확인)", False)
-        if S.fresh or ARM == "right":     # 11-08: 오른팔은 모든 비교에서 LDA > SVM (재생 47 대 42, 32 대 26, 오른팔 기본 + 보정도 SVM 이 6–12 낮음, 정현 체감도 LDA) → LDA 선택
-            S.pick = out.name
-            ended(f"완료: {out.name} 선택됨 (SVM {S.svm_out} 도 저장됨){warn}", not S.report["severe"])
-        else:
-            S.pick = S.svm_out
-            ended(f"완료: {S.svm_out} 선택됨 (LDA {out.name} 도 저장됨){warn}", not S.report["severe"])
+        S.pick = main_svm()             # 11-11 재생 (7 착용 시험 349 회, 정밀 보정 한 번): SVM 343 대 LDA 311, 거치대 착용에서도 SVM 이 위
+        return ended(f"완료: 메인 SVM 선택 (LDA 도 만듦){warn}." + (" 기본 모델 강화는 뒤에서 계속 (다음 보정부터 쓰임)" if ARM == "right" else " (왼팔 메인)"), not S.report["severe"])
     except Exception as e:
         ended(f"캘리브레이션 오류: {e}", False)
 
@@ -741,24 +755,13 @@ def svm_build():
     if running("svm") or S.flow["active"]:
         raise HTTPException(409, "모델을 만드는 중입니다")
     S.pick = None
-    if ARM == "right":                    # 11-10: 같은 착용 녹화로 메인 LDA·SVM 다시 강화 (새 파일 없음)
-        if not session_files(S.session, "TRANS"):
-            raise HTTPException(409, "이 착용의 전환 녹화가 없습니다")
-        cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
-        S.svm_out = "grip7_main_svm.pkl"
-        start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
-        return {"ok": True}
-    start_svm()
-    return {"ok": True}
-
-
-def start_svm():
+    # 11-10: 같은 착용 녹화로 메인 LDA·SVM 다시 강화 (새 파일 없음, 11-11 왼팔도)
+    if not session_files(S.session, "TRANS"):
+        raise HTTPException(409, "이 착용의 전환 녹화가 없습니다")
     cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
-    fr = "_fresh" if S.fresh else ""; out = DATA / f"grip7_{S.session}{fr}_svm.pkl"; k = 2
-    while out.exists():
-        out = DATA / f"grip7_{S.session}{fr}_svm{k}.pkl"; k += 1
-    S.svm_out = out.name
-    start("svm", "svm", files=[str(cal[-1])] + ([str(trans[-1])] if trans else []), out=str(out), fresh=S.fresh)
+    S.svm_out = main_svm()
+    start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
+    return {"ok": True}
 
 
 # ---- 동작 자세 수정 (11-07 사용자 요청) ----

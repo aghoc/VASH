@@ -548,6 +548,12 @@ def summary(rows):
 
 MAIN_LDA = os.path.join(DATA, "grip7_main_lda.pkl")    # 11-10 정현 요청: 앱에 보이는 모델은 이 2 개뿐, 정밀 보정마다 덮어써서 강화
 MAIN_SVM = os.path.join(DATA, "grip7_main_svm.pkl")
+MAIN_LEFT_LDA = os.path.join(DATA, "grip7_main_left_lda.pkl")   # 11-11: 왼팔 착용 (거치대는 오른팔, 근전도는 왼팔). 왼팔 기본 모델(grip7_base.pkl)로 보정, 착용 목록·기본 강화 없음
+MAIN_LEFT_SVM = os.path.join(DATA, "grip7_main_left_svm.pkl")
+
+
+def main_paths():
+    return (MAIN_LDA, MAIN_SVM) if ARM == "right" else (MAIN_LEFT_LDA, MAIN_LEFT_SVM)
 
 
 def register_wear(session, cal, trans, extra=()):
@@ -586,10 +592,18 @@ def reinforce(session, cal, trans, extra=(), rebuild=True):
     보정 재료는 앱과 같게 마지막 보정 녹화 + 마지막 전환 녹화, 무게 ×30"""
     global CAL_WEIGHT
     t0 = time.time()
-    key = register_wear(session, cal, trans, extra)
-    use_arm("right")                                     # 방금 추가한 착용까지 다시 읽음
+    lda_out, svm_out = main_paths()
+    if ARM != "right":                                   # 11-11 왼팔: 왼팔 기본 모델 그대로, 착용 목록(wears_right.json)에 넣지 않음
+        key = session
+        print(f"왼팔 착용 {session} → 왼팔 기본 모델({os.path.basename(BASE_FILE)})로 왼팔 메인 LDA·SVM 보정 (착용 목록·기본 모델 강화 없음)", flush=True)
+        base = pickle.load(open(BASE_FILE, "rb"))
+    else:
+        key = register_wear(session, cal, trans, extra)
+        use_arm("right")                                 # 방금 추가한 착용까지 다시 읽음
     have = [w for w in WEARS if all(os.path.exists(fpath(n)) for n in WEARS[w]["train"])]
-    if not rebuild:                                      # 11-11: 앱은 지금 기본 모델로 메인 2 개를 먼저 만들고, 기본 모델 강화(rebuild-base)는 뒤에서 따로 (재생: 기본 모델 종류에 따른 차이 없음 343 대 342/349)
+    if ARM != "right":
+        pass
+    elif not rebuild:                                      # 11-11: 앱은 지금 기본 모델로 메인 2 개를 먼저 만들고, 기본 모델 강화(rebuild-base)는 뒤에서 따로 (재생: 기본 모델 종류에 따른 차이 없음 343 대 342/349)
         print(f"착용 {key} 추가 (기본 모델 강화는 따로) → 지금 기본 모델로 메인 LDA·SVM 보정", flush=True)
         base = pickle.load(open(BASE_FILE, "rb"))
     elif len(have) == len(WEARS):
@@ -603,11 +617,11 @@ def reinforce(session, cal, trans, extra=(), rebuild=True):
     spec = [(p, None) for p in (cal[-1:] + trans[-1:])]
     CAL_WEIGHT = 30
     placement_report([p for p, _ in spec], base["reference"])
-    lda = calibrate(base, spec); lda["place_ref"] = place_ref_from([p for p, _ in spec]); keep_old(MAIN_LDA); pickle.dump(lda, open(MAIN_LDA, "wb"))
-    print(f"보정 저장 {MAIN_LDA}  (보정 창 {lda['calibrated']['windows']} 개 ×{CAL_WEIGHT})", flush=True)
-    svm = calibrate_svm(base, spec); svm["place_ref"] = lda["place_ref"]; keep_old(MAIN_SVM)
-    tmp = MAIN_SVM + ".tmp"; pickle.dump(svm, open(tmp, "wb")); os.replace(tmp, MAIN_SVM)
-    print(f"SVM 모델 저장 {MAIN_SVM}  (서포트 벡터 {svm['svm'].n_support_.sum()}, 전체 {time.time() - t0:.0f} s)", flush=True)
+    lda = calibrate(base, spec); lda["place_ref"] = place_ref_from([p for p, _ in spec]); lda["arm"] = ARM; keep_old(lda_out); pickle.dump(lda, open(lda_out, "wb"))
+    print(f"보정 저장 {lda_out}  (보정 창 {lda['calibrated']['windows']} 개 ×{CAL_WEIGHT})", flush=True)
+    svm = calibrate_svm(base, spec); svm["place_ref"] = lda["place_ref"]; svm["arm"] = ARM; keep_old(svm_out)
+    tmp = svm_out + ".tmp"; pickle.dump(svm, open(tmp, "wb")); os.replace(tmp, svm_out)
+    print(f"SVM 모델 저장 {svm_out}  (서포트 벡터 {svm['svm'].n_support_.sum()}, 전체 {time.time() - t0:.0f} s)", flush=True)
     return key
 
 
@@ -771,7 +785,10 @@ def main():
             class_check(a.csv, pk)
     elif a.cmd == "rebuild-base":
         E.CLASSES = GESTURES
-        rebuild_base()
+        if a.arm != "right":
+            print("왼팔은 기본 모델 강화 없음 (왼팔 기본 모델 grip7_base.pkl 그대로)")
+        else:
+            rebuild_base()
     elif a.cmd == "report":
         E.CLASSES = GESTURES
         print_report(pickle.load(open(a.model, "rb")), a.csv, dict(min_s=a.min_s, commit_s=max(0.4, a.min_s + 0.1)) if a.min_s is not None else None)
