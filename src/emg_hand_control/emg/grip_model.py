@@ -611,7 +611,7 @@ def add_session(session):
     """11-11 밤: 이 착용(세션) 녹화를 모두 착용 목록에 넣음 (터미널 녹화 rec_right.py 용). CAL = 정렬·보정 재료, TEST·CHAIN (없으면 TRANS) = 시험"""
     import glob
     names = sorted(os.path.splitext(os.path.basename(f))[0] for f in glob.glob(os.path.join(DATA, f"*_{session}.csv")) + glob.glob(os.path.join(DATA, f"*_{session}_*.csv")))
-    names = [n for n in names if n.split("_")[0] in ("CAL", "TRANS", "TEST", "CHAIN", "FOCUS", "FWD", "UP", "PINCH", "DOWN", "SIDE")]
+    names = [n for n in names if n.split("_")[0] in ("CAL", "TRANS", "TEST", "CHAIN", "FOCUS", "FWD", "UP", "PINCH", "DOWN", "SIDE", "HELLO")]
     cal = [n for n in names if n.startswith("CAL_")]
     if not cal:
         raise SystemExit(f"{session}: CAL 녹화가 없습니다 (rec_right.py CAL {session} {ARM})")

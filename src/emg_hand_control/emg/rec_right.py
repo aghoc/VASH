@@ -10,6 +10,7 @@
   python rec_right.py PINCH 20261111c left  집기와 헷갈리는 동작(손 펴기·세손가락·가위·검지)만, 모든 순서, 길게 (약 4 분)
   python rec_right.py DOWN 20261111c left   팔꿈치 90°, 손바닥이 바닥 (엎침), 약 90 s (11-12)
   python rec_right.py SIDE 20261111c left   팔꿈치 90°, 엄지가 위, 약 90 s (11-12)
+  python rec_right.py HELLO 20261112a left  위팔을 어깨 높이로 들고 팔꿈치 90°, 손이 위 (인사 자세), 약 90 s (11-12)
   세 번째 인자 = 착용 팔 (left/right, 없으면 right)
 같은 이름 파일이 있으면 _2, _3 … 을 붙임 (덮어쓰지 않음)"""
 import os, subprocess, sys, time
@@ -32,12 +33,14 @@ OPTS = {
     # 11-12: 아래팔 돌림 (평소 CAL 은 손바닥이 나를 향한 뒤침) → 엎침·중간 자세도 같은 녹화
     "DOWN": ["--reps", "2", "--relax", "--rest-jitter", "1", "--next-cue", "1"],
     "SIDE": ["--reps", "2", "--relax", "--rest-jitter", "1", "--next-cue", "1"],
+    "HELLO": ["--reps", "2", "--relax", "--rest-jitter", "1", "--next-cue", "1"],   # 11-12: 인사 자세 (RUN65 손 펴기→휴식)
     # 집기 집중: 집기와 헷갈리는 쌍(손 펴기 0.89, 세손가락 0.87 상관)을 서로 바로 바꿔 가며, 2 s 유지, 4 번씩
     "PINCH": ["--reps", "4", "--hold", "2", "--chain", "4", "--all-transitions", "--relax", "--rest-jitter", "1", "--next-cue", "0.7"],
 }
 TASK_GESTURES = {"FOCUS": "손 펴기,집기 (중지 펴기),세손가락 (중지 굽힘),가위", "PINCH": "손 펴기,집기 (중지 펴기),세손가락 (중지 굽힘),가위,검지 펴기"}
 POSTURE = {"FWD": "팔을 앞으로 뻗어 어깨 높이 (팔꿈치 폄)", "UP": "팔꿈치 90° 접어 손이 위로 (위팔은 몸통 옆)",
-           "DOWN": "팔꿈치 90°, 손바닥이 바닥을 향함 (엎침)", "SIDE": "팔꿈치 90°, 엄지가 위 (손바닥이 옆을 향함)"}
+           "DOWN": "팔꿈치 90°, 손바닥이 바닥을 향함 (엎침)", "SIDE": "팔꿈치 90°, 엄지가 위 (손바닥이 옆을 향함)",
+           "HELLO": "위팔을 어깨 높이로 들고 팔꿈치 90°, 손이 위 (인사 자세)"}
 HERE = os.path.dirname(os.path.abspath(__file__))
 task, session = sys.argv[1].upper(), sys.argv[2]
 arm = sys.argv[3] if len(sys.argv) > 3 else "right"
