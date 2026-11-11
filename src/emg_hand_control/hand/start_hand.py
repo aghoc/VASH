@@ -25,7 +25,7 @@ HERE = Path(__file__).resolve().parent
 CALIBRATION = HERE / "calibration.yaml"
 BASELINE = HERE / "travel_baseline.yaml"
 NEUTRAL_LIMIT_DEG = 3.0                  # 중립 도착 한도 최소값 (모터 각도)
-NEUTRAL_LIMIT_FRAC = 0.08                # 11-09: 모터별 한도 = 캘리브레이션 범위의 8 % (ID 14 약 52° → 4.2°)
+NEUTRAL_LIMIT_FRAC = 0.10                # 11-09: 모터별 한도 = 캘리브레이션 범위의 비율. 11-11: 0.08→0.10 (ID 14 가 4.18° 로 한도 4.16° 를 넘어 시작 실패 → 5.0°)
 NEUTRAL_LIMIT_MAX_DEG = 5.0              #   단 5° 넘게는 안 늘림 (범위 큰 MCP 133° → 5°)
 TRAVEL_MARGIN = 0.25                     # 11-02: 줄이 풀린 ID 14 는 평소 45~62° 가 8° 로 측정됨. 기준은 줄 교체 뒤 값 (travel_baseline.yaml)
 

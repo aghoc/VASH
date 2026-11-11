@@ -941,7 +941,7 @@ class Stiffness:
         return self.last
 
 
-FLOW_DEFAULT = "pinch,scissors,index_ext,thumb_ext"   # 11-10: 실제 손 미리보기 확인(정현 '괜찮음') 뒤 기본으로 켬. 끄려면 --flow ""
+FLOW_DEFAULT = ""   # 11-11 정현 결정으로 다시 끔 (집기·가위·검지·엄지 흐름 롤백, 주먹·세손가락 동선은 flow 와 별개라 그대로). 켜려면 --flow pinch,scissors,index_ext,thumb_ext
 
 
 def run(hand, stopped, read, registers):
