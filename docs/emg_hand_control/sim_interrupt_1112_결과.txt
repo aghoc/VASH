@@ -1,0 +1,12 @@
+인자: (기본)   틱 20 ms
+장면                                   예외      새 동작 나옴    목표 급변    명령 급변   95% 도착  나온 자세 순서
+세손가락 → 주먹 (바로)                       없음        0.78s    85.8°     7.0°    1.60s  relax → tripod → relax → fist
+주먹 → 세손가락 (바로)                       없음        0.00s     8.1°     9.0°    0.92s  relax → fist → tripod
+주먹 → 검지 펴기 (바로)                      없음        0.00s     0.0°     9.0°    0.44s  relax → fist → index_ext
+주먹 → 손 펴기 (바로)                       없음        0.00s    17.1°     8.0°    1.22s  relax → fist → open
+세손가락 → 손 펴기 (바로)                     없음        0.58s    53.7°     8.7°    1.32s  relax → tripod → relax → open
+세손가락 쥐는 중(0.4 s) → 가위                없음        0.38s    77.2°     7.0°    1.00s  relax → tripod → relax → scissors
+세손가락 → 휴식 0.2 s(풀던 중) → 주먹           없음        0.58s    85.8°     7.0°    1.40s  relax → tripod → relax → fist
+주먹 → 휴식 0.25 s(풀던 중) → 세손가락          없음        0.04s    73.3°     9.0°    0.96s  relax → fist → relax → tripod
+세손가락 → 주먹 0.15 s 깜빡 → 세손가락           없음        0.00s     6.9°     3.0°    0.32s  relax → tripod → relax → tripod
+주먹 → 검지 0.15 s 깜빡 → 주먹               없음        0.00s    14.6°     9.0°    0.82s  relax → fist → index_ext → fist

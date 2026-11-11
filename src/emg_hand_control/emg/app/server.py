@@ -60,6 +60,8 @@ EMG_COM = os.environ.get("VASH_EMG_PORT") or ("COM6" if WIN else "/dev/vash-emg"
 HAND_COM = os.environ.get("VASH_HAND_PORT") or ("COM7" if WIN else "/dev/vash-hand")
 FLOW_ALL = "pinch,scissors,index_ext,thumb_ext"
 HAND_FLOW = os.environ.get("VASH_HAND_FLOW", "")   # 11-10 동작 흐름 (emg_bridge_guarded --flow). 11-11 정현 결정으로 다시 기본 끔, 켜려면 VASH_HAND_FLOW=pinch,scissors,index_ext,thumb_ext
+# 11-12 정현: 동작 도중 다른 동작이 끼어들 때 (세손가락은 다 풀 때까지 안 넘어감, 주먹은 풀기 순서를 건너뜀) → 의수 실행에 두 옵션 켬. 끄려면 VASH_HAND_SWITCH=0
+HAND_SWITCH = [] if os.environ.get("VASH_HAND_SWITCH", "1") == "0" else ["--tripod-switch-s", "0.3", "--fist-unwind-any"]
 NOISE = re.compile(r"findfont:|^\s*warnings\.warn|UserWarning")
 LOCAL_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
 
@@ -107,7 +109,7 @@ def command(kind, **kw):
         return [str(PC_PY), str(Path(__file__).with_name("signal_monitor.py")), "--port", EMG_COM, *quick], PC
     if kind == "hand":
         extra = (["--calibrate", "--calibrate-only"] if kw.get("calibrate") else []) + (["--update-baseline"] if kw.get("update_baseline") else [])
-        return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra, *(["--flow", HAND_FLOW] if not kw.get("calibrate") else [])], ORCA
+        return [str(HAND_PY), str(HAND_DIR / "start_hand.py"), "--log", kw["log"], *extra, *(["--flow", HAND_FLOW, *HAND_SWITCH] if not kw.get("calibrate") else [])], ORCA
     if kind == "teach":                              # 자세 가르치기 (teach_live.py: 60 mA 로 낮춰 손으로 밀어 만듦)
         return [str(HAND_PY), str(HAND_DIR / "teach_live.py"), kw["pose"], "--soft", str(kw["soft"]), *(["--path"] if kw.get("path") else [])], ORCA
     if kind == "preview":                            # 동작 미리보기 (11-07): 대기 → 쥐기(엄지 동선) → 풀기(거꾸로) → 대기, 근전도 없이

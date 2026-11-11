@@ -680,7 +680,7 @@ class Composer:
             self.key = None
         return tgt
 
-    def _unwind_tripod(self, dt, stop_at_via=False, key="tripod"):
+    def _unwind_tripod(self, dt, stop_at_via=False, key="tripod", switch=False):
         """세손가락 풀기 (11-09, 정현: 돌아올 때도 벌리면서 돌아와야 간섭 없음): 쥘 때 경로를 거꾸로 —
         엄지 IP → MCP 펴고 → 뿌리가 돌아 크게 벌린 자리(엄지 동선 첫 기준점)로 나가며 손가락 폄 → tripod_rel_hold s 머묾 → 대기.
         다시 쥐면 지금 c 에서 이어서 닫음 (엄지 진행 tc 도 같이 맞춤)
@@ -688,6 +688,10 @@ class Composer:
         tri = key == "tripod"
         vc = self.poses.get("_pre_thumb_c", {}).get(key, 0.0)
         rate = dt / (ARGS.tripod_unwind if tri else ARGS.flow_unwind)
+        if switch:                              # 11-12 --tripod-switch-s: 다른 동작이 확정됨 → 머묾 없이 빨리 엄지만 비키고 바로 넘어감
+            rate = dt / ARGS.tripod_switch_s
+            if self.c <= vc:
+                self.c = 0.0
         if self.c > vc:
             self.c = max(vc, self.c - rate); self.dwell = 0.0
         elif self.dwell < (ARGS.tripod_rel_hold if tri else (ARGS.flow_rel_hold if vc > 0 else 0.0)):
@@ -809,10 +813,14 @@ class Composer:
         if self.key == "wrap" and key != "wrap" and self.c > 0 and ARGS.wrap_unwind > 0:
             return self._unwind(dt, stop_at_via=(key == "open")), rest_key, 0.0
         if key != "tripod" and self._tri_rel():
-            return self._unwind_tripod(dt, stop_at_via=(key in ("open", "tripod_pre"))), rest_key, 0.0
+            sw = ARGS.tripod_switch_s > 0 and msg.get("committed") and key not in ("relax", "preshape", "tripod_pre")
+            return self._unwind_tripod(dt, stop_at_via=(key in ("open", "tripod_pre")), switch=sw), rest_key, 0.0
         if key != self.key and self._flow_rel():
             return self._unwind_tripod(dt, stop_at_via=(key in ("open", self.key + "_pre")), key=self.key), rest_key, 0.0
         if key in ("open", "relax", "preshape"):
+            if self.key == "fist":
+                self._release_start()
+        elif ARGS.fist_unwind_any and key != "fist":     # 11-12: 주먹에서 다른 동작으로 바로 / 풀던 중 다른 동작 → 주먹 풀기 순서 그대로 (엄지 먼저 비킴)
             if self.key == "fist":
                 self._release_start()
         else:
@@ -898,6 +906,35 @@ class Composer:
         elif self.rel_from is not None:
             tgt = self._fist_release(dt, tgt)
         return tgt, key, ((1.0 if auto else lv) if key not in ("open", "relax", "preshape") else 0.0)
+
+
+DEMO_SEQ_DEFAULT = "rest:1.5,fist:1.5,index_ext:1.5,rest:1.5,tripod:1.5,fist:1.5,rest:1.5,tripod:0.5,scissors:1.5,rest:1.5,fist:1.5,rest:0.25,tripod:1.5,rest:1.5,tripod:1.5,open:1.5,rest:2"
+
+
+def parse_demo_seq(spec, emg_map):
+    """'fist:1.5,rest:1,tripod:0.5,...' → [(근전도 동작 이름 또는 None, 시간 s)]. 'default' = DEMO_SEQ_DEFAULT"""
+    out = []
+    for item in (DEMO_SEQ_DEFAULT if spec == "default" else spec).split(","):
+        k, d = item.strip().rsplit(":", 1)
+        if k in ("rest", "휴식"):
+            out.append((None, float(d))); continue
+        g = next((n for n, v in emg_map.items() if v == k), None) or next((n for n in emg_map if n.startswith(k)), None)
+        if g is None:
+            raise SystemExit(f"--demo-seq: '{k}' 를 모름 (자세 이름 fist·tripod·pinch·scissors·index_ext·thumb_ext·open 또는 rest)")
+        out.append((g, float(d)))
+    return out
+
+
+def demo_seq_msg(seq, t, level):
+    """순서 데모의 지금 메시지. 각 동작은 0.15 s 뒤 확정 (근전도 확정과 비슷), 전 동작에서 쉬지 않고 바로 넘어가면 그대로 끼어듦"""
+    T = sum(d for _, d in seq); t = t % T
+    for g, d in seq:
+        if t < d:
+            if g is None:
+                return {"state": "rest", "grip": None, "committed": False, "level": 0.0}
+            return {"state": "active", "grip": g, "committed": t >= 0.15, "level": level}
+        t -= d
+    return {"state": "rest", "grip": None, "committed": False, "level": 0.0}
 
 
 class Stiffness:
@@ -1114,6 +1151,9 @@ def run(hand, stopped, read, registers):
         g_ = next((n for n, k in emg_map.items() if k == g_), None) or next((n for n in emg_map if n.startswith(g_)), g_)   # 자세 이름(tripod)도 받음
         demo = [("rest", None), ("active", g_)]
         print(f"데모: '{g_}' → {emg_map.get(g_)} 만 반복", flush=True)
+    seq = parse_demo_seq(ARGS.demo_seq, emg_map) if ARGS.demo_seq else None   # 11-12: 정한 순서대로 (연속·끼어듦 보여 주기)
+    if seq:
+        print("데모 순서: " + " → ".join(f"{emg_map.get(g, '휴식') if g else '휴식'} {d:g}s" for g, d in seq) + f"  (한 바퀴 {sum(d for _, d in seq):g} s)", flush=True)
     dt = 1.0 / ARGS.rate; msg, t_msg = None, 0.0; t0 = time.monotonic(); n = 0
     sm = Smoother(cur, poses); worst = 0.0
     comp = Composer(poses, emg_map); stiff = None if ARGS.no_stiffness else Stiffness(hand)
@@ -1124,7 +1164,9 @@ def run(hand, stopped, read, registers):
     print(f"{'데모' if ARGS.demo else '근전도 수신 ' + ARGS.udp}  — Ctrl+C 로 종료 (open 후 토크 해제)", flush=True)
     while not stopped.is_set():
         tick = time.monotonic()
-        if ARGS.demo:
+        if ARGS.demo and seq:
+            msg = demo_seq_msg(seq, tick - t0, ARGS.lv_hi); t_msg = tick
+        elif ARGS.demo:
             T = 6.0 if ARGS.demo_ramp else 3.0
             ph = (tick - t0) % T; st, g = demo[int((tick - t0) / T) % len(demo)]
             if ARGS.demo_ramp:                    # 세기 0 → 1 → 0 (삼각형, 6 s) — 손이 세기 따라 천천히 쥐었다 펴져야 함
@@ -1236,6 +1278,8 @@ def main():
     ap.add_argument("--wrap-unwind", type=float, default=0.9, help="감싸 쥐기 풀기 = 쥘 때 경로를 거꾸로 (엄지 끝 → 엄지 뿌리가 C 자로 벌어지며 손가락 폄 → 준비 자세 → 대기). 끝→대기 전체 시간 s, 0 = 바로 대기로")
     ap.add_argument("--tripod-unwind", type=float, default=0.6, help="(11-09) 세손가락 풀기 = 쥘 때 경로를 거꾸로 (엄지 IP→MCP→뿌리가 벌린 자리로 돌아나감 → 대기). 끝→대기 전체 시간 s, 0 = 이전처럼 바로 대기로")
     ap.add_argument("--tripod-open-hold", type=float, default=0.2, help="(11-09) 세손가락 쥘 때 검지·중지 편 준비 지점(approach_open)에서 머무는 시간 s. 0 = 안 머묾")
+    ap.add_argument("--tripod-switch-s", type=float, default=0.0, help="(11-12) 세손가락 중 다른 동작이 확정되면 머묾 없이 이 시간 s 로 빨리 풀고 바로 넘어감 (권장 0.3). 0 = 이전처럼 끝까지 풀고 머문 뒤")
+    ap.add_argument("--fist-unwind-any", action="store_true", help="(11-12) 주먹에서 손 펴기·휴식이 아닌 동작으로 바로 넘어갈 때도, 풀던 중 다른 동작이 와도 주먹 풀기 순서(엄지 마디→손가락→엄지)를 거침. 끄면 이전처럼 바로 새 동작")
     ap.add_argument("--tripod-rel-hold", type=float, default=0.15, help="세손가락 풀 때 엄지 벌린 자리에서 머무는 시간 s")
     ap.add_argument("--flow", default=FLOW_DEFAULT, help="(11-10 기본 끔 → 11-10 실제 손 확인 뒤 정현 결정으로 기본 켬, --flow \"\" = 끔) 동작 흐름 켤 자세들 (emg_grips.yaml flow): 예 pinch,scissors,index_ext,thumb_ext 또는 all. 시작·끝 자세는 같고 사이 순서만 바뀜")
     ap.add_argument("--flow-close-s", type=float, default=0.45, help="흐름 켠 동작 모드 자세(가위·가리키기·엄지 척): 쥐는 정도 0→1 최소 시간 s (0 = 제한 없음)")
@@ -1270,6 +1314,7 @@ def main():
     ap.add_argument("--lv-hi", type=float, default=0.55, help="이 세기 이상 = 끝까지 쥠 (S02 RAMP 중간~세게 ≈ 0.6~0.75)")
     ap.add_argument("--lv-gamma", type=float, default=1.0, help="세기 곡선 (0.7 = 약한 힘에 민감, 1.5 = 세게 쥐어야 닫힘)")
     ap.add_argument("--pre-frac", type=float, default=0.5, help="예비 자세가 다 되는 세기 (쥐는 정도 비율)")
+    ap.add_argument("--demo-seq", default=None, help="(11-12) --demo 를 정한 순서대로: 'fist:1.5,index_ext:1.5,rest:1,...' (자세 이름:시간 s, rest = 휴식). 'default' = 연속·끼어듦 보여 주기 순서 (약 24 s 한 바퀴)")
     ap.add_argument("--demo-grip", default=None, help="--demo 에서 한 동작만 쉬기↔쥐기 3 s 씩 반복. 자세 이름(tripod·pinch·fist) 또는 근전도 동작 이름 앞부분")
     ap.add_argument("--demo-ramp", action="store_true", help="--demo 에서 세기를 0→1→0 으로 천천히 바꿈 (비례 확인용)")
     ap.add_argument("--check-every", type=int, default=5, help="상태 읽기 간격 (제어 주기 수). 주기 최대가 크면 늘림")
