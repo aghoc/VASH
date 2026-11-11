@@ -59,7 +59,7 @@ set_arm(_arm0 if _arm0 in ("left", "right") else "right")
 EMG_COM = os.environ.get("VASH_EMG_PORT") or ("COM6" if WIN else "/dev/vash-emg")
 HAND_COM = os.environ.get("VASH_HAND_PORT") or ("COM7" if WIN else "/dev/vash-hand")
 FLOW_ALL = "pinch,scissors,index_ext,thumb_ext"
-HAND_FLOW = os.environ.get("VASH_HAND_FLOW", FLOW_ALL)   # 11-10 동작 흐름 (emg_bridge_guarded --flow). 11-10 정현 결정으로 기본 켬, VASH_HAND_FLOW= (빈 값) 이면 끔
+HAND_FLOW = os.environ.get("VASH_HAND_FLOW", "")   # 11-10 동작 흐름 (emg_bridge_guarded --flow). 11-11 정현 결정으로 다시 기본 끔, 켜려면 VASH_HAND_FLOW=pinch,scissors,index_ext,thumb_ext
 NOISE = re.compile(r"findfont:|^\s*warnings\.warn|UserWarning")
 LOCAL_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
 
@@ -76,20 +76,26 @@ RECORD["CHECK"] = ("분류 확인", 40, ["--reps", "1", "--hold", "2", "--rest",
 TASK_GESTURES = {"PLACE": "손 펴기,주먹,가위,검지 펴기,엄지 펴기"}
 # 11-08: 보정 녹화를 2 회 반복 (한 착용의 보정 녹화 1 개 → 2 개에서 재생 정답 38 → 46/49). 11-11 왼팔도 같게
 RECORD["CAL"] = ("보정 2 회", 90, ["--reps", "2", "--relax"])
+# 11-12 정현: 정밀 보정에 팔 자세 녹화 (rec_right.py 와 같은 설정). 재생: 손바닥 아래 검지 판단 5→70 %, 자세 빼기 SVM 155→157/164 LDA 135→151
+POSES = {"FWD": "팔을 앞으로 뻗어 어깨 높이 (팔꿈치 폄)", "UP": "팔꿈치 90° 접어 손이 위로 (위팔은 몸통 옆)",
+         "DOWN": "팔꿈치 90°, 손바닥이 바닥을 향함 (엎침)", "SIDE": "팔꿈치 90°, 엄지가 위 (손바닥이 옆을 향함)"}
+for _k in POSES:
+    RECORD[_k] = (f"자세 {_k}", 90, ["--reps", "2", "--relax", "--rest-jitter", "1", "--next-cue", "1"])
+POSE_PREP_S = 6                           # 자세를 바꿀 시간
 
 
 def command(kind, **kw):
     """실행할 명령과 폴더. 시험 때 가짜 명령으로 바꿈"""
     if kind == "record":
         return [str(PC_PY), "finger_test.py", "record", "--port", EMG_COM, "--ch", "1-8", "--side", "band", "--subject", "S01", "--session", kw["session"], "--task", kw["task"],
-                "--arm", ARM, "--gestures", TASK_GESTURES.get(kw["task"], GESTURES), "--seed", str(int(time.time()) % 100000), *RECORD[kw["task"]][2], "--out", kw["out"]], PC
+                "--arm", ARM, "--gestures", TASK_GESTURES.get(kw["task"], GESTURES), "--seed", str(int(time.time()) % 100000), *RECORD[kw["task"]][2], *(["--note", POSES[kw["task"]]] if kw["task"] in POSES else []), "--out", kw["out"]], PC
     if kind == "calib":
         ref = ["--ref", str(REF_RIGHT)] if ARM == "right" and not RIGHT_BASE and REF_RIGHT.exists() else []   # 오른팔 기본 모델에는 오른팔 기준이 들어 있음
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib", *kw["files"], "--weight", str(kw["weight"]), "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else []), *ref], PC
     if kind == "svm":
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "calib-svm", *kw["files"], "--weight", "30", "--out", kw["out"], *(["--fresh"] if kw.get("fresh") else [])], PC
     if kind == "reinforce":                          # 11-10: 정밀 보정 녹화 → 착용 목록 → 기본 모델 다시 → 메인 LDA·SVM 덮어씀
-        return [str(PC_PY), "grip_model.py", "--arm", ARM, "reinforce", "--session", kw["session"], "--cal", *kw["cal"], "--trans", *kw["trans"], "--no-base"], PC
+        return [str(PC_PY), "grip_model.py", "--arm", ARM, "reinforce", "--session", kw["session"], "--cal", *kw["cal"], "--trans", *kw["trans"], *(["--pose", *kw["pose"]] if kw.get("pose") else []), "--no-base"], PC
     if kind == "check":                              # 11-11 착용 확인 (위치·분류)
         return [str(PC_PY), "grip_model.py", "--arm", ARM, "placecheck" if kw["what"] == "PLACE" else "classcheck", kw["csv"], "--model", kw["model"],
                 *(["--skip-ch", "5,6,7"] if kw.get("mount") and kw["what"] == "PLACE" else [])], PC
@@ -192,7 +198,7 @@ class Job:
 class State:
     def __init__(self):
         self.jobs = {}; self.svm_out = None; self.session = next_session(); self.t_band = None; self.report = None
-        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.fresh = False; self.mount = False; self.pick = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
+        self.run_no = None; self.record_kind = None; self.lock = threading.RLock(); self.ports = {}; self.t_ports = 0.0; self.teach_pose = None; self.teach_path = False; self.teach_preview = False; self.fresh = False; self.mount = False; self.pose = True; self.pick = None; self.hand_mode = None; self.model = None; self.svm_temp = None; self.sum_cache = {}
         self.flow = dict(active=False, stage="", step=0, waiting=False, ask=None, message="", ok=None); self.answer = None; self.cancel = threading.Event(); self.proceed = threading.Event()
 
 
@@ -581,13 +587,18 @@ def wait_job(name):
     return S.jobs[name].code
 
 
+def pose_files(session):
+    """이 착용의 자세 녹화 (종류마다 마지막 것)"""
+    return [str(fs[-1]) for k in POSES if (fs := session_files(session, k))]
+
+
 def run_reinforce():
     cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
     if running("base"):                   # 앞 보정의 기본 모델 강화가 끝날 때까지 (같은 파일을 씀)
         wait_job("base")
-    start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
+    start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])], pose=pose_files(S.session) if S.pose else [])
     code = wait_job("svm")
-    if not code and ARM == "right":      # 왼팔은 기본 모델 강화 없음
+    if not code:                          # 11-11 밤: 왼팔도 기본 모델 강화 (wears_left.json)
         start("base", "rebuild_base")     # 뒤에서 기본 모델 강화 → 다음 정밀 보정에 쓰임 (지금 메인 2 개는 바로 사용)
     return code, mount_filter(parse_report(list(S.jobs["svm"].lines)))
 
@@ -655,8 +666,9 @@ def calibration_worker():
     """캘리브레이션 = 접촉 확인 → 40 초 보정 녹화 → 품질 확인 → 전환 녹화 → 모델 (LDA·SVM).
     11-07 사용자 요청: 접촉·위치가 불안정하면 그대로 다음 단계로 넘어가지 않고, 고친 뒤 다시 할지 그대로 진행할지 팝업으로 물어봄"""
     f = S.flow
+    n = 6 if S.pose else 5                # 11-12: 자세 녹화를 하면 6 단계
     def stage(step, text):
-        f.update(step=step, stage=text)
+        f.update(step=step, stage=text.replace("/5 ", f"/{n} "), steps=n)
     def ended(msg, ok):
         f.update(active=False, waiting=False, ask=None, message=msg, ok=ok, stage="")
     def record(task):
@@ -697,8 +709,17 @@ def calibration_worker():
         code = record("TRANS")
         if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
         if code: return ended(f"녹화가 오류로 멈췄습니다 (코드 {code}). 아래 기록을 확인하세요.", False)
+        if S.pose:                        # 11-12: 팔 자세 녹화 4 개 (각 약 90 초, 녹화 내내 그 자세)
+            for i, (task, desc) in enumerate(POSES.items(), 1):
+                for left in range(POSE_PREP_S, 0, -1):
+                    stage(5, f"5/5 자세 {i}/{len(POSES)} 준비: {desc} — {left}초 뒤 시작")
+                    if S.cancel.wait(1): return ended("캘리브레이션을 중단했습니다.", None)
+                stage(5, f"5/5 자세 {i}/{len(POSES)}: {desc} — 쉬는 동안에도 이 자세 유지")
+                code = record(task)
+                if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
+                if code: return ended(f"녹화가 오류로 멈췄습니다 (코드 {code}). 아래 기록을 확인하세요.", False)
         # 11-10: 새 파일을 만들지 않고 메인 LDA·SVM 을 강화 (11-11 왼팔도 = 왼팔 메인 2 개)
-        stage(5, "5/5 메인 LDA·SVM 만들기 (약 40 초)")
+        stage(n, f"{n}/5 메인 LDA·SVM 만들기 (약 {'90' if S.pose else '40'} 초)")
         code, S.report = run_reinforce()
         if S.cancel.is_set(): return ended("캘리브레이션을 중단했습니다.", None)
         if code or not S.report["saved"]: return ended("모델을 만들지 못했습니다. 아래 기록을 확인하세요.", False)
@@ -715,8 +736,9 @@ async def calibration_start(req: Request):
         body = await req.json()
         S.fresh = bool(body.get("fresh"))    # 11-07: 이 착용만으로 학습 (오른팔·처음 차는 위치)
         S.mount = bool(body.get("mount"))    # 11-11: 의수 거치대 착용 (CH5–7 경고 무시)
+        S.pose = bool(body.get("pose", True))  # 11-12: 팔 자세 녹화 포함 (기본 켬)
     except Exception:
-        S.fresh = False; S.mount = False
+        S.fresh = False; S.mount = False; S.pose = True
     if S.flow["active"] or running("emg") or running("record"):
         raise HTTPException(409, "근전도 포트를 쓰는 프로그램을 먼저 끄세요")
     S.report = None; S.cancel.clear(); S.answer = None; S.pick = None
@@ -760,7 +782,7 @@ def svm_build():
         raise HTTPException(409, "이 착용의 전환 녹화가 없습니다")
     cal, trans = session_files(S.session, "CAL"), session_files(S.session, "TRANS")
     S.svm_out = main_svm()
-    start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])])
+    start("svm", "reinforce", session=S.session, cal=[str(cal[-1])], trans=[str(trans[-1])], pose=pose_files(S.session))
     return {"ok": True}
 
 
